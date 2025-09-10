@@ -6,7 +6,7 @@ import Contacts from '@/shared/components/shared/contacts';
 export default function Home() {
   return (
     <Container className="flex flex-col gap-8 mt-12">
-      <Post title={'О нас'}>
+      <Post blockId={1} title="О нас" slug="about">
         <p className="text-2xl w-9/10 lg:w-3/5 text-center mx-auto">
           Бренд «УстА» — это место, где одежда становится искусством, — способом
           самовыражения. Мы создаём уникальные образы, вдохновлённые культурными
@@ -17,10 +17,10 @@ export default function Home() {
           вместе с нами и меняйте мир через стиль!
         </p>
       </Post>
-      <Post title="Каталог">
+      <Post blockId={2} title="Каталог" slug="catalog">
         <ProductList />
       </Post>
-      <Post className="mb-4" title="Контакты">
+      <Post blockId={3} className="mb-4" title="Контакты" slug="contacts">
         <Contacts />
       </Post>
     </Container>

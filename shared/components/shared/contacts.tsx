@@ -29,7 +29,7 @@ const contacts = [
   {
     id: 'email',
     label: 'to-zlato@mail.ru',
-    tooltip: 'Скопировать email',
+    tooltip: 'Скопировать почтовый адрес',
     icon: <Mail size={28} aria-hidden="true" className="shrink-0" />,
     copy: true,
   },
@@ -46,8 +46,8 @@ export default function Contacts() {
   const handleCopy = async (text: string) => {
     try {
       await navigator.clipboard.writeText(text);
-      toast.success(`${text} - успешно скопировано`, {
-        duration: 1500,
+      toast.success(`${text} успешно скопирован`, {
+        duration: 2500,
         position: 'top-center',
       });
     } catch {
