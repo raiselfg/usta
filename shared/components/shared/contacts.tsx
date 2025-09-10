@@ -9,7 +9,17 @@ import {
 } from '@/shared/components/ui/tooltip';
 import { toast } from 'sonner';
 
-const contacts = [
+interface Contact {
+  id: string;
+  href?: string;
+  label: string;
+  tooltip: string;
+  icon: React.ReactNode;
+  external?: boolean;
+  copy?: boolean;
+}
+
+const contacts: Contact[] = [
   {
     id: 'vk',
     href: 'https://vk.com/butikusta?from=groups',
@@ -57,45 +67,44 @@ export default function Contacts() {
     }
   };
 
+  const commonClasses =
+    'flex items-center gap-2 text-primary hover:underline transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary rounded-md';
+
   return (
-    <div className="flex flex-col sm:flex-row items-center justify-center gap-6 text-xl">
-      {contacts.map(({ id, href, label, tooltip, icon, external, copy }) => {
-        const commonClasses =
-          'flex items-center gap-2 text-primary hover:underline transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary rounded-md';
-
-        return (
-          <Tooltip key={id}>
-            <TooltipTrigger asChild>
-              {copy ? (
-                <button
-                  type="button"
-                  aria-label={tooltip}
-                  onClick={() => handleCopy(label)}
-                  className={commonClasses}
-                >
-                  {icon}
-                  <span>{label}</span>
-                </button>
-              ) : (
-                <a
-                  href={href}
-                  target={external ? '_blank' : undefined}
-                  rel={external ? 'noopener noreferrer nofollow' : 'nofollow'}
-                  aria-label={tooltip}
-                  className={commonClasses}
-                >
-                  {icon}
-                  <span>{label}</span>
-                </a>
-              )}
-            </TooltipTrigger>
-
-            <TooltipContent aria-hidden="true">
-              <p>{tooltip}</p>
-            </TooltipContent>
-          </Tooltip>
-        );
-      })}
-    </div>
+    <address className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 text-lg sm:text-xl">
+      {contacts.map(({ id, href, label, tooltip, icon, external, copy }) => (
+        <Tooltip key={id}>
+          <TooltipTrigger asChild>
+            {copy ? (
+              <button
+                type="button"
+                aria-label={`Скопировать ${label}`}
+                aria-describedby={`tooltip-${id}`}
+                onClick={() => handleCopy(label)}
+                className={commonClasses}
+              >
+                {icon}
+                <span>{label}</span>
+              </button>
+            ) : (
+              <a
+                href={href}
+                target={external ? '_blank' : undefined}
+                rel={external ? 'noopener noreferrer nofollow' : 'nofollow'}
+                aria-label={tooltip}
+                aria-describedby={`tooltip-${id}`}
+                className={commonClasses}
+              >
+                {icon}
+                <span>{label}</span>
+              </a>
+            )}
+          </TooltipTrigger>
+          <TooltipContent id={`tooltip-${id}`}>
+            <p>{tooltip}</p>
+          </TooltipContent>
+        </Tooltip>
+      ))}
+    </address>
   );
 }

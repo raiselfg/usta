@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import './globals.css';
 import { Toaster } from '@/shared/components/ui/sonner';
-import { Header } from '@/shared/components/shared/header';
 
 const cyrillicOld = localFont({
   src: '../public/fonts/CyrillicOld.woff2',
@@ -21,10 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${cyrillicOld.variable} antialiased px-3 lg:px-4 xl:px-0`}
-      >
-        <Header />
+      <body className={`${cyrillicOld.variable} antialiased `}>
         {children}
         <Toaster />
       </body>
