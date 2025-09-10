@@ -1,0 +1,47 @@
+[
+  {
+    "id": 1,
+    "name": "Товар 1",
+    "imageUrl": "/images/products/product1.jpg"
+  },
+  {
+    "id": 2,
+    "name": "Товар 2",
+    "imageUrl": "/images/products/product2.jpg"
+  },
+  {
+    "id": 3,
+    "name": "Товар 3",
+    "imageUrl": "/images/products/product3.jpg"
+  },
+  {
+    "id": 4,
+    "name": "Товар 4",
+    "imageUrl": "/images/products/product4.jpg"
+  },
+  {
+    "id": 5,
+    "name": "Товар 5",
+    "imageUrl": "/images/products/product5.jpg"
+  },
+  {
+    "id": 6,
+    "name": "Товар 6",
+    "imageUrl": "/images/products/product6.jpg"
+  },
+  {
+    "id": 7,
+    "name": "Товар 7",
+    "imageUrl": "/images/products/product7.jpg"
+  },
+  {
+    "id": 8,
+    "name": "Товар 8",
+    "imageUrl": "/images/products/product8.jpg"
+  },
+  {
+    "id": 9,
+    "name": "Товар 9",
+    "imageUrl": "/images/products/product9.jpg"
+  }
+]
