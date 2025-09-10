@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import './globals.css';
+import { Toaster } from '@/shared/components/ui/sonner';
 import { Header } from '@/shared/components/shared/header';
 
 const cyrillicOld = localFont({
@@ -25,6 +26,7 @@ export default function RootLayout({
       >
         <Header />
         {children}
+        <Toaster />
       </body>
     </html>
   );
