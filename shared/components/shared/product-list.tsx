@@ -1,4 +1,4 @@
-import products from '@/data/products.json';
+import products from '@/shared/data/products.json';
 import Image from 'next/image';
 import { Container } from '../ui/container';
 
@@ -12,8 +12,8 @@ export const ProductList = () => {
             key={product.id}
             src={product.imageUrl}
             alt={product.name}
-            height={250}
-            width={250}
+            width={305}
+            height={455}
           />
         ))}
       </section>

@@ -1,5 +1,5 @@
+import { cn } from '@/shared/lib/utils';
 import { Container } from '../ui/container';
-import { cn } from '@/lib/utils';
 
 const cats = [
   { id: 1, name: 'О нас' },

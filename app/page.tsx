@@ -6,7 +6,7 @@ export default function Home() {
   return (
     <Container className="flex flex-col gap-8 mt-12">
       <Post title={'О нас'}>
-        <p className="text-xl w-[900px] text-center mx-auto">
+        <p className="text-2xl w-[900px] text-center mx-auto">
           Бренд «УстА» — это место, где одежда становится искусством, — способом
           самовыражения. Мы создаём уникальные образы, вдохновлённые культурными
           корнями, разными эпохами, событиями прошедшего времени и
