@@ -33,7 +33,7 @@ export default function Home() {
             <ProductList products={products} />
           </div>
           <div className="flex flex-col gap-3">
-            <h3 className="text-center text-3xl">Шапки</h3>
+            <h3 className="text-center text-3xl">Головные уборы</h3>
             <ProductList products={hats} />
           </div>
         </Post>
