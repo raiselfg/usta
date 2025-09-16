@@ -3,17 +3,19 @@ import { Product, ProductList } from '@/shared/components/shared/product-list';
 import { Container } from '@/shared/components/ui/container';
 import Contacts from '@/shared/components/shared/contacts';
 import Header from '@/shared/components/shared/header';
+import productsData from '@/shared/data/products.json';
+import hatsData from '@/shared/data/hats.json';
 
-const products: Product[] = require('@/shared/data/products.json');
-const hats: Product[] = require('@/shared/data/hats.json');
+const products: Product[] = productsData;
+const hats: Product[] = hatsData;
 
 export default function Home() {
   return (
     <>
       <Header />
-      <Container className="flex flex-col gap-8 mt-3 px-3 lg:px-4 xl:px-0">
+      <Container className="flex flex-col gap-8 mt-3 px-3 lg:px-4 xl:px-0 text-stone-300">
         <Post title="О нас">
-          <p className="text-2xl w-9/10 lg:w-3/5 text-center mx-auto">
+          <p className="text-2xl w-9/10 lg:w-3/5 text-center mx-auto ">
             Бренд «УстА» — это место, где одежда становится искусством, —
             способом самовыражения. Мы создаём уникальные образы, вдохновлённые
             культурными корнями, разными эпохами, событиями прошедшего времени и
@@ -25,11 +27,11 @@ export default function Home() {
         </Post>
         <Post title="Каталог">
           <div className="flex flex-col gap-3">
-            <h3 className="text-center text-2xl">Одежда</h3>
+            <h3 className="text-center text-3xl">Одежда</h3>
             <ProductList products={products} />
           </div>
           <div className="flex flex-col gap-3">
-            <h3 className="text-center text-2xl">Шапки</h3>
+            <h3 className="text-center text-3xl">Шапки</h3>
             <ProductList products={hats} />
           </div>
         </Post>

@@ -126,7 +126,7 @@
 @layer utilities {
   @keyframes slideUp {
     0% {
-      transform: translateY(700px);
+      transform: translateY(340px);
       opacity: 0;
     }
     100% {

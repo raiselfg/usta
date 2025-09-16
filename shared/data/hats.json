@@ -5,6 +5,11 @@
     "imageUrl": "/images/products/product10.jpg"
   },
   {
+    "id": 18,
+    "name": "Товар 18",
+    "imageUrl": "/images/products/product18.jpg"
+  },
+  {
     "id": 11,
     "name": "Товар 11",
     "imageUrl": "/images/products/product11.jpg"
