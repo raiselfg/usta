@@ -22,7 +22,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="ru">
       <body
         className={`${cyrillicOld.variable} antialiased bg-[oklch(25.8%_0.132_29.4)]`}
       >
