@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import { Container } from '../ui/container';
 
 export interface Product {
@@ -22,7 +21,7 @@ export const ProductList = ({ products }: Props) => {
       >
         {products.map((product) => (
           <article key={product.id} className="w-full " role="listitem">
-            <Image
+            <img
               className="w-full h-auto border-2 border-[oklch(81%_0.18_77)]"
               src={product.imageUrl}
               alt={product.altText || product.name}
