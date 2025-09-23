@@ -1,0 +1,32 @@
+[
+  {
+    "id": 17,
+    "name": "Товар 17",
+    "imageUrl": "/images/products/blouse1.jpg"
+  },
+  {
+    "id": 18,
+    "name": "Товар 18",
+    "imageUrl": "/images/products/blouse2.jpg"
+  },
+  {
+    "id": 19,
+    "name": "Товар 19",
+    "imageUrl": "/images/products/blouse3.jpg"
+  },
+  {
+    "id": 20,
+    "name": "Товар 20",
+    "imageUrl": "/images/products/blouse4.jpg"
+  },
+  {
+    "id": 21,
+    "name": "Товар 21",
+    "imageUrl": "/images/products/blouse5.jpg"
+  },
+  {
+    "id": 22,
+    "name": "Товар 22",
+    "imageUrl": "/images/products/blouse6.jpg"
+  }
+]

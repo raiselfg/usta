@@ -5,9 +5,11 @@ import Contacts from '@/shared/components/shared/contacts';
 import Header from '@/shared/components/shared/header';
 import productsData from '@/shared/data/products.json';
 import hatsData from '@/shared/data/hats.json';
+import blousesData from '@/shared/data/blouses.json';
 
 const products: Product[] = productsData;
 const hats: Product[] = hatsData;
+const blouses: Product[] = blousesData;
 
 export default function Home() {
   const description: string = `Бренд «УстА» — это место, где одежда становится искусством, —
@@ -17,6 +19,7 @@ export default function Home() {
             случайно народная мудрость гласит:- " По одежке встречают"... Здесь
             мы переосмысляем моду, соединяя прошлое и настоящее. Вдохновляйтесь
             вместе с нами и меняйте мир через стиль!`;
+  const label: string = `Одежда "коллекция Свадебка"`;
 
   return (
     <>
@@ -29,8 +32,12 @@ export default function Home() {
         </Post>
         <Post title="Каталог">
           <div className="flex flex-col gap-3">
-            <h3 className="text-center text-3xl">Одежда</h3>
+            <h3 className="text-center text-3xl">{label}</h3>
             <ProductList products={products} />
+          </div>
+          <div className="flex flex-col gap-3">
+            <h3 className="text-center text-3xl">Блузки</h3>
+            <ProductList products={blouses} />
           </div>
           <div className="flex flex-col gap-3">
             <h3 className="text-center text-3xl">Головные уборы</h3>

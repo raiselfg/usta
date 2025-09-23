@@ -2,46 +2,36 @@
   {
     "id": 10,
     "name": "Товар 10",
-    "imageUrl": "/images/products/product10.jpg"
-  },
-  {
-    "id": 18,
-    "name": "Товар 18",
-    "imageUrl": "/images/products/product18.jpg"
+    "imageUrl": "/images/products/hat1.jpg"
   },
   {
     "id": 11,
     "name": "Товар 11",
-    "imageUrl": "/images/products/product11.jpg"
+    "imageUrl": "/images/products/hat2.jpg"
   },
   {
     "id": 12,
     "name": "Товар 12",
-    "imageUrl": "/images/products/product12.jpg"
+    "imageUrl": "/images/products/hat3.jpg"
   },
   {
     "id": 13,
     "name": "Товар 13",
-    "imageUrl": "/images/products/product13.jpg"
+    "imageUrl": "/images/products/hat4.jpg"
   },
   {
     "id": 14,
     "name": "Товар 14",
-    "imageUrl": "/images/products/product14.jpg"
+    "imageUrl": "/images/products/hat5.jpg"
   },
   {
     "id": 15,
     "name": "Товар 15",
-    "imageUrl": "/images/products/product15.jpg"
+    "imageUrl": "/images/products/hat6.jpg"
   },
   {
     "id": 16,
     "name": "Товар 16",
-    "imageUrl": "/images/products/product16.jpg"
-  },
-  {
-    "id": 17,
-    "name": "Товар 17",
-    "imageUrl": "/images/products/product17.jpg"
+    "imageUrl": "/images/products/hat7.jpg"
   }
 ]
