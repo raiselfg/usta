@@ -9,7 +9,7 @@ interface ProductTypeApi extends product_type {
   product: product[];
 }
 
-export const dynamic = 'force-dynamic';
+export const dynamic = 'force-static';
 
 export default async function Home() {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/product-types`, {
