@@ -1,3 +1,5 @@
+import process from 'node:process';
+import 'dotenv/config';
 import { serve } from '@hono/node-server';
 import { Hono } from 'hono';
 import { productsRoutes } from './routes/products.js';
@@ -16,6 +18,7 @@ serve(
   {
     fetch: app.fetch,
     port: Number(process.env.PORT) || 3000,
+    hostname: '0.0.0.0',
   },
   (info) => {
     console.log(`Server is running on http://localhost:${info.port}`);

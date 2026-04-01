@@ -1,5 +1,6 @@
-import { products, productTypes } from './constants';
-import { prisma } from '../src/client';
+import process from 'node:process';
+import { products, productTypes } from './constants.js';
+import { prisma } from '../src/client.js';
 
 async function main() {
   console.log('Start seeding...');

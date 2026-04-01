@@ -40,6 +40,12 @@ COPY --from=pruner /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
 
 RUN pnpm install --frozen-lockfile --prod --ignore-scripts
 
+# Copy Prisma schema for runtime generation
+COPY --from=builder /app/packages/database/prisma ./packages/database/prisma
+
+# Generate Prisma client for runtime
+RUN pnpm -C packages/database db:generate
+
 COPY --from=builder /app/apps/api/dist ./apps/api/dist
 COPY --from=builder /app/packages/database/dist ./packages/database/dist
 COPY --from=builder /app/packages/database/package.json ./packages/database/package.json
