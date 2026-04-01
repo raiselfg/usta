@@ -1,0 +1,32 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model product {
+  id              String       @id @default(uuid()) @db.Uuid
+  name            String?      @unique
+  description     String?
+  is_active       Boolean      @default(true)
+  image           String       @unique
+  created_at      DateTime     @default(now())
+  updated_at      DateTime
+  product_type_id String       @db.Uuid
+  product_type    product_type @relation(fields: [product_type_id], references: [id])
+
+  @@index([name])
+}
+
+model product_type {
+  id         String    @id @default(uuid()) @db.Uuid
+  name       String    @unique
+  order      Int       @unique
+  created_at DateTime  @default(now())
+  updated_at DateTime
+  product    product[]
+
+  @@index([name])
+}

@@ -1,0 +1,24 @@
+{
+  "name": "@usta/eslint-config",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "base.js",
+  "exports": {
+    ".": "./base.js",
+    "./nextjs.js": "./nextjs.js"
+  },
+  "dependencies": {
+    "eslint-config-next": "^16.2.1",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-react-hooks": "^5.1.0"
+  },
+  "devDependencies": {
+    "@eslint/compat": "^2.0.3",
+    "@eslint/eslintrc": "^3.3.5",
+    "@eslint/js": "^9.39.4",
+    "eslint": "^9.39.4",
+    "globals": "^17.4.0",
+    "typescript-eslint": "^8.18.0"
+  }
+}
