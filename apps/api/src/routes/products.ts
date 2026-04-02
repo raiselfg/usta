@@ -1,24 +1,124 @@
-import { Hono } from 'hono';
+import { OpenAPIHono, createRoute, z } from '@hono/zod-openapi';
 import { uploadToMinio } from '../lib/minio.js';
 import { randomUUID } from 'crypto';
 import { prisma } from '@usta/database';
 
-export const productsRoutes = new Hono()
-  .get('/', async (c) => {
+// Schemas
+const ProductSchema = z.object({
+  id: z.string().uuid(),
+  name: z.string().nullable(),
+  description: z.string().nullable(),
+  is_active: z.boolean(),
+  image: z.string(),
+  created_at: z.string().datetime().or(z.date()),
+  updated_at: z.string().datetime().or(z.date()),
+  product_type_id: z.string().uuid(),
+}).openapi('Product');
+
+const ErrorSchema = z.object({
+  message: z.string(),
+}).openapi('Error');
+
+export const productsRoutes = new OpenAPIHono();
+
+// GET /
+productsRoutes.openapi(
+  createRoute({
+    method: 'get',
+    path: '/',
+    responses: {
+      200: {
+        content: {
+          'application/json': {
+            schema: z.array(ProductSchema),
+          },
+        },
+        description: 'Retrieve all products',
+      },
+    },
+  }),
+  async (c) => {
     const products = await prisma.product.findMany();
     return c.json(products);
-  })
-  .get('/:id', async (c) => {
-    const id = c.req.param('id');
+  }
+);
+
+// GET /:id
+productsRoutes.openapi(
+  createRoute({
+    method: 'get',
+    path: '/{id}',
+    request: {
+      params: z.object({
+        id: z.string().uuid().openapi({
+          param: {
+            name: 'id',
+            in: 'path',
+          },
+          example: '123e4567-e89b-12d3-a456-426614174000',
+        }),
+      }),
+    },
+    responses: {
+      200: {
+        content: {
+          'application/json': {
+            schema: ProductSchema,
+          },
+        },
+        description: 'Retrieve a product by ID',
+      },
+      404: {
+        description: 'Product not found',
+      },
+    },
+  }),
+  async (c) => {
+    const { id } = c.req.valid('param');
     const product = await prisma.product.findUnique({
       where: { id },
     });
     if (!product) {
-      return c.text('Product not found', 404);
+      return c.json({ message: 'Product not found' }, 404);
     }
     return c.json(product);
-  })
-  .post('/', async (c) => {
+  }
+);
+
+// POST /
+productsRoutes.openapi(
+  createRoute({
+    method: 'post',
+    path: '/',
+    request: {
+      body: {
+        content: {
+          'multipart/form-data': {
+            schema: z.object({
+              file: z.instanceof(File).openapi({ type: 'string', format: 'binary' }),
+              name: z.string().optional(),
+              description: z.string().optional(),
+              typeId: z.string().uuid(),
+            }),
+          },
+        },
+      },
+    },
+    responses: {
+      201: {
+        content: {
+          'application/json': {
+            schema: ProductSchema,
+          },
+        },
+        description: 'Create a new product',
+      },
+      400: {
+        description: 'Invalid input',
+      },
+    },
+  }),
+  async (c) => {
     const body = await c.req.parseBody();
     const file = body['file'] as unknown as File;
     const name = body['name'] as string | undefined;
@@ -26,10 +126,9 @@ export const productsRoutes = new Hono()
     const typeId = body['typeId'] as string;
 
     if (!file || !(file instanceof File)) {
-      return c.text('File is required', 400);
+      return c.json({ message: 'File is required' }, 400);
     }
 
-    // Generate a unique filename preserving the extension
     const ext = file.name.split('.').pop() ?? 'jpg';
     const fileName = `${randomUUID()}.${ext}`;
     const imageUrl = await uploadToMinio(file, fileName);
@@ -45,16 +144,54 @@ export const productsRoutes = new Hono()
       },
     });
     return c.json(product, 201);
-  })
-  .patch('/:id', async (c) => {
-    const id = c.req.param('id');
+  }
+);
+
+// PATCH /:id
+productsRoutes.openapi(
+  createRoute({
+    method: 'patch',
+    path: '/{id}',
+    request: {
+      params: z.object({
+        id: z.string().uuid(),
+      }),
+      body: {
+        content: {
+          'multipart/form-data': {
+            schema: z.object({
+              file: z.instanceof(File).openapi({ type: 'string', format: 'binary' }).optional(),
+              name: z.string().optional(),
+              description: z.string().optional(),
+              typeId: z.string().uuid().optional(),
+            }),
+          },
+        },
+      },
+    },
+    responses: {
+      200: {
+        content: {
+          'application/json': {
+            schema: ProductSchema,
+          },
+        },
+        description: 'Update a product',
+      },
+      404: {
+        description: 'Product not found',
+      },
+    },
+  }),
+  async (c) => {
+    const { id } = c.req.valid('param');
     const body = await c.req.parseBody();
 
     const existing = await prisma.product.findUnique({
       where: { id },
     });
     if (!existing) {
-      return c.text('Product not found', 404);
+      return c.json({ message: 'Product not found' }, 404);
     }
 
     const file = body['file'] as unknown as File | undefined;
@@ -80,16 +217,43 @@ export const productsRoutes = new Hono()
       },
     });
     return c.json(product);
-  })
-  .delete('/:id', async (c) => {
-    const id = c.req.param('id');
+  }
+);
+
+// DELETE /:id
+productsRoutes.openapi(
+  createRoute({
+    method: 'delete',
+    path: '/{id}',
+    request: {
+      params: z.object({
+        id: z.string().uuid(),
+      }),
+    },
+    responses: {
+      200: {
+        content: {
+          'application/json': {
+            schema: z.object({ success: z.boolean() }),
+          },
+        },
+        description: 'Delete a product',
+      },
+      404: {
+        description: 'Product not found',
+      },
+    },
+  }),
+  async (c) => {
+    const { id } = c.req.valid('param');
     const existing = await prisma.product.findUnique({
       where: { id },
     });
     if (!existing) {
-      return c.text('Product not found', 404);
+      return c.json({ message: 'Product not found' }, 404);
     }
 
     await prisma.product.delete({ where: { id } });
     return c.json({ success: true });
-  });
+  }
+);
