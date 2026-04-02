@@ -16,18 +16,20 @@ WORKDIR /app/out/full
 RUN pnpm install
 
 # Build the admin app
-# Note: Since this is a monorepo, we might need to build packages first if they are used
 RUN pnpm turbo run build --filter=@usta/admin
 
 # 3. Runner stage
-FROM nginx:stable-alpine AS runner
+FROM base AS runner
+WORKDIR /app
+COPY --from=builder /app/out/full/apps/admin/dist ./apps/admin/dist
+COPY --from=builder /app/out/full/apps/admin/package.json ./apps/admin/package.json
+# We also need the lockfile and node_modules to run pnpm preview
+COPY --from=builder /app/out/full/node_modules ./node_modules
+COPY --from=builder /app/out/full/apps/admin/node_modules ./apps/admin/node_modules
 
-# Copy the built site from the builder stage
-COPY --from=builder /app/out/full/apps/admin/dist /usr/share/nginx/html
+# Vite preview defaults to 4173
+EXPOSE 4173
 
-# Copy the custom nginx config for SPA routing
-COPY apps/admin/nginx.conf /etc/nginx/conf.d/default.conf
-
-EXPOSE 80
-
-CMD ["nginx", "-g", "daemon off;"]
+# We need to run preview from the admin directory
+WORKDIR /app/apps/admin
+CMD ["pnpm", "preview", "--host", "0.0.0.0"]
