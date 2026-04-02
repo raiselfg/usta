@@ -17,6 +17,8 @@ export const ProductGrid = ({ products }: Props) => {
             width={305}
             height={455}
             sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            priority
+            loading="eager"
           />
         </li>
       ))}

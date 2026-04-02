@@ -13,6 +13,7 @@ export default function Hero() {
         sizes="100vw"
         style={{ objectFit: 'cover' }}
         priority
+        loading="eager"
       />
       <Image
         src="/images/backgrounds/logo.png"
@@ -21,6 +22,7 @@ export default function Hero() {
         height={400}
         className="slide-up absolute"
         priority
+        loading="eager"
       />
     </header>
   );
