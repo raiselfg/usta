@@ -23,6 +23,9 @@ services:
     ports:
       - "8080:3000"
     environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-usta}
       DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-usta}?schema=public
     depends_on:
       db:
@@ -50,7 +53,7 @@ services:
       context: .
       dockerfile: apps/admin/Dockerfile
     ports:
-      - "8081:4173"
+      - "8081:3000"
     environment:
       VITE_API_URL: http://localhost:8080
     depends_on:

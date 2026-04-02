@@ -22,14 +22,12 @@ RUN pnpm turbo run build --filter=@usta/admin
 FROM base AS runner
 WORKDIR /app
 COPY --from=builder /app/out/full/apps/admin/dist ./apps/admin/dist
-COPY --from=builder /app/out/full/apps/admin/package.json ./apps/admin/package.json
-# We also need the lockfile and node_modules to run pnpm preview
-COPY --from=builder /app/out/full/node_modules ./node_modules
-COPY --from=builder /app/out/full/apps/admin/node_modules ./apps/admin/node_modules
 
-# Vite preview defaults to 4173
-EXPOSE 4173
+# Use serve for simple and robust SPA hosting
+RUN pnpm install -g serve
 
-# We need to run preview from the admin directory
-WORKDIR /app/apps/admin
-CMD ["pnpm", "preview", "--host", "0.0.0.0"]
+# Standard port for serve
+EXPOSE 3000
+
+# Serve the dist folder in SPA mode (-s)
+CMD ["serve", "-s", "apps/admin/dist", "-l", "3000"]
