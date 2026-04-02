@@ -5,6 +5,8 @@ import { OpenAPIHono } from '@hono/zod-openapi';
 import { swaggerUI } from '@hono/swagger-ui';
 import { productsRoutes } from './routes/products.js';
 import { productTypesRoutes } from './routes/product-types.js';
+import { auth } from './lib/auth.js';
+import { cors } from 'hono/cors';
 
 const app = new OpenAPIHono();
 
@@ -12,11 +14,26 @@ app.get('/', (c) => {
   return c.text('Hello Hono!');
 });
 
-// Register routes
+app.use(
+  '/api/auth/*',
+  cors({
+    origin: [
+      'https://admin.us-ta.ru',
+      'https://us-ta.ru',
+      'https://cdn.us-ta.ru',
+      'http://localhost:5173',
+    ],
+    allowHeaders: ['Content-Type', 'Authorization'],
+    allowMethods: ['POST', 'GET', 'OPTIONS'],
+    exposeHeaders: ['Content-Length'],
+    maxAge: 600,
+    credentials: true,
+  }),
+);
+
 app.route('/products', productsRoutes);
 app.route('/product-types', productTypesRoutes);
 
-// OpenAPI documentation
 app.doc('/doc', {
   openapi: '3.0.0',
   info: {
@@ -25,8 +42,11 @@ app.doc('/doc', {
   },
 });
 
-// Swagger UI
 app.get('/docs', swaggerUI({ url: '/doc' }));
+
+app.on(['POST', 'GET'], '/api/auth/*', (c) => {
+  return auth.handler(c.req.raw);
+});
 
 serve(
   {
