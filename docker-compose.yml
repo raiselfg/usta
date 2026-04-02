@@ -45,5 +45,16 @@ services:
     depends_on:
       - api
 
+  admin:
+    build:
+      context: .
+      dockerfile: apps/admin/Dockerfile
+    ports:
+      - "8081:80"
+    environment:
+      VITE_API_URL: http://localhost:8080
+    depends_on:
+      - api
+
 volumes:
   postgres_data:
