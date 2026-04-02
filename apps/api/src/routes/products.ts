@@ -4,20 +4,24 @@ import { randomUUID } from 'crypto';
 import { prisma } from '@usta/database';
 
 // Schemas
-const ProductSchema = z.object({
-  id: z.string().uuid(),
-  name: z.string().nullable(),
-  description: z.string().nullable(),
-  is_active: z.boolean(),
-  image: z.string(),
-  created_at: z.string().datetime().or(z.date()),
-  updated_at: z.string().datetime().or(z.date()),
-  product_type_id: z.string().uuid(),
-}).openapi('Product');
+const ProductSchema = z
+  .object({
+    id: z.string().uuid(),
+    name: z.string().nullable(),
+    description: z.string().nullable(),
+    is_active: z.boolean(),
+    image: z.string(),
+    created_at: z.string().datetime().or(z.date()),
+    updated_at: z.string().datetime().or(z.date()),
+    product_type_id: z.string().uuid(),
+  })
+  .openapi('Product');
 
-const ErrorSchema = z.object({
-  message: z.string(),
-}).openapi('Error');
+const ErrorSchema = z
+  .object({
+    message: z.string(),
+  })
+  .openapi('Error');
 
 export const productsRoutes = new OpenAPIHono();
 
@@ -40,7 +44,7 @@ productsRoutes.openapi(
   async (c) => {
     const products = await prisma.product.findMany();
     return c.json(products);
-  }
+  },
 );
 
 // GET /:id
@@ -50,13 +54,16 @@ productsRoutes.openapi(
     path: '/{id}',
     request: {
       params: z.object({
-        id: z.string().uuid().openapi({
-          param: {
-            name: 'id',
-            in: 'path',
-          },
-          example: '123e4567-e89b-12d3-a456-426614174000',
-        }),
+        id: z
+          .string()
+          .uuid()
+          .openapi({
+            param: {
+              name: 'id',
+              in: 'path',
+            },
+            example: '123e4567-e89b-12d3-a456-426614174000',
+          }),
       }),
     },
     responses: {
@@ -82,7 +89,7 @@ productsRoutes.openapi(
       return c.json({ message: 'Product not found' }, 404);
     }
     return c.json(product);
-  }
+  },
 );
 
 // POST /
@@ -95,7 +102,9 @@ productsRoutes.openapi(
         content: {
           'multipart/form-data': {
             schema: z.object({
-              file: z.instanceof(File).openapi({ type: 'string', format: 'binary' }),
+              file: z
+                .instanceof(File)
+                .openapi({ type: 'string', format: 'binary' }),
               name: z.string().optional(),
               description: z.string().optional(),
               typeId: z.string().uuid(),
@@ -144,7 +153,7 @@ productsRoutes.openapi(
       },
     });
     return c.json(product, 201);
-  }
+  },
 );
 
 // PATCH /:id
@@ -160,7 +169,10 @@ productsRoutes.openapi(
         content: {
           'multipart/form-data': {
             schema: z.object({
-              file: z.instanceof(File).openapi({ type: 'string', format: 'binary' }).optional(),
+              file: z
+                .instanceof(File)
+                .openapi({ type: 'string', format: 'binary' })
+                .optional(),
               name: z.string().optional(),
               description: z.string().optional(),
               typeId: z.string().uuid().optional(),
@@ -217,7 +229,7 @@ productsRoutes.openapi(
       },
     });
     return c.json(product);
-  }
+  },
 );
 
 // DELETE /:id
@@ -255,5 +267,5 @@ productsRoutes.openapi(
 
     await prisma.product.delete({ where: { id } });
     return c.json({ success: true });
-  }
+  },
 );

@@ -1,8 +1,8 @@
-import { product } from '@usta/database';
+import { Product } from '@usta/database';
 import Image from 'next/image';
 
 interface Props {
-  products: product[];
+  products: Product[];
 }
 
 export const ProductGrid = ({ products }: Props) => {

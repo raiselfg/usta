@@ -3,24 +3,28 @@ import { randomUUID } from 'crypto';
 import { prisma } from '@usta/database';
 
 // Schemas
-const ProductSchema = z.object({
-  id: z.string().uuid(),
-  name: z.string().nullable(),
-  description: z.string().nullable(),
-  is_active: z.boolean(),
-  image: z.string(),
-  created_at: z.string().datetime().or(z.date()),
-  updated_at: z.string().datetime().or(z.date()),
-  product_type_id: z.string().uuid(),
-}).openapi('Product');
+const ProductSchema = z
+  .object({
+    id: z.string().uuid(),
+    name: z.string().nullable(),
+    description: z.string().nullable(),
+    is_active: z.boolean(),
+    image: z.string(),
+    created_at: z.string().datetime().or(z.date()),
+    updated_at: z.string().datetime().or(z.date()),
+    product_type_id: z.string().uuid(),
+  })
+  .openapi('Product');
 
-const ProductTypeSchema = z.object({
-  id: z.string().uuid(),
-  name: z.string(),
-  order: z.number(),
-  created_at: z.string().datetime().or(z.date()),
-  updated_at: z.string().datetime().or(z.date()),
-}).openapi('ProductType');
+const ProductTypeSchema = z
+  .object({
+    id: z.string().uuid(),
+    name: z.string(),
+    order: z.number(),
+    created_at: z.string().datetime().or(z.date()),
+    updated_at: z.string().datetime().or(z.date()),
+  })
+  .openapi('ProductType');
 
 const ProductTypeWithProductsSchema = ProductTypeSchema.extend({
   product: z.array(ProductSchema),
@@ -45,11 +49,11 @@ productTypesRoutes.openapi(
     },
   }),
   async (c) => {
-    const productTypes = await prisma.product_type.findMany({
+    const productTypes = await prisma.productType.findMany({
       include: { product: true },
     });
     return c.json(productTypes);
-  }
+  },
 );
 
 // GET /:id
@@ -78,7 +82,7 @@ productTypesRoutes.openapi(
   }),
   async (c) => {
     const { id } = c.req.valid('param');
-    const productType = await prisma.product_type.findUnique({
+    const productType = await prisma.productType.findUnique({
       where: { id },
       include: { product: true },
     });
@@ -86,7 +90,7 @@ productTypesRoutes.openapi(
       return c.json({ message: 'Product type not found' }, 404);
     }
     return c.json(productType);
-  }
+  },
 );
 
 // POST /
@@ -101,9 +105,13 @@ productTypesRoutes.openapi(
             schema: z.object({
               name: z.string(),
               order: z.number(),
-              product: z.object({
-                connect: z.array(z.object({ id: z.string().uuid() })).optional(),
-              }).optional(),
+              product: z
+                .object({
+                  connect: z
+                    .array(z.object({ id: z.string().uuid() }))
+                    .optional(),
+                })
+                .optional(),
             }),
           },
         },
@@ -123,7 +131,7 @@ productTypesRoutes.openapi(
   async (c) => {
     const body = c.req.valid('json');
     const { product, ...data } = body;
-    const productType = await prisma.product_type.create({
+    const productType = await prisma.productType.create({
       data: {
         id: randomUUID(),
         ...data,
@@ -133,7 +141,7 @@ productTypesRoutes.openapi(
       include: { product: true },
     });
     return c.json(productType, 201);
-  }
+  },
 );
 
 // PATCH /:id
@@ -151,10 +159,16 @@ productTypesRoutes.openapi(
             schema: z.object({
               name: z.string().optional(),
               order: z.number().optional(),
-              product: z.object({
-                connect: z.array(z.object({ id: z.string().uuid() })).optional(),
-                disconnect: z.array(z.object({ id: z.string().uuid() })).optional(),
-              }).optional(),
+              product: z
+                .object({
+                  connect: z
+                    .array(z.object({ id: z.string().uuid() }))
+                    .optional(),
+                  disconnect: z
+                    .array(z.object({ id: z.string().uuid() }))
+                    .optional(),
+                })
+                .optional(),
             }),
           },
         },
@@ -178,7 +192,7 @@ productTypesRoutes.openapi(
     const { id } = c.req.valid('param');
     const body = c.req.valid('json');
 
-    const existing = await prisma.product_type.findUnique({
+    const existing = await prisma.productType.findUnique({
       where: { id },
     });
     if (!existing) {
@@ -186,7 +200,7 @@ productTypesRoutes.openapi(
     }
 
     const { product, ...data } = body;
-    const productType = await prisma.product_type.update({
+    const productType = await prisma.productType.update({
       where: { id },
       data: {
         ...data,
@@ -205,7 +219,7 @@ productTypesRoutes.openapi(
       include: { product: true },
     });
     return c.json(productType);
-  }
+  },
 );
 
 // DELETE /:id
@@ -234,14 +248,14 @@ productTypesRoutes.openapi(
   }),
   async (c) => {
     const { id } = c.req.valid('param');
-    const existing = await prisma.product_type.findUnique({
+    const existing = await prisma.productType.findUnique({
       where: { id },
     });
     if (!existing) {
       return c.json({ message: 'Product type not found' }, 404);
     }
 
-    await prisma.product_type.delete({ where: { id } });
+    await prisma.productType.delete({ where: { id } });
     return c.json({ success: true });
-  }
+  },
 );

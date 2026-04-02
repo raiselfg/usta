@@ -3,10 +3,10 @@ import Contacts from '@/features/landing/components/contact-info';
 import Hero from '@/features/landing/components/hero';
 import { LandingSection } from '@/features/landing/components/landing-section';
 import { ProductGrid } from '@/features/landing/components/product-grid';
-import { product, product_type } from '@usta/database';
+import { Product, ProductType } from '@usta/database';
 
-interface ProductTypeApi extends product_type {
-  product: product[];
+interface ProductTypeApi extends ProductType {
+  product: Product[];
 }
 
 export const dynamic = 'force-static';
