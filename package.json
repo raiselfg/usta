@@ -7,13 +7,28 @@
     "dev": "turbo run dev",
     "build": "turbo run build",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,md,json,yaml}\"",
-    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,md,json,yaml}\""
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,md,json,yaml}\"",
+    "prepare": "husky"
   },
   "packageManager": "pnpm@10.30.1",
   "devDependencies": {
-    "eslint": "^9.39.4",
-    "prettier": "^3.8.1",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
     "prettier-plugin-tailwindcss": "^0.7.2",
     "turbo": "^2.9.3"
+  },
+  "lint-staged": {
+    "apps/admin/**/*.{ts,tsx}": [
+      "pnpm --filter @usta/admin lint:fix"
+    ],
+    "apps/landing/**/*.{ts,tsx,mjs}": [
+      "pnpm --filter @usta/landing lint:fix"
+    ],
+    "apps/api/**/*.{ts,js,mjs}": [
+      "pnpm --filter @usta/api lint:fix"
+    ],
+    "**/*.{json,md,css}": [
+      "prettier --write"
+    ]
   }
 }

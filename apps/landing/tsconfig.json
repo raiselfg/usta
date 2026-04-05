@@ -16,15 +16,15 @@
     "resolveJsonModule": true,
     "plugins": [
       {
-        "name": "next",
-      },
+        "name": "next"
+      }
     ],
     "paths": {
       "@/*": ["./*"],
       "@usta/database": ["../../packages/database/src/index.ts"],
       "@usta/database/*": ["../../packages/database/src/*"],
-      "@usta/ui/*": ["../../packages/ui/src/*"],
-    },
+      "@usta/ui/*": ["../../packages/ui/src/*"]
+    }
   },
   "include": [
     "next-env.d.ts",
@@ -32,7 +32,7 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
-    "**/*.mts",
+    "**/*.mts"
   ],
-  "exclude": ["node_modules"],
+  "exclude": ["node_modules"]
 }

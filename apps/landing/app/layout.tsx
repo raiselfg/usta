@@ -1,11 +1,11 @@
 import './globals.css';
 
 import type { Metadata, Viewport } from 'next';
-import localFont from 'next/font/local';
-import { ReactNode } from 'react';
 
 import { Toaster } from '@usta/ui/components/sonner';
 import { TooltipProvider } from '@usta/ui/components/tooltip';
+import localFont from 'next/font/local';
+import { ReactNode } from 'react';
 
 const cyrillicOld = localFont({
   src: '../fonts/CyrillicOld.woff2',

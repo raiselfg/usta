@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect } from 'react';
 import { Button } from '@usta/ui/components/button';
+import { useEffect } from 'react';
 
 export default function Error({
   error,
@@ -22,12 +22,12 @@ export default function Error({
         попробуйте обновить или вернуться позже.
       </p>
       <div className="flex gap-4">
-        <Button variant="outline" onClick={() => reset()}>
+        <Button onClick={() => reset()} variant="outline">
           Попробовать снова
         </Button>
         <Button
-          variant="secondary"
           onClick={() => (window.location.href = '/')}
+          variant="secondary"
         >
           Вернуться на главную
         </Button>

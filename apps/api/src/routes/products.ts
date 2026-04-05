@@ -1,7 +1,8 @@
 import { OpenAPIHono, createRoute, z } from '@hono/zod-openapi';
-import { uploadToMinio } from '../lib/minio.js';
-import { randomUUID } from 'crypto';
 import { prisma } from '@usta/database';
+import { randomUUID } from 'crypto';
+
+import { uploadToMinio } from '../lib/minio.js';
 
 // Schemas
 const ProductSchema = z
@@ -16,12 +17,6 @@ const ProductSchema = z
     product_category_id: z.string().uuid(),
   })
   .openapi('Product');
-
-const ErrorSchema = z
-  .object({
-    message: z.string(),
-  })
-  .openapi('Error');
 
 export const productsRoutes = new OpenAPIHono();
 

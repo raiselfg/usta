@@ -1,6 +1,6 @@
 import { OpenAPIHono, createRoute, z } from '@hono/zod-openapi';
-import { randomUUID } from 'crypto';
 import { prisma } from '@usta/database';
+import { randomUUID } from 'crypto';
 
 const ProductSchema = z
   .object({

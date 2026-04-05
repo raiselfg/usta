@@ -1,6 +1,5 @@
-import { ReactNode } from 'react';
-
 import { cn } from '@usta/ui/lib/utils';
+import { ReactNode } from 'react';
 
 interface Props {
   title: string;

@@ -1,12 +1,13 @@
-import process from 'node:process';
-import 'dotenv/config';
 import { serve } from '@hono/node-server';
-import { OpenAPIHono } from '@hono/zod-openapi';
+import 'dotenv/config';
 import { swaggerUI } from '@hono/swagger-ui';
-import { productsRoutes } from './routes/products.js';
-import { productCategoriesRoutes } from './routes/product-categories.js';
-import { auth } from './lib/auth.js';
+import { OpenAPIHono } from '@hono/zod-openapi';
 import { cors } from 'hono/cors';
+import process from 'node:process';
+
+import { auth } from './lib/auth.js';
+import { productCategoriesRoutes } from './routes/product-categories.js';
+import { productsRoutes } from './routes/products.js';
 
 const app = new OpenAPIHono();
 
