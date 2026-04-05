@@ -4,7 +4,7 @@ import { serve } from '@hono/node-server';
 import { OpenAPIHono } from '@hono/zod-openapi';
 import { swaggerUI } from '@hono/swagger-ui';
 import { productsRoutes } from './routes/products.js';
-import { productTypesRoutes } from './routes/product-types.js';
+import { productCategoriesRoutes } from './routes/product-categories.js';
 import { auth } from './lib/auth.js';
 import { cors } from 'hono/cors';
 
@@ -32,7 +32,7 @@ app.use(
 );
 
 app.route('/products', productsRoutes);
-app.route('/product-types', productTypesRoutes);
+app.route('/product-categories', productCategoriesRoutes);
 
 app.doc('/doc', {
   openapi: '3.0.0',

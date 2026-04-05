@@ -74,21 +74,22 @@ model Product {
   image           String       @unique
   created_at      DateTime     @default(now())
   updated_at      DateTime
-  product_type_id String       @db.Uuid
-  product_type    ProductType @relation(fields: [product_type_id], references: [id])
+  product_category_id String       @db.Uuid
+  product_category    ProductCategory @relation(fields: [product_category_id], references: [id])
 
   @@index([name])
   @@map("product")
 }
 
-model ProductType {
+model ProductCategory {
   id         String    @id @default(uuid()) @db.Uuid
   name       String    @unique
-  order      Int       @unique
+  order      Int       @unique @default(autoincrement())
+  is_active       Boolean      @default(true)
   created_at DateTime  @default(now())
   updated_at DateTime
   product    Product[]
 
   @@index([name])
-  @@map("product_type")
+  @@map("product_category")
 }

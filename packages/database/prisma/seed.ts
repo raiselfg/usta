@@ -6,19 +6,21 @@ async function main() {
   console.log('Start seeding...');
 
   await prisma.$executeRawUnsafe(
-    `TRUNCATE TABLE "product", "product_type" CASCADE;`,
+    `TRUNCATE TABLE "product", "product_category" CASCADE;`,
   );
   console.log('Tables truncated.');
 
   for (const type of productTypes) {
     try {
-      const created = await prisma.product_type.create({
+      const created = await prisma.productCategory.create({
         data: {
           ...type,
           updated_at: new Date(),
         },
       });
-      console.log(`Created product type: ${created.name} (id: ${created.id})`);
+      console.log(
+        `Created product category: ${created.name} (id: ${created.id})`,
+      );
     } catch (error) {
       console.error(`Failed to create product type ${type.name}:`, error);
       throw error;

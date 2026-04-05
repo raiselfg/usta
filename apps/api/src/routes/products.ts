@@ -13,7 +13,7 @@ const ProductSchema = z
     image: z.string(),
     created_at: z.string().datetime().or(z.date()),
     updated_at: z.string().datetime().or(z.date()),
-    product_type_id: z.string().uuid(),
+    product_category_id: z.string().uuid(),
   })
   .openapi('Product');
 
@@ -107,7 +107,7 @@ productsRoutes.openapi(
                 .openapi({ type: 'string', format: 'binary' }),
               name: z.string().optional(),
               description: z.string().optional(),
-              typeId: z.string().uuid(),
+              categoryId: z.string().uuid(),
             }),
           },
         },
@@ -132,7 +132,7 @@ productsRoutes.openapi(
     const file = body['file'] as unknown as File;
     const name = body['name'] as string | undefined;
     const description = body['description'] as string | undefined;
-    const typeId = body['typeId'] as string;
+    const categoryId = body['categoryId'] as string;
 
     if (!file || !(file instanceof File)) {
       return c.json({ message: 'File is required' }, 400);
@@ -148,7 +148,7 @@ productsRoutes.openapi(
         name: name ?? null,
         description: description ?? null,
         image: imageUrl,
-        product_type: { connect: { id: typeId } },
+        product_category: { connect: { id: categoryId } },
         updated_at: new Date(),
       },
     });
@@ -175,7 +175,7 @@ productsRoutes.openapi(
                 .optional(),
               name: z.string().optional(),
               description: z.string().optional(),
-              typeId: z.string().uuid().optional(),
+              categoryId: z.string().uuid().optional(),
             }),
           },
         },
@@ -209,7 +209,7 @@ productsRoutes.openapi(
     const file = body['file'] as unknown as File | undefined;
     const name = body['name'] as string | undefined;
     const description = body['description'] as string | undefined;
-    const typeId = body['typeId'] as string | undefined;
+    const categoryId = body['categoryId'] as string | undefined;
 
     let imageUrl: string | undefined;
     if (file && file instanceof File) {
@@ -225,7 +225,9 @@ productsRoutes.openapi(
         description: description !== undefined ? description : undefined,
         updated_at: new Date(),
         ...(imageUrl ? { image: imageUrl } : {}),
-        ...(typeId ? { product_type: { connect: { id: typeId } } } : {}),
+        ...(categoryId
+          ? { product_category: { connect: { id: categoryId } } }
+          : {}),
       },
     });
     return c.json(product);

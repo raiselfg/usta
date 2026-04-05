@@ -3,28 +3,31 @@ import Contacts from '@/features/landing/components/contact-info';
 import Hero from '@/features/landing/components/hero';
 import { LandingSection } from '@/features/landing/components/landing-section';
 import { ProductGrid } from '@/features/landing/components/product-grid';
-import { Product, ProductType } from '@usta/database';
+import { Product, ProductCategory } from '@usta/database';
 
-interface ProductTypeApi extends ProductType {
+interface ProductCategoryApi extends ProductCategory {
   product: Product[];
 }
 
 export const dynamic = 'force-static';
 
 export default async function Home() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/product-types`, {
-    next: { revalidate: 3600, tags: ['catalog'] },
-  });
-  const productTypesData: ProductTypeApi[] = await res.json();
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/product-categories`,
+    {
+      next: { revalidate: 3600, tags: ['catalog'] },
+    },
+  );
+  const productCategoriesData: ProductCategoryApi[] = await res.json();
 
   if (!res.ok) {
     return <div>Error</div>;
   }
 
-  const sortedProductTypes = productTypesData
-    .map((productType) => ({
-      ...productType,
-      product: productType.product.filter((product) => product.is_active),
+  const sortedProductCategories = productCategoriesData
+    .map((productCategory) => ({
+      ...productCategory,
+      product: productCategory.product.filter((product) => product.is_active),
     }))
     .filter((productType) => productType.product.length > 0)
     .sort((a, b) => a.order - b.order);
@@ -45,9 +48,12 @@ export default async function Home() {
           </p>
         </LandingSection>
         <LandingSection title="Каталог">
-          {sortedProductTypes?.map((productType) => (
-            <CategorySection key={productType.id} label={productType.name}>
-              <ProductGrid products={productType.product} />
+          {sortedProductCategories?.map((productCategory) => (
+            <CategorySection
+              key={productCategory.id}
+              label={productCategory.name}
+            >
+              <ProductGrid products={productCategory.product} />
             </CategorySection>
           ))}
         </LandingSection>
