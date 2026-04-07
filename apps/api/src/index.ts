@@ -19,9 +19,9 @@ app.use(
   '/api/auth/*',
   cors({
     origin: [
-      'https://admin.us-ta.ru',
       'https://us-ta.ru',
-      'https://cdn.us-ta.ru',
+      'https://*.us-ta.ru',
+      'http://localhost:*',
       'http://localhost:5173',
     ],
     allowHeaders: ['Content-Type', 'Authorization'],

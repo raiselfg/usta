@@ -21,6 +21,7 @@ export const auth = betterAuth({
     'https://us-ta.ru',
     'https://*.us-ta.ru',
     'http://localhost:*',
+    'http://localhost:5173',
   ],
   rateLimit: {
     enabled: true,
