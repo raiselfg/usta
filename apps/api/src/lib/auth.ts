@@ -38,6 +38,11 @@ export const auth = betterAuth({
     },
   },
   advanced: {
-    // useSecureCookies: process.env.NODE_ENV === 'production',
+    useSecureCookies: process.env.NODE_ENV === 'production',
+    cookiePrefix: 'usta_auth',
+    defaultCookieAttributes: {
+      sameSite: 'none',
+      secure: true,
+    },
   },
 });
