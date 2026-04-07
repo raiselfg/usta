@@ -3,6 +3,7 @@ import { prismaAdapter } from 'better-auth/adapters/prisma';
 import { betterAuth } from 'better-auth/minimal';
 
 export const auth = betterAuth({
+  appName: 'USTA',
   secret: process.env.BETTER_AUTH_SECRET,
   baseURL: process.env.BETTER_AUTH_URL,
   basePath: '/api/auth',
@@ -12,18 +13,18 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: false,
-    minPasswordLength: 8,
-    maxPasswordLength: 128,
-    allowSignUp: false,
+    minPasswordLength: 6,
+    maxPasswordLength: 64,
+    disableSignUp: false,
   },
   trustedOrigins: [
-    'https://admin.us-ta.ru',
     'https://us-ta.ru',
-    'https://cdn.us-ta.ru',
+    'https://*.us-ta.ru',
+    'http://localhost:*',
   ],
   rateLimit: {
     enabled: true,
-    window: 10,
+    window: 60,
     max: 100,
   },
   session: {
@@ -33,5 +34,9 @@ export const auth = betterAuth({
       enabled: true,
       maxAge: 300, // 5 минут кэша
     },
+  },
+  advanced: {
+    // useSecureCookies: process.env.NODE_ENV === 'production',
+    cookiePrefix: 'usta_auth',
   },
 });
