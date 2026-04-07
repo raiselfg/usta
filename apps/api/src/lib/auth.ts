@@ -19,9 +19,10 @@ export const auth = betterAuth({
   },
   trustedOrigins: [
     'https://us-ta.ru',
-    'https://*.us-ta.ru',
-    'http://localhost:*',
+    'https://admin.us-ta.ru',
+    'https://cdn.us-ta.ru',
     'http://localhost:5173',
+    'http://localhost:3001',
   ],
   rateLimit: {
     enabled: true,

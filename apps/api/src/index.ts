@@ -20,9 +20,10 @@ app.use(
   cors({
     origin: [
       'https://us-ta.ru',
-      'https://*.us-ta.ru',
-      'http://localhost:*',
+      'https://admin.us-ta.ru',
+      'https://cdn.us-ta.ru',
       'http://localhost:5173',
+      'http://localhost:3001',
     ],
     allowHeaders: ['Content-Type', 'Authorization'],
     allowMethods: ['POST', 'GET', 'OPTIONS'],
