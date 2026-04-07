@@ -15,7 +15,7 @@ export const auth = betterAuth({
     requireEmailVerification: false,
     minPasswordLength: 6,
     maxPasswordLength: 64,
-    disableSignUp: false,
+    disableSignUp: true,
   },
   trustedOrigins: [
     'https://us-ta.ru',
