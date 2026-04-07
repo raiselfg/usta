@@ -1,14 +1,26 @@
+import { RouterProvider, createRouter } from '@tanstack/react-router';
 import { Toaster } from '@usta/ui/components/sonner';
 import { StrictMode } from 'react';
+import ReactDOM from 'react-dom/client';
 
+import { routeTree } from './routeTree.gen';
 import './globals.css';
-import { createRoot } from 'react-dom/client';
 
-import App from './App.tsx';
+const router = createRouter({ routeTree });
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <App />
-    <Toaster position="top-center" duration={3500} />
-  </StrictMode>,
-);
+declare module '@tanstack/react-router' {
+  interface Register {
+    router: typeof router;
+  }
+}
+
+const rootElement = document.getElementById('root')!;
+if (!rootElement.innerHTML) {
+  const root = ReactDOM.createRoot(rootElement);
+  root.render(
+    <StrictMode>
+      <RouterProvider router={router} />
+      <Toaster position="top-center" duration={3500} />
+    </StrictMode>,
+  );
+}

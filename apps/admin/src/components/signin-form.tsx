@@ -44,7 +44,7 @@ export const SignInForm = () => {
   }
 
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)}>
+    <form onSubmit={form.handleSubmit(onSubmit)} className="w-full max-w-sm">
       <FieldGroup className="flex flex-col gap-2">
         <Controller
           name="email"
