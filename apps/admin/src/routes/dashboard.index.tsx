@@ -16,7 +16,7 @@ function DashboardIndexContent() {
           Товары
         </Link>
         <Link
-          to="/dashboard/categories"
+          to="/dashboard/product-categories"
           className="bg-muted flex min-h-[100px] items-center justify-center rounded-xl"
         >
           Категории

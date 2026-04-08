@@ -13,7 +13,7 @@ import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
 import { Route as DashboardProductsRouteImport } from './routes/dashboard.products'
-import { Route as DashboardCategoriesRouteImport } from './routes/dashboard.categories'
+import { Route as DashboardProductCategoriesRouteImport } from './routes/dashboard.product-categories'
 
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
@@ -35,22 +35,23 @@ const DashboardProductsRoute = DashboardProductsRouteImport.update({
   path: '/products',
   getParentRoute: () => DashboardRoute,
 } as any)
-const DashboardCategoriesRoute = DashboardCategoriesRouteImport.update({
-  id: '/categories',
-  path: '/categories',
-  getParentRoute: () => DashboardRoute,
-} as any)
+const DashboardProductCategoriesRoute =
+  DashboardProductCategoriesRouteImport.update({
+    id: '/product-categories',
+    path: '/product-categories',
+    getParentRoute: () => DashboardRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteWithChildren
-  '/dashboard/categories': typeof DashboardCategoriesRoute
+  '/dashboard/product-categories': typeof DashboardProductCategoriesRoute
   '/dashboard/products': typeof DashboardProductsRoute
   '/dashboard/': typeof DashboardIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/dashboard/categories': typeof DashboardCategoriesRoute
+  '/dashboard/product-categories': typeof DashboardProductCategoriesRoute
   '/dashboard/products': typeof DashboardProductsRoute
   '/dashboard': typeof DashboardIndexRoute
 }
@@ -58,7 +59,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteWithChildren
-  '/dashboard/categories': typeof DashboardCategoriesRoute
+  '/dashboard/product-categories': typeof DashboardProductCategoriesRoute
   '/dashboard/products': typeof DashboardProductsRoute
   '/dashboard/': typeof DashboardIndexRoute
 }
@@ -67,16 +68,20 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/dashboard'
-    | '/dashboard/categories'
+    | '/dashboard/product-categories'
     | '/dashboard/products'
     | '/dashboard/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dashboard/categories' | '/dashboard/products' | '/dashboard'
+  to:
+    | '/'
+    | '/dashboard/product-categories'
+    | '/dashboard/products'
+    | '/dashboard'
   id:
     | '__root__'
     | '/'
     | '/dashboard'
-    | '/dashboard/categories'
+    | '/dashboard/product-categories'
     | '/dashboard/products'
     | '/dashboard/'
   fileRoutesById: FileRoutesById
@@ -116,24 +121,24 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardProductsRouteImport
       parentRoute: typeof DashboardRoute
     }
-    '/dashboard/categories': {
-      id: '/dashboard/categories'
-      path: '/categories'
-      fullPath: '/dashboard/categories'
-      preLoaderRoute: typeof DashboardCategoriesRouteImport
+    '/dashboard/product-categories': {
+      id: '/dashboard/product-categories'
+      path: '/product-categories'
+      fullPath: '/dashboard/product-categories'
+      preLoaderRoute: typeof DashboardProductCategoriesRouteImport
       parentRoute: typeof DashboardRoute
     }
   }
 }
 
 interface DashboardRouteChildren {
-  DashboardCategoriesRoute: typeof DashboardCategoriesRoute
+  DashboardProductCategoriesRoute: typeof DashboardProductCategoriesRoute
   DashboardProductsRoute: typeof DashboardProductsRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
 }
 
 const DashboardRouteChildren: DashboardRouteChildren = {
-  DashboardCategoriesRoute: DashboardCategoriesRoute,
+  DashboardProductCategoriesRoute: DashboardProductCategoriesRoute,
   DashboardProductsRoute: DashboardProductsRoute,
   DashboardIndexRoute: DashboardIndexRoute,
 }

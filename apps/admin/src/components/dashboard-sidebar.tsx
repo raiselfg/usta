@@ -16,11 +16,11 @@ const data = {
   navMain: [
     {
       title: 'Управление контентом',
-      url: '#', // TODO: Замените на реальные пути, например '/dashboard/categories'
+      url: '/dashboard',
       items: [
         {
-          title: 'Категории',
-          url: '/dashboard/categories',
+          title: 'Категории товаров',
+          url: '/dashboard/product-categories',
         },
         {
           title: 'Товары',
@@ -34,7 +34,6 @@ const data = {
 export function DashboardSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
-  // Получаем текущий путь из роутера
   const pathname = useLocation({ select: (location) => location.pathname });
 
   return (
@@ -46,13 +45,10 @@ export function DashboardSidebar({
             <SidebarGroupContent>
               <SidebarMenu>
                 {group.items.map((item) => {
-                  // Проверяем, совпадает ли путь элемента с текущим URL
                   const isActive = pathname.startsWith(item.url);
-
                   return (
                     <SidebarMenuItem key={item.title}>
                       <SidebarMenuButton asChild isActive={isActive}>
-                        {/* Используем Link из @tanstack/react-router вместо <a> */}
                         <Link to={item.url}>{item.title}</Link>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
