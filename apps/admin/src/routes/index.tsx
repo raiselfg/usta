@@ -1,28 +1,25 @@
-import { createFileRoute, Navigate } from '@tanstack/react-router';
+import { createFileRoute, redirect } from '@tanstack/react-router';
 import { Spinner } from '@usta/ui/components/spinner';
 
 import { SignInForm } from '@/components/signin-form';
-import { useSession } from '@/lib/auth-client';
+import { authClient } from '@/lib/auth-client';
 
 export const Route = createFileRoute('/')({
+  beforeLoad: async () => {
+    const { data } = await authClient.getSession();
+    if (data?.session) {
+      throw redirect({ to: '/dashboard' });
+    }
+  },
+  pendingComponent: () => (
+    <div className="flex h-screen items-center justify-center">
+      <Spinner />
+    </div>
+  ),
   component: Index,
 });
 
 function Index() {
-  const { data, isPending } = useSession();
-
-  if (isPending) {
-    return (
-      <div className="flex h-screen items-center justify-center">
-        <Spinner />
-      </div>
-    );
-  }
-
-  if (data?.session) {
-    return <Navigate to="/dashboard" />;
-  }
-
   return (
     <div className="flex h-screen items-center justify-center">
       <SignInForm />
