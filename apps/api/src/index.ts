@@ -11,6 +11,7 @@ import { productsRoutes } from './routes/products.js';
 
 const app = new OpenAPIHono();
 
+// 1. CORS применяется ко ВСЕМ роутам первым делом
 app.use(
   '*',
   cors({
@@ -29,16 +30,24 @@ app.use(
   }),
 );
 
+// 2. Auth middleware
 app.use('*', async (c, next) => {
   const path = c.req.path;
 
+  // Точные совпадения
   const isPublicPath = ['/', '/doc', '/docs'].includes(path);
-  const isAuthRoute = path.startsWith('/api/auth');
 
-  if (isPublicPath || isAuthRoute) {
+  // Совпадения по началу пути
+  const isAuthRoute = path.startsWith('/api/auth');
+  const isProductRoute =
+    path.startsWith('/products') || path.startsWith('/product-categories');
+
+  // Если это публичный путь, роут авторизации или роут продуктов - пропускаем без проверки
+  if (isPublicPath || isAuthRoute || isProductRoute) {
     return next();
   }
 
+  // Для всех остальных путей проверяем сессию
   const session = await auth.api.getSession({
     headers: c.req.raw.headers,
   });
