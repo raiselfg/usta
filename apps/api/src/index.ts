@@ -15,10 +15,10 @@ import { productsRoutes } from './routes/products.js';
 
 const app = new OpenAPIHono();
 
-// 1. Базовые заголовки безопасности (защита от XSS и сниффинга)
+// Базовые заголовки безопасности (защита от XSS и сниффинга)
 app.use('*', secureHeaders());
 
-// 2. CORS (разрешаем запросы только с твоих доменов)
+// CORS
 app.use(
   '*',
   cors({
@@ -37,7 +37,7 @@ app.use(
   }),
 );
 
-// 3. Rate Limiter (защита API от спама и ботов)
+// 3. Rate Limiter
 const limiter = rateLimiter({
   windowMs: 10 * 60 * 1000, // Окно: 10 минут
   limit: 200, // Максимум 200 запросов за 10 минут с одного IP
@@ -48,7 +48,6 @@ const limiter = rateLimiter({
 });
 app.use('*', limiter);
 
-// 4. Эндпоинты Better Auth (обработка логина/сессий)
 app.on(['POST', 'GET'], '/api/auth/*', (c) => {
   return auth.handler(c.req.raw);
 });
@@ -76,11 +75,10 @@ const requireAuth = async (c: Context, next: Next) => {
 app.use('/products/*', requireAuth);
 app.use('/product-categories/*', requireAuth);
 
-// 6. Подключение бизнес-логики (твои роуты)
 app.route('/products', productsRoutes);
 app.route('/product-categories', productCategoriesRoutes);
 
-// 7. Документация Swagger API
+// Документация Swagger API
 app.doc('/doc', {
   openapi: '3.0.0',
   info: {
@@ -90,7 +88,6 @@ app.doc('/doc', {
 });
 app.get('/docs', swaggerUI({ url: '/doc' }));
 
-// 8. Запуск сервера
 serve(
   {
     fetch: app.fetch,
