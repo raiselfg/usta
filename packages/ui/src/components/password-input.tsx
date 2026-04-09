@@ -1,4 +1,4 @@
-import { ComponentProps, useState } from 'react';
+import { type ComponentProps, useState } from 'react';
 import { Input } from './input';
 import { Eye, EyeOff } from 'lucide-react';
 import { cn } from '../lib/utils';
