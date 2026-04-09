@@ -10,7 +10,7 @@ interface ProductCategoryApi extends ProductCategory {
   product: Product[];
 }
 
-export const dynamic = 'force-dynamic';
+export const dynamic = 'force-static';
 
 export default async function Home() {
   const res = await fetch(
