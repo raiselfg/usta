@@ -10,19 +10,25 @@ interface ProductCategoryApi extends ProductCategory {
   product: Product[];
 }
 
-export const dynamic = 'force-static';
+export const dynamic = 'force-dynamic';
 
 export default async function Home() {
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/product-categories`,
     {
-      next: { revalidate: 3600, tags: ['catalog'] },
+      next: { revalidate: 3600, tags: ['product-categories'] },
     },
   );
   const productCategoriesData: ProductCategoryApi[] = await res.json();
 
   if (!res.ok) {
-    return <div>Error</div>;
+    const errorText = await res.text();
+    return (
+      <div className="p-10 text-red-500">
+        Ошибка API: {res.status} {res.statusText}
+        <pre className="text-xs">{errorText.slice(0, 100)}</pre>
+      </div>
+    );
   }
 
   const sortedProductCategories = productCategoriesData
