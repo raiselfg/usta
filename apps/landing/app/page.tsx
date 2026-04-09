@@ -10,8 +10,6 @@ interface ProductCategoryApi extends ProductCategory {
   product: Product[];
 }
 
-export const dynamic = 'force-static';
-
 export default async function Home() {
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/product-categories`,

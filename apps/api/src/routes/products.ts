@@ -3,6 +3,7 @@ import { prisma } from '@usta/database';
 import { randomUUID } from 'crypto';
 
 import { uploadToMinio } from '../lib/minio.js';
+import { revalidateFrontend } from '../lib/revalidate.js';
 
 // Schemas
 const ProductSchema = z
@@ -147,6 +148,7 @@ productsRoutes.openapi(
         updated_at: new Date(),
       },
     });
+    revalidateFrontend();
     return c.json(product, 201);
   },
 );
@@ -225,6 +227,7 @@ productsRoutes.openapi(
           : {}),
       },
     });
+    revalidateFrontend();
     return c.json(product);
   },
 );
@@ -263,6 +266,7 @@ productsRoutes.openapi(
     }
 
     await prisma.product.delete({ where: { id } });
+    revalidateFrontend();
     return c.json({ success: true });
   },
 );

@@ -2,6 +2,8 @@ import { OpenAPIHono, createRoute, z } from '@hono/zod-openapi';
 import { prisma } from '@usta/database';
 import { randomUUID } from 'crypto';
 
+import { revalidateFrontend } from '../lib/revalidate.js';
+
 const ProductSchema = z
   .object({
     id: z.string().uuid(),
@@ -140,6 +142,7 @@ productCategoriesRoutes.openapi(
       },
       include: { product: true },
     });
+    revalidateFrontend();
     return c.json(productCategory, 201);
   },
 );
@@ -218,6 +221,7 @@ productCategoriesRoutes.openapi(
       },
       include: { product: true },
     });
+    revalidateFrontend();
     return c.json(productCategory);
   },
 );
@@ -256,6 +260,7 @@ productCategoriesRoutes.openapi(
     }
 
     await prisma.productCategory.delete({ where: { id } });
+    revalidateFrontend();
     return c.json({ success: true });
   },
 );

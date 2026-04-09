@@ -1,8 +1,12 @@
-import { serve } from '@hono/node-server';
+import type { Context, Next } from 'hono';
+
 import 'dotenv/config';
+import { serve } from '@hono/node-server';
 import { swaggerUI } from '@hono/swagger-ui';
 import { OpenAPIHono } from '@hono/zod-openapi';
+import { rateLimiter } from 'hono-rate-limiter';
 import { cors } from 'hono/cors';
+import { secureHeaders } from 'hono/secure-headers';
 import process from 'node:process';
 
 import { auth } from './lib/auth.js';
@@ -11,6 +15,10 @@ import { productsRoutes } from './routes/products.js';
 
 const app = new OpenAPIHono();
 
+// 1. Базовые заголовки безопасности (защита от XSS и сниффинга)
+app.use('*', secureHeaders());
+
+// 2. CORS (разрешаем запросы только с твоих доменов)
 app.use(
   '*',
   cors({
@@ -29,9 +37,50 @@ app.use(
   }),
 );
 
+// 3. Rate Limiter (защита API от спама и ботов)
+const limiter = rateLimiter({
+  windowMs: 10 * 60 * 1000, // Окно: 10 минут
+  limit: 200, // Максимум 200 запросов за 10 минут с одного IP
+  standardHeaders: 'draft-6',
+  keyGenerator: (c) => c.req.header('x-forwarded-for') || 'anonymous',
+  handler: (c) =>
+    c.json({ message: 'Слишком много запросов, подождите немного' }, 429),
+});
+app.use('*', limiter);
+
+// 4. Эндпоинты Better Auth (обработка логина/сессий)
+app.on(['POST', 'GET'], '/api/auth/*', (c) => {
+  return auth.handler(c.req.raw);
+});
+
+// 5. Middleware защиты (Проверка прав доступа)
+// Лендинг читает данные (GET) свободно. Админка (POST/PATCH/DELETE) обязана иметь сессию.
+const requireAuth = async (c: Context, next: Next) => {
+  if (c.req.method === 'GET') {
+    return await next();
+  }
+
+  const session = await auth.api.getSession({ headers: c.req.raw.headers });
+
+  if (!session) {
+    return c.json(
+      { message: 'Unauthorized: Требуется авторизация в админке' },
+      401,
+    );
+  }
+
+  return await next();
+};
+
+// Применяем защиту только к роутам продуктов и категорий
+app.use('/products/*', requireAuth);
+app.use('/product-categories/*', requireAuth);
+
+// 6. Подключение бизнес-логики (твои роуты)
 app.route('/products', productsRoutes);
 app.route('/product-categories', productCategoriesRoutes);
 
+// 7. Документация Swagger API
 app.doc('/doc', {
   openapi: '3.0.0',
   info: {
@@ -39,13 +88,9 @@ app.doc('/doc', {
     title: 'USTA API',
   },
 });
-
 app.get('/docs', swaggerUI({ url: '/doc' }));
 
-app.on(['POST', 'GET'], '/api/auth/*', (c) => {
-  return auth.handler(c.req.raw);
-});
-
+// 8. Запуск сервера
 serve(
   {
     fetch: app.fetch,

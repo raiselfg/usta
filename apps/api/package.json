@@ -16,6 +16,7 @@
     "better-auth": "^1.5.6",
     "dotenv": "^17.3.1",
     "hono": "^4.12.9",
+    "hono-rate-limiter": "^0.5.3",
     "minio": "^8.0.7",
     "zod": "^4.3.6"
   },
