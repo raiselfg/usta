@@ -126,7 +126,7 @@ productsRoutes.openapi(
   async (c) => {
     const body = await c.req.parseBody();
     const file = body['file'] as unknown as File;
-    const name = body['name'] as string | undefined;
+    const name = body['name'] as string;
     const description = body['description'] as string | undefined;
     const categoryId = body['categoryId'] as string;
 
@@ -141,7 +141,7 @@ productsRoutes.openapi(
     const product = await prisma.product.create({
       data: {
         id: randomUUID(),
-        name: name ?? null,
+        name: name,
         description: description ?? null,
         image: imageUrl,
         product_category: { connect: { id: categoryId } },
