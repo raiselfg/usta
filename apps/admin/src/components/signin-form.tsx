@@ -7,6 +7,7 @@ import {
   FieldLabel,
 } from '@usta/ui/components/field';
 import { Input } from '@usta/ui/components/input';
+import { PasswordInput } from '@usta/ui/components/password-input';
 import { Spinner } from '@usta/ui/components/spinner';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -70,10 +71,9 @@ export const SignInForm = () => {
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <FieldLabel htmlFor="password">Пароль</FieldLabel>
-              <Input
+              <PasswordInput
                 {...field}
                 id="password"
-                type="password"
                 aria-invalid={fieldState.invalid}
                 placeholder="******"
                 autoComplete="off"
