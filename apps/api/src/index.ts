@@ -11,12 +11,8 @@ import { productsRoutes } from './routes/products.js';
 
 const app = new OpenAPIHono();
 
-app.get('/', (c) => {
-  return c.text('Hello Hono!');
-});
-
 app.use(
-  '/api/auth/*',
+  '*',
   cors({
     origin: [
       'https://us-ta.ru',
@@ -26,12 +22,37 @@ app.use(
       'http://localhost:3001',
     ],
     allowHeaders: ['Content-Type', 'Authorization'],
-    allowMethods: ['POST', 'GET', 'OPTIONS'],
+    allowMethods: ['POST', 'GET', 'OPTIONS', 'PUT', 'PATCH', 'DELETE'],
     exposeHeaders: ['Content-Length'],
     maxAge: 600,
     credentials: true,
   }),
 );
+
+app.use('*', async (c, next) => {
+  const path = c.req.path;
+
+  const isPublicPath = ['/', '/doc', '/docs'].includes(path);
+  const isAuthRoute = path.startsWith('/api/auth');
+
+  if (isPublicPath || isAuthRoute) {
+    return next();
+  }
+
+  const session = await auth.api.getSession({
+    headers: c.req.raw.headers,
+  });
+
+  if (!session) {
+    return c.json({ error: 'Unauthorized' }, 401);
+  }
+
+  await next();
+});
+
+app.get('/', (c) => {
+  return c.text('Hello Hono!');
+});
 
 app.route('/products', productsRoutes);
 app.route('/product-categories', productCategoriesRoutes);
