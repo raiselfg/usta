@@ -3,6 +3,7 @@ FROM node:20-slim AS base
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable && corepack prepare pnpm@10.30.1 --activate
+RUN apt-get update -y && apt-get install -y openssl
 
 # 2. Builder stage
 FROM base AS builder
