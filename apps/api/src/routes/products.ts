@@ -19,6 +19,21 @@ const ProductSchema = z
   })
   .openapi('Product');
 
+const ProductCategorySchema = z
+  .object({
+    id: z.string().uuid(),
+    name: z.string(),
+    order: z.number(),
+    is_active: z.boolean(),
+    created_at: z.string().datetime().or(z.date()),
+    updated_at: z.string().datetime().or(z.date()),
+  })
+  .openapi('ProductCategory');
+
+const ProductWithProductCategorySchema = ProductSchema.extend({
+  product_category: ProductCategorySchema.nullable(),
+}).openapi('ProductWithProductCategory');
+
 export const productsRoutes = new OpenAPIHono();
 
 // GET /
@@ -30,7 +45,7 @@ productsRoutes.openapi(
       200: {
         content: {
           'application/json': {
-            schema: z.array(ProductSchema),
+            schema: z.array(ProductWithProductCategorySchema),
           },
         },
         description: 'Retrieve all products',
@@ -38,7 +53,9 @@ productsRoutes.openapi(
     },
   }),
   async (c) => {
-    const products = await prisma.product.findMany();
+    const products = await prisma.product.findMany({
+      include: { product_category: true },
+    });
     return c.json(products);
   },
 );
@@ -66,7 +83,7 @@ productsRoutes.openapi(
       200: {
         content: {
           'application/json': {
-            schema: ProductSchema,
+            schema: ProductWithProductCategorySchema,
           },
         },
         description: 'Retrieve a product by ID',
@@ -80,6 +97,7 @@ productsRoutes.openapi(
     const { id } = c.req.valid('param');
     const product = await prisma.product.findUnique({
       where: { id },
+      include: { product_category: true },
     });
     if (!product) {
       return c.json({ message: 'Product not found' }, 404);
@@ -113,7 +131,7 @@ productsRoutes.openapi(
       201: {
         content: {
           'application/json': {
-            schema: ProductSchema,
+            schema: ProductWithProductCategorySchema,
           },
         },
         description: 'Create a new product',
@@ -147,6 +165,7 @@ productsRoutes.openapi(
         product_category: { connect: { id: categoryId } },
         updated_at: new Date(),
       },
+      include: { product_category: true },
     });
     revalidateFrontend();
     return c.json(product, 201);
@@ -182,7 +201,7 @@ productsRoutes.openapi(
       200: {
         content: {
           'application/json': {
-            schema: ProductSchema,
+            schema: ProductWithProductCategorySchema,
           },
         },
         description: 'Update a product',
@@ -226,6 +245,7 @@ productsRoutes.openapi(
           ? { product_category: { connect: { id: categoryId } } }
           : {}),
       },
+      include: { product_category: true },
     });
     revalidateFrontend();
     return c.json(product);
