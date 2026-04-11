@@ -165,7 +165,6 @@ productsRoutes.openapi(
         product_category: { connect: { id: categoryId } },
         updated_at: new Date(),
       },
-      include: { product_category: true },
     });
     revalidateFrontend();
     return c.json(product, 201);
@@ -245,7 +244,6 @@ productsRoutes.openapi(
           ? { product_category: { connect: { id: categoryId } } }
           : {}),
       },
-      include: { product_category: true },
     });
     revalidateFrontend();
     return c.json(product);
