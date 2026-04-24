@@ -46,14 +46,9 @@ const CreateProductBodySchema = z.object({
 });
 
 const UpdateProductBodySchema = z.object({
-  file: z
-    .instanceof(File)
-    .optional()
-    .openapi({ type: 'string', format: 'binary' }),
   name: z.string().optional(),
   description: z.string().optional(),
   product_category_id: z.string().uuid().optional(),
-  image: z.string().optional(),
   is_active: z.preprocess(
     (v) => (v === 'true' ? true : v === 'false' ? false : v),
     z.boolean().optional(),
@@ -217,7 +212,7 @@ productsRoutes.openapi(
         content: {
           'multipart/form-data': { schema: UpdateProductBodySchema },
           'application/json': {
-            schema: UpdateProductBodySchema.omit({ file: true }),
+            schema: UpdateProductBodySchema,
           },
         },
       },
