@@ -35,7 +35,6 @@ const ProductSchema = z.object({
   name: z.string().min(1, 'Название обязательно'),
   description: z.string().nullable(),
   is_active: z.boolean(),
-  image: z.string().url('Введите корректный URL изображения'),
   product_category_id: z.string().uuid('Выберите категорию'),
 });
 
@@ -66,7 +65,6 @@ export const EditProductForm = ({ product }: Props) => {
       name: product.name || '',
       description: product.description,
       is_active: product.is_active,
-      image: product.image,
       product_category_id: product.product_category_id,
     },
   });
@@ -86,7 +84,6 @@ export const EditProductForm = ({ product }: Props) => {
 
   const onSubmit = (data: ProductFormData) => {
     updateMutation.mutate(data);
-    console.log(data);
   };
 
   const onOpenChange = (open: boolean) => {
@@ -124,12 +121,6 @@ export const EditProductForm = ({ product }: Props) => {
             <FieldLabel>Описание</FieldLabel>
             <Input {...register('description')} />
             {errors.description && <FieldError errors={[errors.description]} />}
-          </Field>
-
-          <Field>
-            <FieldLabel>URL Изображения</FieldLabel>
-            <Input {...register('image')} />
-            {errors.image && <FieldError errors={[errors.image]} />}
           </Field>
 
           <Field>

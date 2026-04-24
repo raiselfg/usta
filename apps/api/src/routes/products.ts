@@ -252,13 +252,6 @@ productsRoutes.openapi(
     const existing = await prisma.product.findUnique({ where: { id } });
     if (!existing) return c.json({ message: 'Product not found' }, 404);
 
-    let imageUrl = validatedData.image;
-    if (validatedData.file instanceof File) {
-      const ext = validatedData.file.name.split('.').pop() ?? 'jpg';
-      const fileName = `${randomUUID()}.${ext}`;
-      imageUrl = await uploadToMinio(validatedData.file, fileName);
-    }
-
     const product = await prisma.product.update({
       where: { id },
       data: {
@@ -266,7 +259,6 @@ productsRoutes.openapi(
         description: validatedData.description,
         is_active: validatedData.is_active,
         updated_at: new Date(),
-        ...(imageUrl ? { image: imageUrl } : {}),
         ...(validatedData.product_category_id
           ? {
               product_category: {
