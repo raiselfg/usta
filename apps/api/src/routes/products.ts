@@ -166,7 +166,15 @@ productsRoutes.openapi(
       ? await c.req.json()
       : await c.req.parseBody();
 
-    const validatedData = CreateProductBodySchema.parse(rawData);
+    const result = CreateProductBodySchema.safeParse(rawData);
+    if (!result.success) {
+      console.error('[Validation Error]', result.error.format());
+      return c.json(
+        { message: 'Validation failed', errors: result.error.format() },
+        400,
+      );
+    }
+    const validatedData = result.data;
     const { file, name, description, product_category_id, image } =
       validatedData;
 
@@ -231,7 +239,15 @@ productsRoutes.openapi(
       ? await c.req.json()
       : await c.req.parseBody();
 
-    const validatedData = UpdateProductBodySchema.parse(rawData);
+    const result = UpdateProductBodySchema.safeParse(rawData);
+    if (!result.success) {
+      console.error('[Validation Error]', result.error.format());
+      return c.json(
+        { message: 'Validation failed', errors: result.error.format() },
+        400,
+      );
+    }
+    const validatedData = result.data;
 
     const existing = await prisma.product.findUnique({ where: { id } });
     if (!existing) return c.json({ message: 'Product not found' }, 404);
