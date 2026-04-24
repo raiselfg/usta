@@ -34,6 +34,35 @@ const ProductWithProductCategorySchema = ProductSchema.extend({
   product_category: ProductCategorySchema.nullable(),
 }).openapi('ProductWithProductCategory');
 
+const CreateProductBodySchema = z.object({
+  file: z
+    .instanceof(File)
+    .optional()
+    .openapi({ type: 'string', format: 'binary' }),
+  name: z.string(),
+  description: z.string().optional(),
+  product_category_id: z.string().uuid(),
+  image: z.string().optional(),
+});
+
+const UpdateProductBodySchema = z.object({
+  file: z
+    .instanceof(File)
+    .optional()
+    .openapi({ type: 'string', format: 'binary' }),
+  name: z.string().optional(),
+  description: z.string().optional(),
+  product_category_id: z.string().uuid().optional(),
+  image: z.string().optional(),
+  is_active: z.preprocess(
+    (v) => (v === 'true' ? true : v === 'false' ? false : v),
+    z.boolean().optional(),
+  ),
+});
+
+type CreateProductInput = z.infer<typeof CreateProductBodySchema>;
+type UpdateProductInput = z.infer<typeof UpdateProductBodySchema>;
+
 export const productsRoutes = new OpenAPIHono();
 
 // GET /
@@ -114,15 +143,9 @@ productsRoutes.openapi(
     request: {
       body: {
         content: {
-          'multipart/form-data': {
-            schema: z.object({
-              file: z
-                .instanceof(File)
-                .openapi({ type: 'string', format: 'binary' }),
-              name: z.string().optional(),
-              description: z.string().optional(),
-              categoryId: z.string().uuid(),
-            }),
+          'multipart/form-data': { schema: CreateProductBodySchema },
+          'application/json': {
+            schema: CreateProductBodySchema.omit({ file: true }),
           },
         },
       },
@@ -130,42 +153,46 @@ productsRoutes.openapi(
     responses: {
       201: {
         content: {
-          'application/json': {
-            schema: ProductWithProductCategorySchema,
-          },
+          'application/json': { schema: ProductWithProductCategorySchema },
         },
         description: 'Create a new product',
       },
-      400: {
-        description: 'Invalid input',
-      },
+      400: { description: 'Invalid input' },
     },
   }),
   async (c) => {
-    const body = await c.req.parseBody();
-    const file = body['file'] as unknown as File;
-    const name = body['name'] as string;
-    const description = body['description'] as string | undefined;
-    const categoryId = body['categoryId'] as string;
+    const contentType = c.req.header('content-type') || '';
+    const rawData = contentType.includes('application/json')
+      ? await c.req.json()
+      : await c.req.parseBody();
 
-    if (!file || !(file instanceof File)) {
-      return c.json({ message: 'File is required' }, 400);
+    const validatedData = CreateProductBodySchema.parse(rawData);
+    const { file, name, description, product_category_id, image } =
+      validatedData;
+
+    let imageUrl = image;
+    if (file instanceof File) {
+      const ext = file.name.split('.').pop() ?? 'jpg';
+      const fileName = `${randomUUID()}.${ext}`;
+      imageUrl = await uploadToMinio(file, fileName);
     }
 
-    const ext = file.name.split('.').pop() ?? 'jpg';
-    const fileName = `${randomUUID()}.${ext}`;
-    const imageUrl = await uploadToMinio(file, fileName);
+    if (!imageUrl) {
+      return c.json({ message: 'Image or file is required' }, 400);
+    }
 
     const product = await prisma.product.create({
       data: {
         id: randomUUID(),
-        name: name,
+        name,
         description: description ?? null,
         image: imageUrl,
-        product_category: { connect: { id: categoryId } },
+        product_category: { connect: { id: product_category_id } },
         updated_at: new Date(),
       },
+      include: { product_category: true },
     });
+
     revalidateFrontend();
     return c.json(product, 201);
   },
@@ -177,21 +204,12 @@ productsRoutes.openapi(
     method: 'patch',
     path: '/{id}',
     request: {
-      params: z.object({
-        id: z.string().uuid(),
-      }),
+      params: z.object({ id: z.string().uuid() }),
       body: {
         content: {
-          'multipart/form-data': {
-            schema: z.object({
-              file: z
-                .instanceof(File)
-                .openapi({ type: 'string', format: 'binary' })
-                .optional(),
-              name: z.string().optional(),
-              description: z.string().optional(),
-              categoryId: z.string().uuid().optional(),
-            }),
+          'multipart/form-data': { schema: UpdateProductBodySchema },
+          'application/json': {
+            schema: UpdateProductBodySchema.omit({ file: true }),
           },
         },
       },
@@ -199,52 +217,51 @@ productsRoutes.openapi(
     responses: {
       200: {
         content: {
-          'application/json': {
-            schema: ProductWithProductCategorySchema,
-          },
+          'application/json': { schema: ProductWithProductCategorySchema },
         },
         description: 'Update a product',
       },
-      404: {
-        description: 'Product not found',
-      },
+      404: { description: 'Product not found' },
     },
   }),
   async (c) => {
     const { id } = c.req.valid('param');
-    const body = await c.req.parseBody();
+    const contentType = c.req.header('content-type') || '';
+    const rawData = contentType.includes('application/json')
+      ? await c.req.json()
+      : await c.req.parseBody();
 
-    const existing = await prisma.product.findUnique({
-      where: { id },
-    });
-    if (!existing) {
-      return c.json({ message: 'Product not found' }, 404);
-    }
+    const validatedData = UpdateProductBodySchema.parse(rawData);
 
-    const file = body['file'] as unknown as File | undefined;
-    const name = body['name'] as string | undefined;
-    const description = body['description'] as string | undefined;
-    const categoryId = body['categoryId'] as string | undefined;
+    const existing = await prisma.product.findUnique({ where: { id } });
+    if (!existing) return c.json({ message: 'Product not found' }, 404);
 
-    let imageUrl: string | undefined;
-    if (file && file instanceof File) {
-      const ext = file.name.split('.').pop() ?? 'jpg';
+    let imageUrl = validatedData.image;
+    if (validatedData.file instanceof File) {
+      const ext = validatedData.file.name.split('.').pop() ?? 'jpg';
       const fileName = `${randomUUID()}.${ext}`;
-      imageUrl = await uploadToMinio(file, fileName);
+      imageUrl = await uploadToMinio(validatedData.file, fileName);
     }
 
     const product = await prisma.product.update({
       where: { id },
       data: {
-        name: name !== undefined ? name : undefined,
-        description: description !== undefined ? description : undefined,
+        name: validatedData.name,
+        description: validatedData.description,
+        is_active: validatedData.is_active,
         updated_at: new Date(),
         ...(imageUrl ? { image: imageUrl } : {}),
-        ...(categoryId
-          ? { product_category: { connect: { id: categoryId } } }
+        ...(validatedData.product_category_id
+          ? {
+              product_category: {
+                connect: { id: validatedData.product_category_id },
+              },
+            }
           : {}),
       },
+      include: { product_category: true },
     });
+
     revalidateFrontend();
     return c.json(product);
   },
@@ -255,33 +272,21 @@ productsRoutes.openapi(
   createRoute({
     method: 'delete',
     path: '/{id}',
-    request: {
-      params: z.object({
-        id: z.string().uuid(),
-      }),
-    },
+    request: { params: z.object({ id: z.string().uuid() }) },
     responses: {
       200: {
         content: {
-          'application/json': {
-            schema: z.object({ success: z.boolean() }),
-          },
+          'application/json': { schema: z.object({ success: z.boolean() }) },
         },
         description: 'Delete a product',
       },
-      404: {
-        description: 'Product not found',
-      },
+      404: { description: 'Product not found' },
     },
   }),
   async (c) => {
     const { id } = c.req.valid('param');
-    const existing = await prisma.product.findUnique({
-      where: { id },
-    });
-    if (!existing) {
-      return c.json({ message: 'Product not found' }, 404);
-    }
+    const existing = await prisma.product.findUnique({ where: { id } });
+    if (!existing) return c.json({ message: 'Product not found' }, 404);
 
     await prisma.product.delete({ where: { id } });
     revalidateFrontend();

@@ -2,7 +2,7 @@ import Image from 'next/image';
 
 export default function Hero() {
   return (
-    <header className="relative mx-auto flex h-screen w-full max-w-[1920px] items-center justify-center">
+    <header className="relative mx-auto flex h-screen w-full max-w-480 items-center justify-center">
       <h1 className="sr-only">
         УстА — студия дизайна одежды и головных уборов
       </h1>

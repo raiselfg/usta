@@ -4,15 +4,15 @@ import { Button } from '@usta/ui/components/button';
 import { Card, CardContent } from '@usta/ui/components/card';
 import { Skeleton } from '@usta/ui/components/skeleton';
 
-import { ProductCard } from '@/components/product-card';
-import { products } from '@/lib/products';
+import { ProductCard } from '@/products/components/product-card';
+import { products } from '@/products/lib/products';
 
 export const Route = createFileRoute('/dashboard/products')({
   component: DashboardProductsContent,
 });
 
 function DashboardProductsContent() {
-  const { isPending, data } = useQuery({
+  const { isPending, isError, data } = useQuery({
     queryKey: ['products'],
     queryFn: products.getProducts,
   });
@@ -26,6 +26,12 @@ function DashboardProductsContent() {
       <Card>
         <CardContent>
           <div className="grid grid-cols-4 gap-4">
+            {isError && (
+              <Card className="bg-destructive flex h-100 w-full items-center justify-center">
+                <CardContent>Ошибка при получении продуктов</CardContent>
+              </Card>
+            )}
+
             {isPending &&
               Array.from({ length: 16 }, (_, i) => (
                 <div

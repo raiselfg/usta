@@ -1,41 +1,12 @@
-import { Product, ProductCategory } from '@usta/database';
-
+import { getLandingData } from '@/features/landing/api/get-landing-data';
 import { CategorySection } from '@/features/landing/components/category-section';
 import Contacts from '@/features/landing/components/contact-info';
 import Hero from '@/features/landing/components/hero';
 import { LandingSection } from '@/features/landing/components/landing-section';
 import { ProductGrid } from '@/features/landing/components/product-grid';
 
-interface ProductCategoryApi extends ProductCategory {
-  product: Product[];
-}
-
 export default async function Home() {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/product-categories`,
-    {
-      next: { revalidate: 3600, tags: ['product-categories'] },
-    },
-  );
-  const productCategoriesData: ProductCategoryApi[] = await res.json();
-
-  if (!res.ok) {
-    const errorText = await res.text();
-    return (
-      <div className="p-10 text-red-500">
-        Ошибка API: {res.status} {res.statusText}
-        <pre className="text-xs">{errorText.slice(0, 100)}</pre>
-      </div>
-    );
-  }
-
-  const sortedProductCategories = productCategoriesData
-    .map((productCategory) => ({
-      ...productCategory,
-      product: productCategory.product.filter((product) => product.is_active),
-    }))
-    .filter((productType) => productType.product.length > 0)
-    .sort((a, b) => a.order - b.order);
+  const productsWithCategories = await getLandingData();
 
   return (
     <>
@@ -53,7 +24,7 @@ export default async function Home() {
           </p>
         </LandingSection>
         <LandingSection title="Каталог">
-          {sortedProductCategories?.map((productCategory) => (
+          {productsWithCategories?.map((productCategory) => (
             <CategorySection
               key={productCategory.id}
               label={productCategory.name}

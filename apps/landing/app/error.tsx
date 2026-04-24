@@ -22,7 +22,7 @@ export default function Error({
         попробуйте обновить или вернуться позже.
       </p>
       <div className="flex gap-4">
-        <Button onClick={() => reset()} variant="outline">
+        <Button onClick={() => reset()} variant={'secondary'}>
           Попробовать снова
         </Button>
         <Button

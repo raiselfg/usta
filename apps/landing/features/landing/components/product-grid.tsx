@@ -1,8 +1,9 @@
-import { Product } from '@usta/database';
 import Image from 'next/image';
 
+import { LandingProduct } from '../api/get-landing-data';
+
 interface Props {
-  products: Product[];
+  products: LandingProduct[];
 }
 
 export const ProductGrid = ({ products }: Props) => {

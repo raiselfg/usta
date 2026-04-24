@@ -30,7 +30,6 @@ export default function ContactInfo() {
 
   return (
     <address className="flex flex-col items-center justify-center gap-4 text-lg sm:flex-row sm:gap-6 sm:text-xl">
-      {/* ВКонтакте */}
       <Tooltip>
         <TooltipTrigger asChild>
           <Link
@@ -56,7 +55,6 @@ export default function ContactInfo() {
         </TooltipContent>
       </Tooltip>
 
-      {/* Email */}
       <Tooltip>
         <TooltipTrigger asChild>
           <button
@@ -80,7 +78,6 @@ export default function ContactInfo() {
         </TooltipContent>
       </Tooltip>
 
-      {/* Телефон */}
       <Tooltip>
         <TooltipTrigger asChild>
           <button

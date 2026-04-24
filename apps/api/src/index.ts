@@ -12,6 +12,7 @@ import process from 'node:process';
 import { auth } from './lib/auth.js';
 import { productCategoriesRoutes } from './routes/product-categories.js';
 import { productsRoutes } from './routes/products.js';
+import { storefrontRoutes } from './routes/storefront.js';
 
 const app = new OpenAPIHono();
 
@@ -48,7 +49,7 @@ const limiter = rateLimiter({
 });
 app.use('*', limiter);
 
-app.on(['POST', 'GET'], '/api/auth/*', (c) => {
+app.all('/api/auth/*', (c) => {
   return auth.handler(c.req.raw);
 });
 
@@ -62,6 +63,9 @@ const requireAuth = async (c: Context, next: Next) => {
   const session = await auth.api.getSession({ headers: c.req.raw.headers });
 
   if (!session) {
+    console.error(
+      `[Auth] Unauthorized access attempt to ${c.req.method} ${c.req.url}`,
+    );
     return c.json(
       { message: 'Unauthorized: Требуется авторизация в админке' },
       401,
@@ -71,12 +75,15 @@ const requireAuth = async (c: Context, next: Next) => {
   return await next();
 };
 
-// Применяем защиту только к роутам продуктов и категорий
+// Применяем защиту к роутам продуктов и категорий
+app.use('/products', requireAuth);
 app.use('/products/*', requireAuth);
+app.use('/product-categories', requireAuth);
 app.use('/product-categories/*', requireAuth);
 
 app.route('/products', productsRoutes);
 app.route('/product-categories', productCategoriesRoutes);
+app.route('/storefront', storefrontRoutes);
 
 // Документация Swagger API
 app.doc('/doc', {
