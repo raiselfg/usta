@@ -9,21 +9,22 @@ export default function Hero() {
 
       <Image
         alt="Фоновое изображение заголовка"
+        className="object-cover"
         fill
         priority
-        quality={60}
-        sizes="(max-width: 1920px) 100vw, 1920px"
-        src="/images/backgrounds/background.jpeg"
-        style={{ objectFit: 'cover' }}
+        quality={50}
+        sizes="100vw"
+        src="/images/backgrounds/background.avif"
       />
 
       <Image
         alt="Логотип бренда УстА"
-        className="slide-up absolute"
+        className="slide-up absolute z-10"
+        fetchPriority="high"
         height={400}
         priority
-        quality={80}
-        src="/images/backgrounds/logo.png"
+        quality={50}
+        src="/images/backgrounds/logo.avif"
         width={400}
       />
     </header>
