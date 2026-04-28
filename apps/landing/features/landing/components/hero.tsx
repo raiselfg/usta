@@ -6,21 +6,23 @@ export default function Hero() {
       <h1 className="sr-only">
         УстА — студия дизайна одежды и головных уборов
       </h1>
+
       <Image
         alt="Фоновое изображение заголовка"
         fill
-        loading="eager"
         priority
-        sizes="100vw"
+        quality={60}
+        sizes="(max-width: 1920px) 100vw, 1920px"
         src="/images/backgrounds/background.jpeg"
         style={{ objectFit: 'cover' }}
       />
+
       <Image
         alt="Логотип бренда УстА"
         className="slide-up absolute"
         height={400}
-        loading="eager"
         priority
+        quality={80}
         src="/images/backgrounds/logo.png"
         width={400}
       />
