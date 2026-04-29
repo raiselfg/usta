@@ -20,9 +20,6 @@ const UpdateProductBodySchema = BaseUpdateProductBodySchema.openapi({
   type: 'object',
 });
 
-type CreateProductInput = z.infer<typeof CreateProductBodySchema>;
-type UpdateProductInput = z.infer<typeof UpdateProductBodySchema>;
-
 export const productsRoutes = new OpenAPIHono();
 
 // GET /
