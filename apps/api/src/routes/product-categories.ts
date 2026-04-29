@@ -1,17 +1,10 @@
 import { OpenAPIHono, createRoute, z } from '@hono/zod-openapi';
 import { prisma } from '@usta/database';
-import {
-  ProductCategorySchema as BaseProductCategorySchema,
-  ProductCategoryWithProductsSchema as BaseProductCategoryWithProductsSchema,
-} from '@usta/types/product-categories';
-import { ProductSchema as BaseProductSchema } from '@usta/types/products';
+import { ProductCategoryWithProductsSchema as BaseProductCategoryWithProductsSchema } from '@usta/types/product-categories';
 import { randomUUID } from 'crypto';
 
 import { revalidateFrontend } from '../lib/revalidate.js';
 
-const ProductSchema = BaseProductSchema.openapi('Product');
-const ProductCategorySchema =
-  BaseProductCategorySchema.openapi('ProductCategory');
 const ProductCategoryWithProductsSchema =
   BaseProductCategoryWithProductsSchema.openapi('ProductCategoryWithProducts');
 

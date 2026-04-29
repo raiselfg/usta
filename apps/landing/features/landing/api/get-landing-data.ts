@@ -1,4 +1,4 @@
-import { LandingCategory } from '@usta/types/types/index';
+import { LandingCategory } from '@usta/types/product-categories';
 
 export async function getLandingData(): Promise<LandingCategory[]> {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL;

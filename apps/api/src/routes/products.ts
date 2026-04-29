@@ -1,8 +1,6 @@
 import { OpenAPIHono, createRoute, z } from '@hono/zod-openapi';
 import { prisma } from '@usta/database';
-import { ProductCategorySchema as BaseProductCategorySchema } from '@usta/types/product-categories';
 import {
-  ProductSchema as BaseProductSchema,
   ProductWithProductCategorySchema as BaseProductWithProductCategorySchema,
   CreateProductBodySchema as BaseCreateProductBodySchema,
   UpdateProductBodySchema as BaseUpdateProductBodySchema,
@@ -13,9 +11,6 @@ import { uploadToMinio } from '../lib/minio.js';
 import { revalidateFrontend } from '../lib/revalidate.js';
 
 // Schemas
-const ProductSchema = BaseProductSchema.openapi('Product');
-const ProductCategorySchema =
-  BaseProductCategorySchema.openapi('ProductCategory');
 const ProductWithProductCategorySchema =
   BaseProductWithProductCategorySchema.openapi('ProductWithProductCategory');
 const CreateProductBodySchema = BaseCreateProductBodySchema.openapi({
@@ -177,7 +172,7 @@ productsRoutes.openapi(
     method: 'patch',
     path: '/{id}',
     request: {
-      params: z.object({ id: z.string().uuid() }),
+      params: z.object({ id: z.uuid() }),
       body: {
         content: {
           'multipart/form-data': { schema: UpdateProductBodySchema },

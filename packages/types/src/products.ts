@@ -4,8 +4,8 @@ import { ProductCategorySchema } from './product-categories';
 
 export const ProductSchema = z.object({
   id: z.uuid(),
-  name: z.string().min(1, 'Название обязательно').nullable(),
-  description: z.string().nullable(),
+  name: z.string().min(1, 'Название обязательно'),
+  description: z.string().optional(),
   is_active: z.boolean(),
   image: z.string(),
   created_at: z.iso.datetime().or(z.date()),
@@ -14,7 +14,7 @@ export const ProductSchema = z.object({
 });
 
 export const ProductWithProductCategorySchema = ProductSchema.extend({
-  product_category: ProductCategorySchema.nullable(),
+  product_category: ProductCategorySchema.optional(),
 });
 
 export const CreateProductBodySchema = ProductSchema.pick({
