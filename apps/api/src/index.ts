@@ -85,6 +85,10 @@ app.route('/products', productsRoutes);
 app.route('/product-categories', productCategoriesRoutes);
 app.route('/storefront', storefrontRoutes);
 
+app.get('/health', (c) =>
+  c.json({ status: 'ok', time: new Date().toISOString() }),
+);
+
 // Документация Swagger API
 app.doc('/doc', {
   openapi: '3.0.0',
@@ -95,13 +99,17 @@ app.doc('/doc', {
 });
 app.get('/docs', swaggerUI({ url: '/doc' }));
 
+const port = Number(process.env.PORT) || 3000;
+const hostname = '0.0.0.0';
+
 serve(
   {
     fetch: app.fetch,
-    port: Number(process.env.PORT) || 3000,
-    hostname: '0.0.0.0',
+    port,
+    hostname,
   },
   (info) => {
-    console.log(`Server is running on http://localhost:${info.port}`);
+    console.log(`Server is running on http://${hostname}:${info.port}`);
+    console.log(`Environment: ${process.env.NODE_ENV}`);
   },
 );
