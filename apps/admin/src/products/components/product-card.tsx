@@ -1,4 +1,4 @@
-import type { ProductWithProductCategory } from '@/types';
+import type { ProductWithProductCategory } from '@usta/types/products';
 
 import { DeleteProductForm } from './delete-product-form';
 import { EditProductForm } from './edit-product-form';

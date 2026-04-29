@@ -1,12 +1,12 @@
 import { OpenAPIHono, createRoute, z } from '@hono/zod-openapi';
 import { prisma } from '@usta/database';
+import { ProductCategorySchema as BaseProductCategorySchema } from '@usta/types/product-categories';
 import {
   ProductSchema as BaseProductSchema,
-  ProductCategorySchema as BaseProductCategorySchema,
   ProductWithProductCategorySchema as BaseProductWithProductCategorySchema,
   CreateProductBodySchema as BaseCreateProductBodySchema,
   UpdateProductBodySchema as BaseUpdateProductBodySchema,
-} from '@usta/types';
+} from '@usta/types/products';
 import { randomUUID } from 'crypto';
 
 import { uploadToMinio } from '../lib/minio.js';

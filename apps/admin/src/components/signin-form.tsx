@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { SignInSchema, type SignInSchemaType } from '@usta/types';
+import { SignInSchema, type SignInSchemaType } from '@usta/types/auth';
 import { Button } from '@usta/ui/components/button';
 import {
   Field,

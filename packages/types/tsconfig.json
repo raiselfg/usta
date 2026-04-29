@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "target": "ESNext",
+    "lib": ["ESNext", "DOM"],
     "composite": true,
     "declaration": true,
     "declarationMap": true,

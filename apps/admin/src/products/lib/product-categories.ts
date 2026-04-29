@@ -1,4 +1,4 @@
-import type { ProductCategory } from '@usta/database';
+import type { ProductCategory } from '@usta/types/product-categories';
 
 import { api, handleApiError } from '../../lib/axios-instance';
 

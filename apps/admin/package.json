@@ -11,8 +11,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@usta/types": "workspace:*",
     "@usta/ui": "workspace:*",
+    "@usta/types": "workspace:*",
     "@hookform/resolvers": "^5.2.2",
     "@tailwindcss/vite": "^4.2.2",
     "@tanstack/react-query": "^5.98.0",
@@ -25,8 +25,7 @@
     "react-dom": "^19.2.5",
     "react-hook-form": "^7.72.1",
     "sonner": "^2.0.7",
-    "tailwindcss": "^4.2.2",
-    "zod": "^4.3.6"
+    "tailwindcss": "^4.2.2"
   },
   "devDependencies": {
     "@babel/core": "^7.29.0",

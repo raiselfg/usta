@@ -1,11 +1,10 @@
-import type { ProductWithProductCategory } from '@usta/types/types/index';
-
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
-  ProductFormSchema,
-  type ProductFormData,
-} from '@usta/types/schemas/index';
+  UpdateProductBodySchema,
+  type ProductWithProductCategory,
+  type UpdateProductDTO,
+} from '@usta/types/products';
 import { Button } from '@usta/ui/components/button';
 import { Checkbox } from '@usta/ui/components/checkbox';
 import {
@@ -53,8 +52,8 @@ export const EditProductForm = ({ product }: Props) => {
     control,
     formState: { errors },
     reset,
-  } = useForm<ProductFormData>({
-    resolver: zodResolver(ProductFormSchema),
+  } = useForm<UpdateProductDTO>({
+    resolver: zodResolver(UpdateProductBodySchema),
     defaultValues: {
       name: product.name || '',
       description: product.description,
@@ -64,7 +63,7 @@ export const EditProductForm = ({ product }: Props) => {
   });
 
   const updateMutation = useMutation({
-    mutationFn: (data: ProductFormData) =>
+    mutationFn: (data: UpdateProductDTO) =>
       products.updateProduct(product.id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['products'] });
@@ -76,7 +75,7 @@ export const EditProductForm = ({ product }: Props) => {
     },
   });
 
-  const onSubmit = (data: ProductFormData) => {
+  const onSubmit = (data: UpdateProductDTO) => {
     updateMutation.mutate(data);
   };
 

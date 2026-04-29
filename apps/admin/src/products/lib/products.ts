@@ -2,7 +2,7 @@ import type {
   CreateProductDTO,
   ProductWithProductCategory,
   UpdateProductDTO,
-} from '@/types';
+} from '@usta/types/products';
 
 import { api, handleApiError } from '../../lib/axios-instance';
 

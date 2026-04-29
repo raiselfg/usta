@@ -21,9 +21,8 @@
     ],
     "paths": {
       "@/*": ["./*"],
-      "@usta/database": ["../../packages/database/src/index.ts"],
-      "@usta/database/*": ["../../packages/database/src/*"],
-      "@usta/ui/*": ["../../packages/ui/src/*"]
+      "@usta/ui/*": ["../../packages/ui/src/*"],
+      "@usta/types/*": ["../../packages/types/src/*"]
     }
   },
   "include": [
