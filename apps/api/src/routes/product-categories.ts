@@ -1,36 +1,19 @@
 import { OpenAPIHono, createRoute, z } from '@hono/zod-openapi';
 import { prisma } from '@usta/database';
+import {
+  ProductSchema as BaseProductSchema,
+  ProductCategorySchema as BaseProductCategorySchema,
+  ProductCategoryWithProductsSchema as BaseProductCategoryWithProductsSchema,
+} from '@usta/types';
 import { randomUUID } from 'crypto';
 
 import { revalidateFrontend } from '../lib/revalidate.js';
 
-const ProductSchema = z
-  .object({
-    id: z.string().uuid(),
-    name: z.string().nullable(),
-    description: z.string().nullable(),
-    is_active: z.boolean(),
-    image: z.string(),
-    created_at: z.string().datetime().or(z.date()),
-    updated_at: z.string().datetime().or(z.date()),
-    product_category_id: z.string().uuid(),
-  })
-  .openapi('Product');
-
-const ProductCategorySchema = z
-  .object({
-    id: z.string().uuid(),
-    name: z.string(),
-    order: z.number(),
-    is_active: z.boolean(),
-    created_at: z.string().datetime().or(z.date()),
-    updated_at: z.string().datetime().or(z.date()),
-  })
-  .openapi('ProductCategory');
-
-const ProductCategoryWithProductsSchema = ProductCategorySchema.extend({
-  product: z.array(ProductSchema),
-}).openapi('ProductCategoryWithProducts');
+const ProductSchema = BaseProductSchema.openapi('Product');
+const ProductCategorySchema =
+  BaseProductCategorySchema.openapi('ProductCategory');
+const ProductCategoryWithProductsSchema =
+  BaseProductCategoryWithProductsSchema.openapi('ProductCategoryWithProducts');
 
 export const productCategoriesRoutes = new OpenAPIHono();
 

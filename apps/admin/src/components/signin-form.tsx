@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { SignInSchema, type SignInSchemaType } from '@usta/types';
 import { Button } from '@usta/ui/components/button';
 import {
   Field,
@@ -13,11 +14,10 @@ import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 
 import { errorMessages, signIn } from '@/lib/auth-client';
-import { signInSchema, type signInSchemaType } from '@/schema/signin-shema';
 
 export const SignInForm = () => {
-  const form = useForm<signInSchemaType>({
-    resolver: zodResolver(signInSchema),
+  const form = useForm<SignInSchemaType>({
+    resolver: zodResolver(SignInSchema),
     defaultValues: {
       email: '',
       password: '',
@@ -25,7 +25,7 @@ export const SignInForm = () => {
     mode: 'onSubmit',
   });
 
-  async function onSubmit(formData: signInSchemaType) {
+  async function onSubmit(formData: SignInSchemaType) {
     const { error } = await signIn.email({
       email: formData.email,
       password: formData.password,

@@ -1,13 +1,14 @@
-import { getLandingData } from '@/features/landing/api/get-landing-data';
-import { CategorySection } from '@/features/landing/components/category-section';
+import { Suspense } from 'react';
+
+import {
+  Catalog,
+  CatalogSkeleton,
+} from '@/features/landing/components/catalog';
 import Contacts from '@/features/landing/components/contact-info';
 import Hero from '@/features/landing/components/hero';
 import { LandingSection } from '@/features/landing/components/landing-section';
-import { ProductGrid } from '@/features/landing/components/product-grid';
 
-export default async function Home() {
-  const productsWithCategories = await getLandingData();
-
+export default function Home() {
   return (
     <>
       <Hero />
@@ -23,16 +24,13 @@ export default async function Home() {
             настоящее. Вдохновляйтесь вместе с нами и меняйте мир через стиль!
           </p>
         </LandingSection>
+
         <LandingSection title="Каталог">
-          {productsWithCategories?.map((productCategory) => (
-            <CategorySection
-              key={productCategory.id}
-              label={productCategory.name}
-            >
-              <ProductGrid products={productCategory.product} />
-            </CategorySection>
-          ))}
+          <Suspense fallback={<CatalogSkeleton />}>
+            <Catalog />
+          </Suspense>
         </LandingSection>
+
         <LandingSection className="mb-4" title="Контакты">
           <Contacts />
         </LandingSection>

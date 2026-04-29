@@ -1,58 +1,28 @@
 import { OpenAPIHono, createRoute, z } from '@hono/zod-openapi';
 import { prisma } from '@usta/database';
+import {
+  ProductSchema as BaseProductSchema,
+  ProductCategorySchema as BaseProductCategorySchema,
+  ProductWithProductCategorySchema as BaseProductWithProductCategorySchema,
+  CreateProductBodySchema as BaseCreateProductBodySchema,
+  UpdateProductBodySchema as BaseUpdateProductBodySchema,
+} from '@usta/types';
 import { randomUUID } from 'crypto';
 
 import { uploadToMinio } from '../lib/minio.js';
 import { revalidateFrontend } from '../lib/revalidate.js';
 
 // Schemas
-const ProductSchema = z
-  .object({
-    id: z.string().uuid(),
-    name: z.string().nullable(),
-    description: z.string().nullable(),
-    is_active: z.boolean(),
-    image: z.string(),
-    created_at: z.string().datetime().or(z.date()),
-    updated_at: z.string().datetime().or(z.date()),
-    product_category_id: z.string().uuid(),
-  })
-  .openapi('Product');
-
-const ProductCategorySchema = z
-  .object({
-    id: z.string().uuid(),
-    name: z.string(),
-    order: z.number(),
-    is_active: z.boolean(),
-    created_at: z.string().datetime().or(z.date()),
-    updated_at: z.string().datetime().or(z.date()),
-  })
-  .openapi('ProductCategory');
-
-const ProductWithProductCategorySchema = ProductSchema.extend({
-  product_category: ProductCategorySchema.nullable(),
-}).openapi('ProductWithProductCategory');
-
-const CreateProductBodySchema = z.object({
-  file: z
-    .instanceof(File)
-    .optional()
-    .openapi({ type: 'string', format: 'binary' }),
-  name: z.string(),
-  description: z.string().optional(),
-  product_category_id: z.string().uuid(),
-  image: z.string().optional(),
+const ProductSchema = BaseProductSchema.openapi('Product');
+const ProductCategorySchema =
+  BaseProductCategorySchema.openapi('ProductCategory');
+const ProductWithProductCategorySchema =
+  BaseProductWithProductCategorySchema.openapi('ProductWithProductCategory');
+const CreateProductBodySchema = BaseCreateProductBodySchema.openapi({
+  type: 'object',
 });
-
-const UpdateProductBodySchema = z.object({
-  name: z.string().optional(),
-  description: z.string().optional(),
-  product_category_id: z.string().uuid().optional(),
-  is_active: z.preprocess(
-    (v) => (v === 'true' ? true : v === 'false' ? false : v),
-    z.boolean().optional(),
-  ),
+const UpdateProductBodySchema = BaseUpdateProductBodySchema.openapi({
+  type: 'object',
 });
 
 type CreateProductInput = z.infer<typeof CreateProductBodySchema>;

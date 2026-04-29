@@ -1,5 +1,11 @@
+import type { ProductWithProductCategory } from '@usta/types/types/index';
+
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  ProductFormSchema,
+  type ProductFormData,
+} from '@usta/types/schemas/index';
 import { Button } from '@usta/ui/components/button';
 import { Checkbox } from '@usta/ui/components/checkbox';
 import {
@@ -24,21 +30,9 @@ import {
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
-import z from 'zod';
-
-import type { ProductWithProductCategory, UpdateProductDTO } from '@/types';
 
 import { productCategories } from '@/products/lib/product-categories';
 import { products } from '@/products/lib/products';
-
-const ProductSchema = z.object({
-  name: z.string().min(1, 'Название обязательно'),
-  description: z.string().nullable(),
-  is_active: z.boolean(),
-  product_category_id: z.string().uuid('Выберите категорию'),
-});
-
-type ProductFormData = z.infer<typeof ProductSchema>;
 
 interface Props {
   product: ProductWithProductCategory;
@@ -60,7 +54,7 @@ export const EditProductForm = ({ product }: Props) => {
     formState: { errors },
     reset,
   } = useForm<ProductFormData>({
-    resolver: zodResolver(ProductSchema),
+    resolver: zodResolver(ProductFormSchema),
     defaultValues: {
       name: product.name || '',
       description: product.description,
@@ -70,7 +64,7 @@ export const EditProductForm = ({ product }: Props) => {
   });
 
   const updateMutation = useMutation({
-    mutationFn: (data: UpdateProductDTO) =>
+    mutationFn: (data: ProductFormData) =>
       products.updateProduct(product.id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['products'] });

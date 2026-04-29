@@ -12,7 +12,7 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  transpilePackages: ['@usta/ui', '@usta/api', '@usta/database'],
+  transpilePackages: ['@usta/ui', '@usta/types'],
   output: 'standalone',
 };
 

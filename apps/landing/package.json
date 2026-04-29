@@ -10,8 +10,8 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
-    "@usta/database": "workspace:*",
     "@usta/ui": "workspace:*",
+    "@usta/types": "workspace:*",
     "lucide-react": "^1.8.0",
     "next": "16.2.3",
     "react": "19.2.5",

@@ -1,14 +1,4 @@
-export interface LandingProduct {
-  id: string;
-  name: string | null;
-  image: string;
-}
-
-export interface LandingCategory {
-  id: string;
-  name: string;
-  product: LandingProduct[];
-}
+import { LandingCategory } from '@usta/types/types/index';
 
 export async function getLandingData(): Promise<LandingCategory[]> {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL;

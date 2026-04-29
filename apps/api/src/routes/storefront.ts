@@ -1,22 +1,15 @@
 import { OpenAPIHono, createRoute, z } from '@hono/zod-openapi';
 import { prisma } from '@usta/database';
+import {
+  LandingProductSchema as BaseLandingProductSchema,
+  LandingCategorySchema as BaseLandingCategorySchema,
+} from '@usta/types';
 
 export const storefrontRoutes = new OpenAPIHono();
 
-const LandingProductSchema = z
-  .object({
-    id: z.string().uuid(),
-    image: z.string(),
-  })
-  .openapi('LandingProduct');
-
-const LandingCategorySchema = z
-  .object({
-    id: z.string().uuid(),
-    name: z.string(),
-    product: z.array(LandingProductSchema),
-  })
-  .openapi('LandingCategory');
+const LandingProductSchema = BaseLandingProductSchema.openapi('LandingProduct');
+const LandingCategorySchema =
+  BaseLandingCategorySchema.openapi('LandingCategory');
 
 storefrontRoutes.openapi(
   createRoute({
