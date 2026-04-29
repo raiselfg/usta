@@ -5,7 +5,7 @@ import { ProductCategorySchema } from './product-categories';
 export const ProductSchema = z.object({
   id: z.uuid(),
   name: z.string().min(1, 'Название обязательно'),
-  description: z.string().optional(),
+  description: z.string().nullish(),
   is_active: z.boolean(),
   image: z.string(),
   created_at: z.iso.datetime().or(z.date()),
@@ -14,7 +14,7 @@ export const ProductSchema = z.object({
 });
 
 export const ProductWithProductCategorySchema = ProductSchema.extend({
-  product_category: ProductCategorySchema.optional(),
+  product_category: z.lazy(() => ProductCategorySchema).optional(),
 });
 
 export const CreateProductBodySchema = ProductSchema.pick({
@@ -58,3 +58,5 @@ export type CreateProductDTO = z.infer<typeof CreateProductBodySchema>;
 export type UpdateProductDTO = z.infer<typeof UpdateProductBodySchema>;
 
 export type { Product };
+
+

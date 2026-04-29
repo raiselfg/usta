@@ -12,14 +12,14 @@ export const ProductCategorySchema = z.object({
 });
 
 export const ProductCategoryWithProductsSchema = ProductCategorySchema.extend({
-  product: z.array(ProductSchema),
+  product: z.array(z.lazy(() => ProductSchema)),
 });
 
 export const LandingCategorySchema = ProductCategorySchema.pick({
   id: true,
   name: true,
 }).extend({
-  product: z.array(LandingProductSchema),
+  product: z.array(z.lazy(() => LandingProductSchema)),
 });
 
 export const CreateProductCategorySchema = ProductCategorySchema.pick({
@@ -36,3 +36,4 @@ export type CreateProductCategory = z.infer<typeof CreateProductCategorySchema>;
 export type UpdateProductCategory = z.infer<typeof UpdateProductCategorySchema>;
 
 export type { ProductCategory };
+

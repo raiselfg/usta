@@ -34,6 +34,7 @@ storefrontRoutes.openapi(
           orderBy: { created_at: 'desc' },
           select: {
             id: true,
+            name: true,
             image: true,
           },
         },

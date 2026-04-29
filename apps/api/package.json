@@ -3,17 +3,17 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "build": "tsc",
+    "build": "tsc --noEmit && tsup src/index.ts --format esm --clean",
     "start": "node dist/index.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
-    "@usta/types": "workspace:*",
-    "@usta/database": "workspace:*",
     "@hono/node-server": "^1.19.13",
     "@hono/swagger-ui": "^0.6.1",
     "@hono/zod-openapi": "^1.2.4",
+    "@usta/database": "workspace:*",
+    "@usta/types": "workspace:*",
     "better-auth": "^1.6.2",
     "dotenv": "^17.4.1",
     "hono": "^4.12.12",
@@ -30,6 +30,7 @@
     "eslint-plugin-prettier": "^5.5.5",
     "globals": "^17.4.0",
     "prettier": "^3.8.2",
+    "tsup": "^8.5.1",
     "tsx": "^4.21.0",
     "typescript": "^6.0.2",
     "typescript-eslint": "^8.58.1"

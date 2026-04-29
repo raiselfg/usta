@@ -11,6 +11,7 @@ const nextConfig: NextConfig = {
         hostname: 'cdn.us-ta.ru',
       },
     ],
+    qualities: [50, 70, 75],
   },
   transpilePackages: ['@usta/ui', '@usta/types'],
   output: 'standalone',
