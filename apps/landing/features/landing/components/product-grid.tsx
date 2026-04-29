@@ -1,4 +1,4 @@
-import { LandingProduct } from '@usta/types/products';
+import type { LandingProduct } from '@usta/types/products';
 import Image from 'next/image';
 
 interface Props {

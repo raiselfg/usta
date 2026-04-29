@@ -1,50 +1,50 @@
 import { defineConfig, globalIgnores } from 'eslint/config';
 import nextVitals from 'eslint-config-next/core-web-vitals';
+import nextTs from 'eslint-config-next/typescript';
+import prettier from 'eslint-config-prettier/flat';
 import tseslint from 'typescript-eslint';
-import perfectionist from 'eslint-plugin-perfectionist';
-import prettier from 'eslint-plugin-prettier/recommended';
+import { fixupConfigRules } from '@eslint/compat';
 
-export default tseslint.config(
-  // 1. Глобальные игноры
+const eslintConfig = defineConfig([
   globalIgnores([
     '.next/**',
     'out/**',
     'build/**',
-    'public/**',
     'next-env.d.ts',
+    'node_modules/**',
   ]),
 
-  // 2. Конфиг Next.js (в него уже вшит jsx-a11y и react)
-  ...nextVitals,
+  ...fixupConfigRules(nextVitals),
+  ...fixupConfigRules(nextTs),
 
-  // 3. Твои кастомные правила и плагины, которых нет в Next.js
   {
-    files: ['**/*.{ts,tsx}'],
-    plugins: {
-      // Регистрируем только то, чего НЕТ в стандартном конфиге Next
-      perfectionist,
+    files: ['**/*.ts', '**/*.tsx'],
+    languageOptions: {
+      parser: tseslint.parser,
+      parserOptions: {
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
+    settings: {
+      react: {
+        version: 'detect',
+      },
     },
     rules: {
-      // Сортировка (perfectionist)
-      'perfectionist/sort-imports': [
-        'error',
-        {
-          type: 'natural',
-          internalPattern: ['^@/.*'],
-        },
+      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        { argsIgnorePattern: '^_' },
       ],
-      'perfectionist/sort-jsx-props': ['error', { type: 'natural' }],
-
-      // Специфичные настройки
-      'react/self-closing-comp': 'error',
-      '@next/next/no-html-link-for-pages': 'error',
-
-      // Мы НЕ добавляем jsx-a11y в plugins,
-      // но можем переопределять его правила здесь, если нужно:
-      // 'jsx-a11y/alt-text': 'error',
+      '@typescript-eslint/consistent-type-imports': 'error',
+      '@typescript-eslint/no-floating-promises': 'error',
+      '@typescript-eslint/consistent-type-definitions': ['error', 'interface'],
+      '@typescript-eslint/no-non-null-assertion': 'warn',
+      'no-console': ['warn', { allow: ['warn', 'error'] }],
     },
   },
-
-  // 4. Prettier (всегда последний)
   prettier,
-);
+]);
+
+export default eslintConfig;
