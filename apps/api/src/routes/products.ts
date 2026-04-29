@@ -4,7 +4,7 @@ import {
   ProductWithProductCategorySchema as BaseProductWithProductCategorySchema,
   CreateProductBodySchema as BaseCreateProductBodySchema,
   UpdateProductBodySchema as BaseUpdateProductBodySchema,
-} from '@usta/types/products';
+} from '@usta/types/products.js';
 import { randomUUID } from 'crypto';
 
 import { uploadToMinio } from '../lib/minio.js';

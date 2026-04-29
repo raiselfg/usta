@@ -1,11 +1,10 @@
 {
   "name": "@usta/api",
-  "version": "1.0.0",
-  "packageManager": "pnpm@10.33.1",
+  "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "build": "tsc --noEmit",
+    "build": "tsc",
     "start": "node dist/index.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"

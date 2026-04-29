@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import type { Product } from '@usta/database';
-import { ProductCategorySchema } from './product-categories';
+import { ProductCategorySchema } from './product-categories.js';
 
 export const ProductSchema = z.object({
   id: z.uuid(),

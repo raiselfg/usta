@@ -1,9 +1,8 @@
 {
   "compilerOptions": {
-    "rootDir": "./src",
     "target": "ESNext",
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "noEmit": false,
     "strict": true,
     "verbatimModuleSyntax": true,
@@ -11,7 +10,8 @@
     "types": ["node"],
     "jsx": "react-jsx",
     "jsxImportSource": "hono/jsx",
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "rootDir": "./src"
   },
-  "exclude": ["node_modules", "tsup.config.ts", "dist"]
+  "exclude": ["node_modules"]
 }

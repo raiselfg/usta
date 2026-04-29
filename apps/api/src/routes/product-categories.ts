@@ -1,6 +1,6 @@
 import { OpenAPIHono, createRoute, z } from '@hono/zod-openapi';
 import { prisma } from '@usta/database';
-import { ProductCategoryWithProductsSchema as BaseProductCategoryWithProductsSchema } from '@usta/types/product-categories';
+import { ProductCategoryWithProductsSchema as BaseProductCategoryWithProductsSchema } from '@usta/types/product-categories.js';
 import { randomUUID } from 'crypto';
 
 import { revalidateFrontend } from '../lib/revalidate.js';
