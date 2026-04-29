@@ -12,7 +12,6 @@ export default function Hero() {
         className="object-cover"
         fill
         priority
-        quality={50}
         sizes="100vw"
         src="/images/backgrounds/background.avif"
       />
