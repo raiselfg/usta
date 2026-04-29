@@ -2,7 +2,8 @@
   "name": "@usta/types",
   "version": "0.0.0",
   "type": "module",
-  "private": true,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
   "scripts": {
     "typecheck": "tsc --noEmit"
   },
@@ -14,6 +15,7 @@
     "typescript": "^5.0.0"
   },
   "exports": {
+    ".": "./src/index.ts",
     "./*": "./src/*.ts"
   }
 }
