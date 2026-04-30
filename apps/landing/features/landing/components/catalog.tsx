@@ -13,11 +13,11 @@ export async function Catalog() {
 
   return (
     <>
-      {productsWithCategories.map((productCategory, i) => (
+      {productsWithCategories.map((productCategory, categoryIndex) => (
         <CategorySection key={productCategory.id} label={productCategory.name}>
           <ProductGrid
-            isPriority={i === 0}
             products={productCategory.product}
+            isFirstCategory={categoryIndex === 0}
           />
         </CategorySection>
       ))}
@@ -25,22 +25,19 @@ export async function Catalog() {
   );
 }
 
-export function CatalogSkeleton() {
+export const CatalogSkeleton = () => {
   return (
-    <div className="flex animate-pulse flex-col gap-8">
+    <div className="flex flex-col gap-7">
       {Array.from({ length: 2 }).map((_, i) => (
-        <div className="flex flex-col gap-3" key={i}>
-          <Skeleton className="mx-auto h-8 w-48 rounded bg-stone-800" />
+        <div className="flex flex-col gap-4" key={i}>
+          <Skeleton className="mx-auto h-8 w-56" />
           <div className="grid grid-cols-2 gap-2 sm:gap-4 md:grid-cols-3 md:gap-8 lg:gap-12 xl:gap-16">
-            {Array.from({ length: 3 }).map((_, i) => (
-              <Skeleton
-                className="aspect-305/455 w-full rounded bg-stone-800"
-                key={i}
-              />
+            {Array.from({ length: 6 }).map((_, i) => (
+              <Skeleton className="aspect-305/455 w-full border-2" key={i} />
             ))}
           </div>
         </div>
       ))}
     </div>
   );
-}
+};
