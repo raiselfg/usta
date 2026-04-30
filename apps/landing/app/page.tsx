@@ -4,9 +4,16 @@ import {
   Catalog,
   CatalogSkeleton,
 } from '@/features/landing/components/catalog';
-import Contacts from '@/features/landing/components/contact-info';
 import Hero from '@/features/landing/components/hero';
 import { LandingSection } from '@/features/landing/components/landing-section';
+import dynamic from 'next/dynamic';
+
+const ContactInfo = dynamic(
+  () => import('@/features/landing/components/contact-info'),
+  {
+    ssr: true,
+  },
+);
 
 export default function Home() {
   return (
@@ -32,7 +39,7 @@ export default function Home() {
         </LandingSection>
 
         <LandingSection className="mb-4" title="Контакты">
-          <Contacts />
+          <ContactInfo />
         </LandingSection>
       </div>
     </>

@@ -2,10 +2,10 @@ import './globals.css';
 
 import type { Metadata, Viewport } from 'next';
 
-import { Toaster } from '@usta/ui/components/sonner';
 import { TooltipProvider } from '@usta/ui/components/tooltip';
 import localFont from 'next/font/local';
 import type { ReactNode } from 'react';
+import dynamic from 'next/dynamic';
 
 const cyrillicOld = localFont({
   src: '../fonts/CyrillicOld.woff2',
@@ -16,6 +16,10 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
 };
+
+const Toaster = dynamic(() => import('sonner').then((mod) => mod.Toaster), {
+  ssr: false,
+});
 
 export const metadata: Metadata = {
   title: {

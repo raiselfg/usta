@@ -8,12 +8,14 @@ import {
 import { Mail, Phone } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { toast } from 'sonner';
 
 export default function ContactInfo() {
   const handleCopy = async (text: string) => {
+    const { toast } = await import('sonner');
+
     try {
       await navigator.clipboard.writeText(text);
+
       toast.success(`${text} успешно скопирован`, {
         duration: 2500,
         position: 'top-center',
