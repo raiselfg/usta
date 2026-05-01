@@ -21,9 +21,9 @@ export const CreateProductBodySchema = ProductSchema.pick({
   name: true,
   description: true,
   product_category_id: true,
-  image: true,
+  is_active: true,
 }).extend({
-  file: z.file().optional(),
+  file: z.file(),
 });
 
 export const UpdateProductBodySchema = ProductSchema.pick({
@@ -58,5 +58,3 @@ export type CreateProductDTO = z.infer<typeof CreateProductBodySchema>;
 export type UpdateProductDTO = z.infer<typeof UpdateProductBodySchema>;
 
 export type { Product };
-
-

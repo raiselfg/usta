@@ -132,10 +132,10 @@ productsRoutes.openapi(
       );
     }
     const validatedData = result.data;
-    const { file, name, description, product_category_id, image } =
+    const { file, name, description, product_category_id, is_active } =
       validatedData;
 
-    let imageUrl = image;
+    let imageUrl;
     if (file instanceof File) {
       const ext = file.name.split('.').pop() ?? 'jpg';
       const fileName = `${randomUUID()}.${ext}`;
@@ -151,6 +151,7 @@ productsRoutes.openapi(
         id: randomUUID(),
         name,
         description: description ?? null,
+        is_active,
         image: imageUrl,
         product_category: { connect: { id: product_category_id } },
         updated_at: new Date(),
