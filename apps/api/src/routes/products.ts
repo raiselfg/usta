@@ -119,11 +119,17 @@ productsRoutes.openapi(
   }),
   async (c) => {
     const contentType = c.req.header('content-type') || '';
-    const rawData = contentType.includes('application/json')
-      ? await c.req.json()
-      : await c.req.parseBody();
+    const isJson = contentType.includes('application/json');
 
-    const result = CreateProductBodySchema.safeParse(rawData);
+    const rawData = isJson ? await c.req.json() : await c.req.parseBody();
+
+    const payload = {
+      ...rawData,
+      is_active: isJson ? rawData.is_active : rawData.is_active === 'true',
+    };
+
+    const result = CreateProductBodySchema.safeParse(payload);
+
     if (!result.success) {
       console.error('[Validation Error]', result.error.format());
       return c.json(
@@ -131,9 +137,9 @@ productsRoutes.openapi(
         400,
       );
     }
-    const validatedData = result.data;
+
     const { file, name, description, product_category_id, is_active } =
-      validatedData;
+      result.data;
 
     let imageUrl;
     if (file instanceof File) {
@@ -142,7 +148,7 @@ productsRoutes.openapi(
       imageUrl = await uploadToMinio(file, fileName);
     }
 
-    if (!imageUrl) {
+    if (!imageUrl && !isJson) {
       return c.json({ message: 'Image or file is required' }, 400);
     }
 
@@ -152,7 +158,7 @@ productsRoutes.openapi(
         name,
         description: description ?? null,
         is_active,
-        image: imageUrl,
+        image: imageUrl || '', // Fallback, если запрос был через JSON
         product_category: { connect: { id: product_category_id } },
         updated_at: new Date(),
       },
