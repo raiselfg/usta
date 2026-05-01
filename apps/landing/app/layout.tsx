@@ -13,6 +13,7 @@ const cyrillicOld = localFont({
   display: 'swap',
   adjustFontFallback: 'Arial',
   fallback: ['Arial', 'Times New Roman', 'serif'],
+  preload: true,
 });
 
 export const viewport: Viewport = {
