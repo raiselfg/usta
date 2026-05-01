@@ -10,6 +10,15 @@ import { Toaster } from '@/features/landing/components/client-toaster';
 const cyrillicOld = localFont({
   src: '../fonts/CyrillicOld.woff2',
   variable: '--font-cyrillic-old',
+  display: 'swap',
+  adjustFontFallback: 'Arial',
+  fallback: ['Arial', 'Times New Roman', 'serif'],
+  declarations: [
+    {
+      prop: 'font-smooth',
+      value: 'antialiased',
+    },
+  ],
 });
 
 export const viewport: Viewport = {
@@ -22,6 +31,7 @@ export const metadata: Metadata = {
     default: 'УстА',
     template: '%s | УстА',
   },
+  metadataBase: new URL('https://us-ta.ru'),
   description: `Бренд «УстА» — это место, где одежда становится искусством — способом самовыражения. Вдохновляйтесь вместе с нами и меняйте мир через стиль!`,
   openGraph: {
     title: 'УстА',

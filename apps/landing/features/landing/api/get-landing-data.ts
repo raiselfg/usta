@@ -1,22 +1,24 @@
 import type { LandingCategory } from '@usta/types/product-categories';
 
-export async function getLandingData(): Promise<LandingCategory[]> {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL;
-  const url = `${baseUrl}/storefront/landing`;
+const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+const url = `${baseUrl}/storefront/landing`;
 
+export async function getLandingData(): Promise<LandingCategory[]> {
   try {
     const res = await fetch(url, {
+      cache: 'force-cache',
       next: {
         tags: ['landing-data'],
+        revalidate: 3600,
       },
     });
 
     if (!res.ok) {
-      throw new Error(`Failed to fetch landing data: ${res.statusText}`);
+      return [];
     }
 
     return res.json();
-  } catch {
-    return [{ id: '', name: '', product: [] }];
+  } catch (error) {
+    return [];
   }
 }
