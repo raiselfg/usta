@@ -22,8 +22,10 @@ export const CreateProductBodySchema = ProductSchema.pick({
   description: true,
   product_category_id: true,
 }).extend({
-  is_active: z.preprocess((val) => val === 'true' || val === true, z.boolean()),
-  file: z.file(),
+  is_active: z
+    .union([z.boolean(), z.literal('true'), z.literal('false')])
+    .transform((val) => val === true || val === 'true'),
+  file: z.file('Загрузите фото товара'),
 });
 
 export const UpdateProductBodySchema = ProductSchema.pick({
