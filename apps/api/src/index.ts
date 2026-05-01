@@ -13,10 +13,10 @@ import { auth } from './lib/auth.js';
 import { productCategoriesRoutes } from './routes/product-categories.js';
 import { productsRoutes } from './routes/products.js';
 import { storefrontRoutes } from './routes/storefront.js';
+import { uploadRoutes } from './routes/upload.js';
 
 const app = new OpenAPIHono();
 
-// Базовые заголовки безопасности (защита от XSS и сниффинга)
 app.use('*', secureHeaders());
 
 // CORS
@@ -80,10 +80,12 @@ app.use('/products', requireAuth);
 app.use('/products/*', requireAuth);
 app.use('/product-categories', requireAuth);
 app.use('/product-categories/*', requireAuth);
+app.use('/upload', requireAuth);
 
 app.route('/products', productsRoutes);
 app.route('/product-categories', productCategoriesRoutes);
 app.route('/storefront', storefrontRoutes);
+app.route('/upload', uploadRoutes);
 
 app.get('/health', (c) =>
   c.json({ status: 'ok', time: new Date().toISOString() }),

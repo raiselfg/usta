@@ -2,18 +2,17 @@ import { OpenAPIHono, createRoute, z } from '@hono/zod-openapi';
 import { prisma } from '@usta/database';
 import {
   ProductWithProductCategorySchema as BaseProductWithProductCategorySchema,
-  CreateProductBodySchema as BaseCreateProductBodySchema,
+  CreateProductApiSchema as BaseCreateProductApiSchema,
   UpdateProductBodySchema as BaseUpdateProductBodySchema,
 } from '@usta/types/products.js';
 import { randomUUID } from 'crypto';
 
-import { uploadToMinio } from '../lib/minio.js';
 import { revalidateFrontend } from '../lib/revalidate.js';
 
 // Schemas
 const ProductWithProductCategorySchema =
   BaseProductWithProductCategorySchema.openapi('ProductWithProductCategory');
-const CreateProductBodySchema = BaseCreateProductBodySchema.openapi({
+const CreateProductApiSchema = BaseCreateProductApiSchema.openapi({
   type: 'object',
 });
 const UpdateProductBodySchema = BaseUpdateProductBodySchema.openapi({
@@ -100,9 +99,8 @@ productsRoutes.openapi(
     request: {
       body: {
         content: {
-          'multipart/form-data': { schema: CreateProductBodySchema },
           'application/json': {
-            schema: CreateProductBodySchema.omit({ file: true }),
+            schema: CreateProductApiSchema,
           },
         },
       },
@@ -118,48 +116,16 @@ productsRoutes.openapi(
     },
   }),
   async (c) => {
-    const contentType = c.req.header('content-type') || '';
-    const isJson = contentType.includes('application/json');
-
-    const rawData = isJson ? await c.req.json() : await c.req.parseBody();
-
-    const payload = {
-      ...rawData,
-      is_active: isJson ? rawData.is_active : rawData.is_active === 'true',
-    };
-
-    const result = CreateProductBodySchema.safeParse(payload);
-
-    if (!result.success) {
-      console.error('[Validation Error]', result.error.format());
-      return c.json(
-        { message: 'Validation failed', errors: result.error.format() },
-        400,
-      );
-    }
-
-    const { file, name, description, product_category_id, is_active } =
-      result.data;
-
-    let imageUrl;
-    if (file instanceof File) {
-      const ext = file.name.split('.').pop() ?? 'jpg';
-      const fileName = `${randomUUID()}.${ext}`;
-      imageUrl = await uploadToMinio(file, fileName);
-    }
-
-    if (!imageUrl && !isJson) {
-      return c.json({ message: 'Image or file is required' }, 400);
-    }
+    const data = c.req.valid('json');
 
     const product = await prisma.product.create({
       data: {
         id: randomUUID(),
-        name,
-        description: description ?? null,
-        is_active,
-        image: imageUrl || '', // Fallback, если запрос был через JSON
-        product_category: { connect: { id: product_category_id } },
+        name: data.name,
+        description: data.description ?? null,
+        is_active: data.is_active,
+        image: data.image,
+        product_category: { connect: { id: data.product_category_id } },
         updated_at: new Date(),
       },
       include: { product_category: true },
