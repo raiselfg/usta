@@ -58,9 +58,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ru">
-      <body
-        className={`${cyrillicOld.variable} bg-[oklch(25.8%_0.132_29.4)] antialiased`}
-      >
+      <body className={`${cyrillicOld.variable} antialiased`}>
         <TooltipProvider>{children}</TooltipProvider>
         <Toaster />
       </body>
