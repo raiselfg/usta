@@ -21,8 +21,8 @@ export const CreateProductBodySchema = ProductSchema.pick({
   name: true,
   description: true,
   product_category_id: true,
-  is_active: true,
 }).extend({
+  is_active: z.preprocess((val) => val === 'true' || val === true, z.boolean()),
   file: z.file(),
 });
 
