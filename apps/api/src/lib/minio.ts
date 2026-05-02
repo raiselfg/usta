@@ -1,43 +1,28 @@
-import { Client } from 'minio';
-import 'dotenv/config';
+import { randomUUID } from 'crypto';
+import * as Minio from 'minio';
+import path from 'path';
 
-const endpoint = process.env.MINIO_ENDPOINT;
-
-if (!endpoint) {
-  console.warn(
-    '[Minio] MINIO_ENDPOINT is not defined. Minio client will not be initialized correctly.',
-  );
-}
-
-const url = endpoint ? new URL(endpoint) : null;
-
-export const minioClient = new Client({
-  endPoint: url?.hostname ?? 'localhost',
-  port: url?.port ? parseInt(url.port) : url?.protocol === 'https:' ? 443 : 80,
-  useSSL: url?.protocol === 'https:',
-  accessKey: process.env.MINIO_ACCESS_KEY || '',
-  secretKey: process.env.MINIO_SECRET_KEY || '',
-  pathStyle: true,
+const minioClient = new Minio.Client({
+  endPoint: 'cdn.us-ta.ru',
+  port: 443,
+  useSSL: true,
+  accessKey: process.env.MINIO_ACCESS_KEY!,
+  secretKey: process.env.MINIO_SECRET_KEY!,
 });
 
-const [bucketName, ...prefixParts] = (
-  process.env.MINIO_BUCKET_NAME ?? ''
-).split('/');
+const BUCKET = process.env.MINIO_BUCKET_NAME!;
+const FOLDER = 'products';
+const ENDPOINT = process.env.MINIO_ENDPOINT!;
 
-export const minioBucket = bucketName;
-export const minioPrefix = prefixParts.length ? prefixParts.join('/') : '';
-
-export async function uploadToMinio(
-  file: File,
-  fileName: string,
-): Promise<string> {
-  const objectName = minioPrefix ? `${minioPrefix}/${fileName}` : fileName;
+export async function uploadFile(file: File): Promise<string> {
   const buffer = Buffer.from(await file.arrayBuffer());
+  const ext = path.extname(file.name);
+  const fileName = `${randomUUID()}${ext}`;
+  const objectName = `${FOLDER}/${fileName}`;
 
-  await minioClient.putObject(minioBucket, objectName, buffer, buffer.length, {
+  await minioClient.putObject(BUCKET, objectName, buffer, buffer.length, {
     'Content-Type': file.type,
   });
 
-  const base = (process.env.MINIO_ENDPOINT ?? '').replace(/\/$/, '');
-  return `${base}/${minioBucket}/${objectName}`;
+  return `${ENDPOINT}/${BUCKET}/${objectName}`;
 }
