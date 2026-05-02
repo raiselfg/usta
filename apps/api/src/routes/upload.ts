@@ -1,13 +1,25 @@
 import { OpenAPIHono, createRoute, z } from '@hono/zod-openapi';
-import { randomUUID } from 'crypto';
 
-import { uploadToMinio } from '../lib/minio.js';
+import { uploadFile } from '../lib/minio.js';
 
 export const uploadRoutes = new OpenAPIHono();
 
 const UploadSchema = z
   .object({
-    file: z.file(),
+    file: z
+      .file()
+      .refine((f) => f.size <= 2 * 1024 * 1024, 'Максимальный размер файла 2MB')
+      .refine(
+        (f) =>
+          [
+            'image/jpeg',
+            'image/jpg',
+            'image/png',
+            'image/webp',
+            'image/avif',
+          ].includes(f.type),
+        'Допустимы только JPEG, JPG, PNG, WebP, AVIF',
+      ),
   })
   .openapi('UploadRequest');
 
@@ -28,27 +40,24 @@ uploadRoutes.openapi(
       201: {
         content: {
           'application/json': {
-            schema: z
-              .object({
-                url: z.string().url(),
-              })
-              .openapi('UploadResponse'),
+            schema: z.object({ url: z.url() }).openapi('UploadResponse'),
           },
         },
         description: 'File uploaded successfully',
       },
-      400: {
-        description: 'Invalid input',
-      },
+      400: { description: 'Invalid input' },
+      500: { description: 'Internal server error' },
     },
   }),
   async (c) => {
     const { file } = c.req.valid('form');
 
-    const ext = file.name.split('.').pop() ?? 'jpg';
-    const fileName = `${randomUUID()}.${ext}`;
-    const url = await uploadToMinio(file, fileName);
-
-    return c.json({ url }, 201);
+    try {
+      const url = await uploadFile(file);
+      return c.json({ url }, 201);
+    } catch (err) {
+      console.error('Upload error:', err);
+      return c.json({ error: 'Failed to upload file' }, 500);
+    }
   },
 );
