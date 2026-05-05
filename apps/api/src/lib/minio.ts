@@ -11,18 +11,16 @@ const minioClient = new Minio.Client({
 });
 
 const BUCKET = process.env.MINIO_BUCKET_NAME!;
-const FOLDER = 'products';
 const ENDPOINT = process.env.MINIO_ENDPOINT!;
 
 export async function uploadFile(file: File): Promise<string> {
   const buffer = Buffer.from(await file.arrayBuffer());
   const ext = path.extname(file.name);
   const fileName = `${randomUUID()}${ext}`;
-  const objectName = `${FOLDER}/${fileName}`;
 
-  await minioClient.putObject(BUCKET, objectName, buffer, buffer.length, {
+  await minioClient.putObject(BUCKET, fileName, buffer, buffer.length, {
     'Content-Type': file.type,
   });
 
-  return `${ENDPOINT}/${BUCKET}/${objectName}`;
+  return `${ENDPOINT}/${fileName}`;
 }

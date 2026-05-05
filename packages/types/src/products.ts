@@ -3,14 +3,14 @@ import type { Product } from '@usta/database';
 import { ProductCategorySchema } from './product-categories.js';
 
 export const ProductSchema = z.object({
-  id: z.uuid(),
+  id: z.uuid({ version: 'v4' }),
   name: z.string().min(1, 'Название обязательно'),
-  description: z.string().nullish(),
+  description: z.string().optional(),
   is_active: z.boolean(),
-  image: z.string(),
+  image: z.url('Некорректная ссылка на изображение'),
   created_at: z.iso.datetime().or(z.date()),
   updated_at: z.iso.datetime().or(z.date()),
-  product_category_id: z.uuid(),
+  product_category_id: z.uuid({ version: 'v4' }),
 });
 
 export const ProductWithProductCategorySchema = ProductSchema.extend({
@@ -23,13 +23,19 @@ export const CreateProductApiSchema = ProductSchema.pick({
   product_category_id: true,
   is_active: true,
 }).extend({
-  image: z.string().url('Некорректная ссылка на изображение'),
+  image: z.url('Некорректная ссылка на изображение'),
 });
 
-export const CreateProductFormSchema = CreateProductApiSchema.omit({
-  image: true,
+export const CreateProductFormSchema = ProductSchema.pick({
+  name: true,
+  description: true,
+  product_category_id: true,
+  is_active: true,
 }).extend({
-  file: z.instanceof(File, { message: 'Загрузите фото товара' }),
+  file: z
+    .file()
+    .max(2 * 1024 * 1024) //2mb
+    .mime(['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/avif']),
 });
 
 export const UpdateProductBodySchema = ProductSchema.pick({

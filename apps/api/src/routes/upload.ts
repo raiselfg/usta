@@ -8,18 +8,14 @@ const UploadSchema = z
   .object({
     file: z
       .file()
-      .refine((f) => f.size <= 2 * 1024 * 1024, 'Максимальный размер файла 2MB')
-      .refine(
-        (f) =>
-          [
-            'image/jpeg',
-            'image/jpg',
-            'image/png',
-            'image/webp',
-            'image/avif',
-          ].includes(f.type),
-        'Допустимы только JPEG, JPG, PNG, WebP, AVIF',
-      ),
+      .max(2 * 1024 * 1024) //2mb
+      .mime([
+        'image/jpeg',
+        'image/jpg',
+        'image/png',
+        'image/webp',
+        'image/avif',
+      ]),
   })
   .openapi('UploadRequest');
 
