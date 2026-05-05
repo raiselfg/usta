@@ -5,7 +5,7 @@ import { ProductCategorySchema } from './product-categories.js';
 export const ProductSchema = z.object({
   id: z.uuid({ version: 'v4' }),
   name: z.string().min(1, 'Название обязательно'),
-  description: z.string().optional(),
+  description: z.string().nullish(),
   is_active: z.boolean(),
   image: z.url('Некорректная ссылка на изображение'),
   created_at: z.iso.datetime().or(z.date()),
