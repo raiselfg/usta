@@ -1,11 +1,6 @@
 {
   "version": 1,
   "skills": {
-    "react-useeffect": {
-      "source": "softaworks/agent-toolkit",
-      "sourceType": "github",
-      "computedHash": "1fdf524f8335afac6f44d3460d6d20e71db9c1d14643e4a31ea17d6463504447"
-    },
     "vercel-composition-patterns": {
       "source": "vercel-labs/agent-skills",
       "sourceType": "github",
