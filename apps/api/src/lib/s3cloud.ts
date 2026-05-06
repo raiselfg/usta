@@ -2,6 +2,7 @@ import {
   S3Client,
   PutObjectCommand,
   S3ServiceException,
+  DeleteObjectCommand,
 } from '@aws-sdk/client-s3';
 import { randomUUID } from 'crypto';
 import path from 'path';
@@ -74,5 +75,33 @@ export async function uploadFile(fileBody: File): Promise<string> {
 
     console.error('Unexpected upload error:', error);
     throw new StorageError('Internal upload error');
+  }
+}
+
+export async function deleteFile(fileUrl: string): Promise<void> {
+  const fileName = fileUrl.split(`/${BUCKET}/`)[1];
+
+  if (!fileName) {
+    throw new ValidationError(`Invalid file URL: ${fileUrl}`);
+  }
+
+  const command = new DeleteObjectCommand({
+    Bucket: BUCKET,
+    Key: fileName,
+  });
+
+  try {
+    await client.send(command);
+  } catch (error) {
+    if (error instanceof S3ServiceException) {
+      console.error(`S3 Error: ${error.name}`, {
+        code: error.$metadata.httpStatusCode,
+        msg: error.message,
+      });
+      throw new StorageError(`Storage failed: ${error.name}`);
+    }
+
+    console.error('Unexpected delete error:', error);
+    throw new StorageError('Internal delete error');
   }
 }

@@ -1,7 +1,7 @@
 import { OpenAPIHono, createRoute, z } from '@hono/zod-openapi';
 
 import { ValidationError } from '../lib/errors.js';
-import { uploadFile } from '../lib/s3cloud-upload.js';
+import { uploadFile } from '../lib/s3cloud.js';
 
 export const uploadRoutes = new OpenAPIHono();
 

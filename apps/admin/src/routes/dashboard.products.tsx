@@ -1,9 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
-import { Button } from '@usta/ui/components/button';
 import { Card, CardContent } from '@usta/ui/components/card';
 import { Skeleton } from '@usta/ui/components/skeleton';
 
+import { CreateProductForm } from '@/products/components/create-product';
 import { ProductCard } from '@/products/components/product-card';
 import { products } from '@/products/lib/products';
 
@@ -21,7 +21,7 @@ function DashboardProductsContent() {
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Товары</h1>
-        <Button>Добавить товар</Button>
+        <CreateProductForm />
       </div>
       <Card>
         <CardContent>

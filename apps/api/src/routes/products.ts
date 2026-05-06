@@ -8,6 +8,7 @@ import {
 import { randomUUID } from 'crypto';
 
 import { revalidateFrontend } from '../lib/revalidate.js';
+import { deleteFile } from '../lib/s3cloud.js';
 
 // Schemas
 const ProductWithProductCategorySchema =
@@ -225,7 +226,7 @@ productsRoutes.openapi(
     const { id } = c.req.valid('param');
     const existing = await prisma.product.findUnique({ where: { id } });
     if (!existing) return c.json({ message: 'Product not found' }, 404);
-
+    await deleteFile(existing.image);
     await prisma.product.delete({ where: { id } });
     revalidateFrontend();
     return c.json({ success: true });

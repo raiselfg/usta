@@ -1,5 +1,5 @@
 import type {
-  CreateProductDTO,
+  CreateProductApiDTO,
   ProductWithProductCategory,
   UpdateProductDTO,
 } from '@usta/types/products';
@@ -18,7 +18,7 @@ export const products = {
 
   getProductById: async (id: string) => {
     try {
-      const { data } = await api.get<ProductWithProductCategory[]>(
+      const { data } = await api.get<ProductWithProductCategory>(
         `/products/${id}`,
       );
       return data;
@@ -27,9 +27,23 @@ export const products = {
     }
   },
 
-  createProduct: async (productData: CreateProductDTO) => {
+  uploadImage: async (file: File): Promise<string> => {
     try {
-      const { data } = await api.post<CreateProductDTO>(
+      const formData = new FormData();
+      formData.append('file', file);
+      const { data } = await api.post<{ url: string }>('/upload', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      return data.url;
+    } catch (error) {
+      handleApiError(error, 'Failed to upload image');
+      throw error;
+    }
+  },
+
+  createProduct: async (productData: CreateProductApiDTO) => {
+    try {
+      const { data } = await api.post<ProductWithProductCategory>(
         '/products',
         productData,
       );
