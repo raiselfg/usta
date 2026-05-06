@@ -104,12 +104,11 @@ productCategoriesRoutes.openapi(
   }),
   async (c) => {
     const body = c.req.valid('json');
-    const { name, order, is_active } = body;
+    const { name, is_active } = body;
     const productCategory = await prisma.productCategory.create({
       data: {
         id: randomUUID(),
         name,
-        order,
         is_active,
         updated_at: new Date(),
       },
@@ -161,13 +160,12 @@ productCategoriesRoutes.openapi(
       return c.json({ message: 'Product category not found' }, 404);
     }
 
-    const { name, order, is_active } = body;
+    const { name, is_active } = body;
 
     const productCategory = await prisma.productCategory.update({
       where: { id },
       data: {
         name,
-        order,
         is_active,
         updated_at: new Date(),
       },

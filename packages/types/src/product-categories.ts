@@ -27,7 +27,6 @@ export const LandingCategorySchema = ProductCategorySchema.pick({
 
 export const CreateProductCategorySchema = ProductCategorySchema.pick({
   name: true,
-  order: true,
   is_active: true,
 });
 
