@@ -40,6 +40,48 @@ productCategoriesRoutes.openapi(
   },
 );
 
+// POST /reorder
+productCategoriesRoutes.openapi(
+  createRoute({
+    method: 'post',
+    path: '/reorder',
+    request: {
+      body: {
+        content: {
+          'application/json': {
+            schema: z.array(z.string().uuid()),
+          },
+        },
+      },
+    },
+    responses: {
+      200: {
+        content: {
+          'application/json': {
+            schema: z.object({ success: z.boolean() }),
+          },
+        },
+        description: 'Reorder product categories',
+      },
+    },
+  }),
+  async (c) => {
+    const categoryIds = c.req.valid('json');
+
+    await prisma.$transaction(
+      categoryIds.map((id, index) =>
+        prisma.productCategory.update({
+          where: { id },
+          data: { order: index },
+        }),
+      ),
+    );
+
+    revalidateFrontend();
+    return c.json({ success: true });
+  },
+);
+
 // GET /:id
 productCategoriesRoutes.openapi(
   createRoute({
