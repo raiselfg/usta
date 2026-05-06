@@ -33,6 +33,7 @@ productCategoriesRoutes.openapi(
   }),
   async (c) => {
     const productCategories = await prisma.productCategory.findMany({
+      orderBy: [{ order: 'asc' }],
       include: { product: true },
     });
     return c.json(productCategories);
