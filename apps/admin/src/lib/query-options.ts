@@ -1,6 +1,6 @@
 import { queryOptions } from '@tanstack/react-query';
 
-import { productCategories } from '@/products/lib/product-categories';
+import { productCategories } from '@/product-category/lib/product-categories';
 import { products } from '@/products/lib/products';
 
 export const productQueries = {
@@ -12,6 +12,7 @@ export const productQueries = {
 export const categoryQueries = {
   all: ['product-categories'] as const,
   list: () => [...categoryQueries.all, 'list'] as const,
+  detail: (id: string) => [...categoryQueries.all, 'detail', id] as const,
 };
 
 export const productOptions = {
@@ -32,5 +33,10 @@ export const categoryOptions = {
     queryOptions({
       queryKey: categoryQueries.list(),
       queryFn: () => productCategories.getCategories(),
+    }),
+  detail: (id: string) =>
+    queryOptions({
+      queryKey: categoryQueries.detail(id),
+      queryFn: () => productCategories.getCategoryById(id),
     }),
 };

@@ -1,10 +1,10 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
-  UpdateProductBodySchema,
-  type ProductWithProductCategory,
-  type UpdateProductDTO,
-} from '@usta/types/products';
+  UpdateProductCategorySchema,
+  type ProductCategoryWithProducts,
+  type UpdateProductCategoryDTO,
+} from '@usta/types/product-categories.js';
 import { Button } from '@usta/ui/components/button';
 import { Checkbox } from '@usta/ui/components/checkbox';
 import {
@@ -19,30 +19,22 @@ import {
 } from '@usta/ui/components/dialog';
 import { Field, FieldError, FieldLabel } from '@usta/ui/components/field';
 import { Input } from '@usta/ui/components/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@usta/ui/components/select';
 import { SquarePen } from 'lucide-react';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 
-import { categoryOptions, productQueries } from '@/lib/query-options';
-import { products } from '@/products/lib/products';
+import { categoryQueries } from '@/lib/query-options';
+
+import { productCategories } from '../lib/product-categories';
 
 interface Props {
-  product: ProductWithProductCategory;
+  category: ProductCategoryWithProducts;
 }
 
-export const EditProductForm = ({ product }: Props) => {
+export const EditProductCategoryForm = ({ category }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const queryClient = useQueryClient();
-
-  const { data: categories } = useQuery(categoryOptions.list());
 
   const {
     register,
@@ -50,31 +42,29 @@ export const EditProductForm = ({ product }: Props) => {
     control,
     formState: { errors },
     reset,
-  } = useForm<UpdateProductDTO>({
-    resolver: zodResolver(UpdateProductBodySchema),
+  } = useForm<UpdateProductCategoryDTO>({
+    resolver: zodResolver(UpdateProductCategorySchema),
     defaultValues: {
-      name: product.name || '',
-      description: product.description,
-      is_active: product.is_active,
-      product_category_id: product.product_category_id,
+      name: category.name,
+      is_active: category.is_active,
     },
     mode: 'all',
   });
 
   const updateMutation = useMutation({
-    mutationFn: (data: UpdateProductDTO) =>
-      products.updateProduct(product.id, data),
+    mutationFn: (data: UpdateProductCategoryDTO) =>
+      productCategories.updateCategory(category.id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: productQueries.all });
+      queryClient.invalidateQueries({ queryKey: categoryQueries.all });
       setIsOpen(false);
-      toast.success('Товар успешно обновлен');
+      toast.success('Категория успешно обновлена');
     },
     onError: () => {
-      toast.error('Ошибка при обновлении товара');
+      toast.error('Ошибка при обновлении категории');
     },
   });
 
-  const onSubmit = (data: UpdateProductDTO) => {
+  const onSubmit = (data: UpdateProductCategoryDTO) => {
     updateMutation.mutate(data);
   };
 
@@ -94,14 +84,14 @@ export const EditProductForm = ({ product }: Props) => {
       </DialogTrigger>
       <DialogContent className="sm:max-w-105">
         <DialogHeader>
-          <DialogTitle>Редактировать товар</DialogTitle>
+          <DialogTitle>Редактировать категорию</DialogTitle>
           <DialogDescription>
-            Внесите изменения в данные товара. Нажмите сохранить, когда
+            Внесите изменения в данные категории. Нажмите сохранить, когда
             закончите.
           </DialogDescription>
         </DialogHeader>
         <form
-          id="edit-product-form"
+          id="edit-product-category-form"
           onSubmit={handleSubmit(onSubmit)}
           className="grid gap-4 py-4"
         >
@@ -109,40 +99,6 @@ export const EditProductForm = ({ product }: Props) => {
             <FieldLabel>Название</FieldLabel>
             <Input {...register('name')} />
             {errors.name && <FieldError errors={[errors.name]} />}
-          </Field>
-
-          <Field>
-            <FieldLabel>Описание</FieldLabel>
-            <Input {...register('description')} />
-            {errors.description && <FieldError errors={[errors.description]} />}
-          </Field>
-
-          <Field>
-            <FieldLabel>Категория</FieldLabel>
-            <Controller
-              control={control}
-              name="product_category_id"
-              render={({ field }) => (
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Выберите категорию" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {categories?.map((category) => (
-                      <SelectItem key={category.id} value={category.id}>
-                        {category.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              )}
-            />
-            {errors.product_category_id && (
-              <FieldError errors={[errors.product_category_id]} />
-            )}
           </Field>
 
           <Field orientation="horizontal">
@@ -168,7 +124,7 @@ export const EditProductForm = ({ product }: Props) => {
           </DialogClose>
           <Button
             type="submit"
-            form="edit-product-form"
+            form="edit-product-category-form"
             disabled={updateMutation.isPending}
           >
             {updateMutation.isPending ? 'Сохранение...' : 'Сохранить'}

@@ -1,5 +1,9 @@
 import { createFileRoute, redirect, Outlet } from '@tanstack/react-router';
-import { SidebarProvider, SidebarInset } from '@usta/ui/components/sidebar';
+import {
+  SidebarProvider,
+  SidebarInset,
+  SidebarTrigger,
+} from '@usta/ui/components/sidebar';
 import { Spinner } from '@usta/ui/components/spinner';
 
 import { DashboardSidebar } from '@/components/dashboard-sidebar';
@@ -25,7 +29,10 @@ function Dashboard() {
     <SidebarProvider>
       <DashboardSidebar />
       <SidebarInset>
-        <main className="flex flex-1 flex-col p-4">
+        <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4 md:hidden">
+          <SidebarTrigger />
+        </header>
+        <main className="flex flex-1 flex-col px-4">
           <Outlet />
         </main>
       </SidebarInset>

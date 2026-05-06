@@ -21,7 +21,7 @@ interface Props {
   productId: string;
 }
 
-export const DeleteProductForm = ({ productId }: Props) => {
+export const DeleteProductButton = ({ productId }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const queryClient = useQueryClient();
@@ -38,6 +38,7 @@ export const DeleteProductForm = ({ productId }: Props) => {
       toast.error('Ошибка при удалении товара');
     },
   });
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>

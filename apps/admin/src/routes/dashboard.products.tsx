@@ -1,10 +1,10 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
-import { Card, CardContent } from '@usta/ui/components/card';
+import { Separator } from '@usta/ui/components/separator';
 import { Skeleton } from '@usta/ui/components/skeleton';
 
 import { productOptions } from '@/lib/query-options';
-import { CreateProductForm } from '@/products/components/create-product';
+import { CreateProductForm } from '@/products/components/create-product-form';
 import { ProductCard } from '@/products/components/product-card';
 
 export const Route = createFileRoute('/dashboard/products')({
@@ -28,21 +28,28 @@ function DashboardProductsContent() {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Товары</h1>
-        <CreateProductForm />
+      <div className="bg-background sticky top-0 z-1 flex flex-col gap-4 py-2">
+        <div className="flex items-center justify-between">
+          <h1 className="text-foreground text-4xl font-black">Товары</h1>
+          <CreateProductForm />
+        </div>
+        <span className="text-sm">Всего товаров: {products?.length || 0}</span>
+        <Separator />
       </div>
-      <Card>
-        <CardContent>
-          <div className="grid grid-cols-4 gap-4">
-            {products
-              ? products.map((product) => (
-                  <ProductCard key={product.id} product={product} />
-                ))
-              : SKELETONS}
-          </div>
-        </CardContent>
-      </Card>
+
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+        {products
+          ? products.map((product, index) => (
+              <div
+                key={product.id}
+                className="animate-in fade-in slide-in-from-bottom-4 fill-mode-both duration-700"
+                style={{ animationDelay: `${index * 50}ms` }}
+              >
+                <ProductCard product={product} />
+              </div>
+            ))
+          : SKELETONS}
+      </div>
     </div>
   );
 }

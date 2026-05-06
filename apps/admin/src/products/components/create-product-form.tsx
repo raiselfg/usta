@@ -250,11 +250,9 @@ export const CreateProductForm = () => {
             )}
           </Field>
 
-          <Field className="rounded-lg p-3">
+          <Field>
             <div className="flex items-center gap-2">
-              <FieldLabel htmlFor="is_active" className="text-sm font-medium">
-                Отображать на сайте
-              </FieldLabel>
+              <FieldLabel htmlFor="is_active">Отображать на сайте</FieldLabel>
               <Controller
                 control={control}
                 name="is_active"
