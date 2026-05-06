@@ -1,21 +1,30 @@
-import { useQuery } from '@tanstack/react-query';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import { Card, CardContent } from '@usta/ui/components/card';
 import { Skeleton } from '@usta/ui/components/skeleton';
 
+import { productOptions } from '@/lib/query-options';
 import { CreateProductForm } from '@/products/components/create-product';
 import { ProductCard } from '@/products/components/product-card';
-import { products } from '@/products/lib/products';
 
 export const Route = createFileRoute('/dashboard/products')({
+  loader: ({ context: { queryClient } }) =>
+    queryClient.ensureQueryData(productOptions.list()),
   component: DashboardProductsContent,
 });
 
+const SKELETONS = Array.from({ length: 16 }, (_, i) => (
+  <div key={i} className="flex flex-col items-center justify-center gap-2">
+    <Skeleton className="h-64 w-48" />
+    <div className="flex w-full max-w-48 items-center justify-between">
+      <Skeleton className="h-8 w-32" />
+      <Skeleton className="h-8 w-8" />
+    </div>
+  </div>
+));
+
 function DashboardProductsContent() {
-  const { isPending, isError, data } = useQuery({
-    queryKey: ['products'],
-    queryFn: products.getProducts,
-  });
+  const { data: products } = useSuspenseQuery(productOptions.list());
 
   return (
     <div className="flex flex-col gap-4">
@@ -26,30 +35,11 @@ function DashboardProductsContent() {
       <Card>
         <CardContent>
           <div className="grid grid-cols-4 gap-4">
-            {isError && (
-              <Card className="bg-destructive flex h-100 w-full items-center justify-center">
-                <CardContent>Ошибка при получении продуктов</CardContent>
-              </Card>
-            )}
-
-            {isPending &&
-              Array.from({ length: 16 }, (_, i) => (
-                <div
-                  key={i}
-                  className="flex flex-col items-center justify-center gap-2"
-                >
-                  <Skeleton className="h-64 w-48" />
-                  <div className="flex w-full max-w-48 items-center justify-between">
-                    <Skeleton className="h-8 w-32" />
-                    <Skeleton className="h-8 w-8" />
-                  </div>
-                </div>
-              ))}
-
-            {data &&
-              data.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
+            {products
+              ? products.map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))
+              : SKELETONS}
           </div>
         </CardContent>
       </Card>

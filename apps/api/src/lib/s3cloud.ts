@@ -6,6 +6,7 @@ import {
 } from '@aws-sdk/client-s3';
 import { randomUUID } from 'crypto';
 import path from 'path';
+import sharp from 'sharp';
 
 import { ValidationError, StorageError } from './errors.js';
 
@@ -44,21 +45,28 @@ export async function uploadFile(fileBody: File): Promise<string> {
     );
   }
 
-  const ext = path.extname(fileBody.name).slice(1).toLowerCase();
+  const inputBuffer = Buffer.from(await fileBody.arrayBuffer());
+  const fileName = `${randomUUID()}.avif`;
 
-  if (!ALLOWED_EXTENSIONS.has(ext)) {
-    throw new ValidationError(`Unsupported file type: .${ext}`);
-  }
-
-  const fileName = `${randomUUID()}.${ext}`;
-  const buffer = Buffer.from(await fileBody.arrayBuffer());
+  const optimizedBuffer = await sharp(inputBuffer)
+    .resize({
+      width: 1280,
+      height: 1280,
+      fit: 'inside',
+      withoutEnlargement: true,
+    })
+    .avif({
+      quality: 70,
+      effort: 5,
+    })
+    .toBuffer();
 
   const command = new PutObjectCommand({
     Bucket: BUCKET,
     Key: fileName,
-    Body: buffer,
-    ContentType: MIME_TYPES[ext],
-    ContentLength: buffer.byteLength,
+    Body: optimizedBuffer,
+    ContentType: 'image/avif',
+    ContentLength: optimizedBuffer.byteLength,
   });
 
   try {

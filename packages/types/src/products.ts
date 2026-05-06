@@ -4,13 +4,21 @@ import { ProductCategorySchema } from './product-categories.js';
 
 export const ProductSchema = z.object({
   id: z.uuid({ version: 'v4' }),
-  name: z.string().min(1, 'Название обязательно'),
-  description: z.string().nullish(),
+  name: z
+    .string()
+    .min(1, 'Введите название товара')
+    .max(50, 'Название слишком длинное (максимум 50 символов)'),
+  description: z
+    .string()
+    .max(255, 'Описание не должно превышать 255 символов')
+    .nullish(),
   is_active: z.boolean(),
   image: z.url('Некорректная ссылка на изображение'),
   created_at: z.iso.datetime().or(z.date()),
   updated_at: z.iso.datetime().or(z.date()),
-  product_category_id: z.uuid({ version: 'v4' }),
+  product_category_id: z.string().min(1, 'Выберите категорию из списка').uuid({
+    version: 'v4',
+  }),
 });
 
 export const ProductWithProductCategorySchema = ProductSchema.extend({
@@ -33,9 +41,12 @@ export const CreateProductFormSchema = ProductSchema.pick({
   is_active: true,
 }).extend({
   file: z
-    .file()
-    .max(2 * 1024 * 1024) //2mb
-    .mime(['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/avif']),
+    .file('Выберите фото')
+    .max(2 * 1024 * 1024, 'Максимальный размер фото — 2МБ')
+    .mime(
+      ['image/jpeg', 'image/png', 'image/webp', 'image/avif'],
+      'Поддерживаются только форматы JPG, PNG, WebP и AVIF',
+    ),
 });
 
 export const UpdateProductBodySchema = ProductSchema.pick({

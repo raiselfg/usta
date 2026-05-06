@@ -14,7 +14,8 @@ import { Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { products } from '../lib/products';
+import { productQueries } from '@/lib/query-options';
+import { products } from '@/products/lib/products';
 
 interface Props {
   productId: string;
@@ -28,7 +29,7 @@ export const DeleteProductForm = ({ productId }: Props) => {
   const deleteMutation = useMutation({
     mutationFn: (id: string) => products.deleteProduct(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['products'] });
+      queryClient.invalidateQueries({ queryKey: productQueries.all });
 
       setIsOpen(false);
       toast.success('Товар успешно удален');

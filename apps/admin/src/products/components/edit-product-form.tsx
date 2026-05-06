@@ -30,7 +30,7 @@ import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 
-import { productCategories } from '@/products/lib/product-categories';
+import { categoryOptions, productQueries } from '@/lib/query-options';
 import { products } from '@/products/lib/products';
 
 interface Props {
@@ -41,10 +41,7 @@ export const EditProductForm = ({ product }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const queryClient = useQueryClient();
 
-  const { data: categories } = useQuery({
-    queryKey: ['product-categories'],
-    queryFn: () => productCategories.getCategories(),
-  });
+  const { data: categories } = useQuery(categoryOptions.list());
 
   const {
     register,
@@ -60,13 +57,14 @@ export const EditProductForm = ({ product }: Props) => {
       is_active: product.is_active,
       product_category_id: product.product_category_id,
     },
+    mode: 'all',
   });
 
   const updateMutation = useMutation({
     mutationFn: (data: UpdateProductDTO) =>
       products.updateProduct(product.id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['products'] });
+      queryClient.invalidateQueries({ queryKey: productQueries.all });
       setIsOpen(false);
       toast.success('Товар успешно обновлен');
     },
@@ -144,21 +142,21 @@ export const EditProductForm = ({ product }: Props) => {
             )}
           </Field>
 
-          <Field
-            orientation="horizontal"
-            className="items-center justify-between"
-          >
-            <FieldLabel>Активен</FieldLabel>
-            <Controller
-              control={control}
-              name="is_active"
-              render={({ field }) => (
-                <Checkbox
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
-              )}
-            />
+          <Field orientation="horizontal">
+            <div className="flex items-center gap-2">
+              <FieldLabel htmlFor="is_active">Отображать на сайте</FieldLabel>
+              <Controller
+                control={control}
+                name="is_active"
+                render={({ field }) => (
+                  <Checkbox
+                    id="is_active"
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                )}
+              />
+            </div>
           </Field>
         </form>
         <DialogFooter>

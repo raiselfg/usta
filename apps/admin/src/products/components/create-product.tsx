@@ -24,25 +24,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@usta/ui/components/select';
-import { Upload, Loader2, CircleX } from 'lucide-react';
-import { useState, useCallback } from 'react';
+import { Loader2, Upload } from 'lucide-react';
+import { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { useForm, Controller } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 
+import { categoryOptions, productQueries } from '@/lib/query-options';
 import { products } from '@/products/lib/products';
-
-import { productCategories } from '../lib/product-categories';
 
 export const CreateProductForm = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [preview, setPreview] = useState<string | null>(null);
   const queryClient = useQueryClient();
 
-  const { data: categories } = useQuery({
-    queryKey: ['product-categories'],
-    queryFn: () => productCategories.getCategories(),
-  });
+  const { data: categories } = useQuery(categoryOptions.list());
 
   const {
     register,
@@ -60,6 +56,7 @@ export const CreateProductForm = () => {
       product_category_id: '',
       file: undefined,
     },
+    mode: 'onChange',
   });
 
   const onDrop = useCallback(
@@ -74,12 +71,36 @@ export const CreateProductForm = () => {
     [setValue],
   );
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop,
-    accept: { 'image/*': ['.png', '.jpg', '.jpeg', '.webp', '.avif'] },
-    maxFiles: 1,
-    multiple: false,
-  });
+  const { getRootProps, getInputProps, isDragActive, fileRejections } =
+    useDropzone({
+      onDrop,
+      accept: { 'image/*': ['.png', '.jpg', '.jpeg', '.webp', '.avif'] },
+      maxFiles: 1,
+      maxSize: 2 * 1024 * 1024, //2mb
+      multiple: false,
+    });
+
+  const getErrorMessage = () => {
+    if (errors.file) return errors.file.message as string;
+
+    if (fileRejections.length > 0) {
+      const error = fileRejections[0].errors[0];
+      switch (error.code) {
+        case 'file-invalid-type':
+          return 'Недопустимый формат файла. Используйте изображения.';
+        case 'file-too-large':
+          return 'Файл слишком большой. Максимум 2МБ.';
+        case 'too-many-files':
+          return 'Можно загрузить только один файл.';
+        default:
+          return error.message;
+      }
+    }
+
+    return null;
+  };
+
+  const errorMessage = getErrorMessage();
 
   const createMutation = useMutation({
     mutationFn: async (data: CreateProductFormDTO) => {
@@ -99,7 +120,7 @@ export const CreateProductForm = () => {
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['products'] });
+      queryClient.invalidateQueries({ queryKey: productQueries.all });
       handleClose();
       toast.success('Товар успешно создан');
     },
@@ -125,7 +146,7 @@ export const CreateProductForm = () => {
       onOpenChange={(val) => (!val ? handleClose() : setIsOpen(true))}
     >
       <DialogTrigger asChild>
-        <Button variant="outline">Создать товар</Button>
+        <Button>Создать товар</Button>
       </DialogTrigger>
 
       <DialogContent className="sm:max-w-110">
@@ -153,41 +174,54 @@ export const CreateProductForm = () => {
           </Field>
 
           <Field>
-            <FieldLabel>Фото</FieldLabel>
+            <FieldLabel>Фото товара</FieldLabel>
+
             <div
               {...getRootProps()}
-              className={`flex min-h-35 cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed p-4 transition-all ${isDragActive ? 'border-primary bg-primary/5' : 'border-stone-800'} ${errors.file ? 'border-red-900' : 'hover:border-stone-700'} `}
+              className={`relative flex min-h-40 cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed p-4 transition-all ${isDragActive ? 'border-primary bg-primary/5' : 'border-stone-800'} ${errorMessage ? 'border-red-500' : 'hover:border-stone-700'} ${preview ? 'border-solid' : ''}`}
             >
               <input {...getInputProps()} />
+
               {preview ? (
-                <img
-                  src={preview}
-                  alt="Preview"
-                  className="max-h-32 rounded object-contain"
-                />
+                <div className="group relative">
+                  <img
+                    src={preview}
+                    alt="Preview"
+                    className="max-h-32 rounded-lg object-contain shadow-sm"
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center rounded-lg opacity-0 transition-opacity group-hover:opacity-100">
+                    <p className="text-xs font-medium text-white">
+                      Заменить фото
+                    </p>
+                  </div>
+                </div>
               ) : (
                 <div className="text-center">
-                  <Upload className="mx-auto mb-2 opacity-50" />
-                  <p className="text-xs">Перетащите фото сюда</p>
+                  <Upload className={`mx-auto mb-2`} />
+                  <p className="text-xs font-medium">
+                    Перетащите фото сюда или нажмите для добавления фото
+                  </p>
+                  <p className="mt-1 text-xs opacity-40">
+                    PNG, JPG, WEBP, AVIF до 2MB
+                  </p>
                 </div>
               )}
             </div>
-            {preview && (
+
+            {errorMessage && <FieldError>{errorMessage}</FieldError>}
+
+            {preview && !createMutation.isPending && (
               <Button
-                variant={'destructive'}
-                size={'icon'}
-                className="flex items-center gap-2"
+                variant="destructive"
+                size="sm"
                 type="button"
-                onClick={resetPreview}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  resetPreview();
+                }}
               >
-                <span>Удалить изображение</span>
-                <CircleX />
+                Удалить изображение
               </Button>
-            )}
-            {errors.file && (
-              <p className="mt-1 text-xs text-red-500">
-                {errors.file.message as string}
-              </p>
             )}
           </Field>
 
@@ -211,21 +245,29 @@ export const CreateProductForm = () => {
                 </Select>
               )}
             />
+            {errors.product_category_id && (
+              <FieldError errors={[errors.product_category_id]} />
+            )}
           </Field>
 
-          <div className="flex items-center gap-2 rounded-lg p-3">
-            <span className="text-sm font-medium">Отображать на сайте</span>
-            <Controller
-              control={control}
-              name="is_active"
-              render={({ field }) => (
-                <Checkbox
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
-              )}
-            />
-          </div>
+          <Field className="rounded-lg p-3">
+            <div className="flex items-center gap-2">
+              <FieldLabel htmlFor="is_active" className="text-sm font-medium">
+                Отображать на сайте
+              </FieldLabel>
+              <Controller
+                control={control}
+                name="is_active"
+                render={({ field }) => (
+                  <Checkbox
+                    id="is_active"
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                )}
+              />
+            </div>
+          </Field>
         </form>
 
         <DialogFooter>
