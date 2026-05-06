@@ -5,7 +5,6 @@ import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
-  SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -39,15 +38,10 @@ export function DashboardSidebar({
 
   return (
     <Sidebar {...props} className="border-border bg-card border-r">
-      <SidebarHeader className="border-border border-b p-4">
-        <span className="text-foreground font-black tracking-[0.2em] uppercase">
-          Админ панель
-        </span>
-      </SidebarHeader>
       <SidebarContent className="p-2">
         {data.navMain.map((group) => (
           <SidebarGroup key={group.title} className="py-4">
-            <SidebarGroupLabel className="text-muted-foreground/50 px-4 text-[10px] font-black tracking-[0.3em] uppercase">
+            <SidebarGroupLabel className="px-4 font-black tracking-widest uppercase">
               <Link to={group.url}>{group.title}</Link>
             </SidebarGroupLabel>
             <SidebarGroupContent className="mt-2">

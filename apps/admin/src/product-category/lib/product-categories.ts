@@ -49,6 +49,17 @@ export const productCategories = {
       handleApiError(error, 'Failed to create product category');
     }
   },
+  reorderCategories: async (categoryIds: string[]) => {
+    try {
+      const { data } = await api.post<{ success: boolean }>(
+        '/product-categories/reorder',
+        categoryIds,
+      );
+      return data;
+    } catch (error) {
+      handleApiError(error, 'Failed to reorder product categories');
+    }
+  },
   deleteCategory: async (id: string) => {
     try {
       const { data } = await api.delete<{ success: boolean }>(

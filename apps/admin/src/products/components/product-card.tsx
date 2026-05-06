@@ -1,7 +1,6 @@
 import type { ProductWithProductCategory } from '@usta/types/products';
 
 import { Badge } from '@usta/ui/components/badge';
-import { cn } from '@usta/ui/lib/utils';
 import { memo } from 'react';
 
 import { DeleteProductButton } from './delete-product-button';
@@ -21,12 +20,8 @@ export const ProductCard = memo(
           />
 
           <Badge
-            className={cn(
-              'absolute top-1 left-1',
-              isActive
-                ? 'bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300'
-                : 'bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-300',
-            )}
+            variant={isActive ? 'green' : 'red'}
+            className="absolute top-1 left-1"
           >
             {isActive ? 'Отображается на сайте' : 'Не отображается на сайте'}
           </Badge>
@@ -35,11 +30,11 @@ export const ProductCard = memo(
         <div className="flex flex-col gap-1 p-4">
           <div className="flex flex-col items-start justify-between gap-2">
             {product.product_category && (
-              <span className="text-muted-foreground shrink-0 text-[10px] font-medium tracking-widest uppercase">
+              <Badge variant={'purple'} className="shrink-0">
                 {product.product_category.name}
-              </span>
+              </Badge>
             )}
-            <span className="text-foreground truncate text-sm font-bold tracking-tight">
+            <span className="truncate text-sm font-semibold">
               {product.name}
             </span>
           </div>

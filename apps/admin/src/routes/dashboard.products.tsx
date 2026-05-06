@@ -1,5 +1,6 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
+import { Badge } from '@usta/ui/components/badge';
 import { Separator } from '@usta/ui/components/separator';
 import { Skeleton } from '@usta/ui/components/skeleton';
 
@@ -33,7 +34,7 @@ function DashboardProductsContent() {
           <h1 className="text-foreground text-4xl font-black">Товары</h1>
           <CreateProductForm />
         </div>
-        <span className="text-sm">Всего товаров: {products?.length || 0}</span>
+        <Badge variant={'indigo'}>Всего товаров: {products?.length || 0}</Badge>
         <Separator />
       </div>
 

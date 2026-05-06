@@ -1,7 +1,6 @@
 import type { ProductCategoryWithProducts } from '@usta/types/product-categories';
 
 import { Badge } from '@usta/ui/components/badge';
-import { cn } from '@usta/ui/lib/utils';
 import { memo } from 'react';
 
 import { DeleteProductCategryButton } from './delete-product-category-button';
@@ -14,7 +13,7 @@ interface ProductCategoryCardProps {
 export const ProductCategoryCard = memo(
   ({ category }: ProductCategoryCardProps) => {
     const isActive = category.is_active;
-
+    const categoryPosition = category.order + 1;
     return (
       <div className="group border-border bg-card hover:border-muted-foreground relative flex flex-col overflow-hidden rounded-lg border transition-all duration-300 hover:shadow-2xl">
         <div className="flex flex-1 flex-col gap-6 p-6">
@@ -31,15 +30,16 @@ export const ProductCategoryCard = memo(
                 {category.product?.length || 0}
               </span>
             </div>
-            <Badge
-              className={cn(
-                isActive
-                  ? 'bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300'
-                  : 'bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-300',
-              )}
-            >
-              {isActive ? 'Отображается на сайте' : 'Не отображается на сайте'}
-            </Badge>
+            <div className="flex flex-col gap-1">
+              <Badge variant={isActive ? 'green' : 'red'}>
+                {isActive
+                  ? 'Отображается на сайте'
+                  : 'Не отображается на сайте'}
+              </Badge>
+              <Badge variant={'cyan'}>
+                Позиция на сайте: {categoryPosition}
+              </Badge>
+            </div>
           </div>
 
           <div className="flex items-center justify-between">
