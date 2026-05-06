@@ -1,6 +1,7 @@
 import { OpenAPIHono, createRoute, z } from '@hono/zod-openapi';
 
-import { uploadFile } from '../lib/minio.js';
+import { ValidationError } from '../lib/errors.js';
+import { uploadFile } from '../lib/s3cloud-upload.js';
 
 export const uploadRoutes = new OpenAPIHono();
 
@@ -8,14 +9,8 @@ const UploadSchema = z
   .object({
     file: z
       .file()
-      .max(2 * 1024 * 1024) //2mb
-      .mime([
-        'image/jpeg',
-        'image/jpg',
-        'image/png',
-        'image/webp',
-        'image/avif',
-      ]),
+      .max(2 * 1024 * 1024)
+      .mime(['image/jpeg', 'image/png', 'image/webp', 'image/avif']),
   })
   .openapi('UploadRequest');
 
@@ -52,6 +47,9 @@ uploadRoutes.openapi(
       const url = await uploadFile(file);
       return c.json({ url }, 201);
     } catch (err) {
+      if (err instanceof ValidationError) {
+        return c.json({ error: err.message }, 400);
+      }
       console.error('Upload error:', err);
       return c.json({ error: 'Failed to upload file' }, 500);
     }
