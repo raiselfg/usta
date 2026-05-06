@@ -43,14 +43,24 @@ uploadRoutes.openapi(
   async (c) => {
     const { file } = c.req.valid('form');
 
+    console.log('File info:', {
+      name: file.name,
+      size: file.size,
+      type: file.type,
+    });
+
     try {
       const url = await uploadFile(file);
       return c.json({ url }, 201);
     } catch (err) {
+      console.error('Upload error details:', {
+        message: err instanceof Error ? err.message : err,
+        stack: err instanceof Error ? err.stack : undefined,
+      });
+
       if (err instanceof ValidationError) {
         return c.json({ error: err.message }, 400);
       }
-      console.error('Upload error:', err);
       return c.json({ error: 'Failed to upload file' }, 500);
     }
   },
