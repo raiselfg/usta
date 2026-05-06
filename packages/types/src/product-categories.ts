@@ -3,9 +3,12 @@ import type { ProductCategory } from '@usta/database';
 import { ProductSchema, LandingProductSchema } from './products.js';
 
 export const ProductCategorySchema = z.object({
-  id: z.uuid(),
-  name: z.string(),
-  order: z.number(),
+  id: z.uuid({ version: 'v4' }),
+  name: z
+    .string()
+    .min(1, 'Введите название категории')
+    .max(50, 'Название слишком длинное (максимум 50 символов)'),
+  order: z.number('Введите порядковый номер категории'),
   is_active: z.boolean(),
   created_at: z.iso.datetime().or(z.date()),
   updated_at: z.iso.datetime().or(z.date()),
@@ -29,11 +32,17 @@ export const CreateProductCategorySchema = ProductCategorySchema.pick({
 });
 
 export const UpdateProductCategorySchema =
-  CreateProductCategorySchema.optional();
+  CreateProductCategorySchema.partial();
 
 export type LandingCategory = z.infer<typeof LandingCategorySchema>;
-export type CreateProductCategory = z.infer<typeof CreateProductCategorySchema>;
-export type UpdateProductCategory = z.infer<typeof UpdateProductCategorySchema>;
+export type CreateProductCategoryDTO = z.infer<
+  typeof CreateProductCategorySchema
+>;
+export type UpdateProductCategoryDTO = z.infer<
+  typeof UpdateProductCategorySchema
+>;
+export type ProductCategoryWithProducts = z.infer<
+  typeof ProductCategoryWithProductsSchema
+>;
 
 export type { ProductCategory };
-

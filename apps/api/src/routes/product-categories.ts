@@ -1,6 +1,11 @@
 import { OpenAPIHono, createRoute, z } from '@hono/zod-openapi';
 import { prisma } from '@usta/database';
-import { ProductCategoryWithProductsSchema as BaseProductCategoryWithProductsSchema } from '@usta/types/product-categories.js';
+import {
+  ProductCategoryWithProductsSchema as BaseProductCategoryWithProductsSchema,
+  CreateProductCategorySchema,
+  ProductCategorySchema,
+  UpdateProductCategorySchema,
+} from '@usta/types/product-categories.js';
 import { randomUUID } from 'crypto';
 
 import { revalidateFrontend } from '../lib/revalidate.js';
@@ -80,17 +85,7 @@ productCategoriesRoutes.openapi(
       body: {
         content: {
           'application/json': {
-            schema: z.object({
-              name: z.string(),
-              order: z.number(),
-              product: z
-                .object({
-                  connect: z
-                    .array(z.object({ id: z.string().uuid() }))
-                    .optional(),
-                })
-                .optional(),
-            }),
+            schema: CreateProductCategorySchema,
           },
         },
       },
@@ -99,7 +94,7 @@ productCategoriesRoutes.openapi(
       201: {
         content: {
           'application/json': {
-            schema: ProductCategoryWithProductsSchema,
+            schema: ProductCategorySchema,
           },
         },
         description: 'Create a new product category',
@@ -108,15 +103,15 @@ productCategoriesRoutes.openapi(
   }),
   async (c) => {
     const body = c.req.valid('json');
-    const { product, ...data } = body;
+    const { name, order, is_active } = body;
     const productCategory = await prisma.productCategory.create({
       data: {
         id: randomUUID(),
-        ...data,
+        name,
+        order,
+        is_active,
         updated_at: new Date(),
-        ...(product?.connect ? { product: { connect: product.connect } } : {}),
       },
-      include: { product: true },
     });
     revalidateFrontend();
     return c.json(productCategory, 201);
@@ -130,25 +125,12 @@ productCategoriesRoutes.openapi(
     path: '/{id}',
     request: {
       params: z.object({
-        id: z.string().uuid(),
+        id: z.uuid({ version: 'v4' }),
       }),
       body: {
         content: {
           'application/json': {
-            schema: z.object({
-              name: z.string().optional(),
-              order: z.number().optional(),
-              product: z
-                .object({
-                  connect: z
-                    .array(z.object({ id: z.string().uuid() }))
-                    .optional(),
-                  disconnect: z
-                    .array(z.object({ id: z.string().uuid() }))
-                    .optional(),
-                })
-                .optional(),
-            }),
+            schema: UpdateProductCategorySchema,
           },
         },
       },
@@ -157,7 +139,7 @@ productCategoriesRoutes.openapi(
       200: {
         content: {
           'application/json': {
-            schema: ProductCategoryWithProductsSchema,
+            schema: ProductCategorySchema,
           },
         },
         description: 'Update a product category',
@@ -178,24 +160,16 @@ productCategoriesRoutes.openapi(
       return c.json({ message: 'Product category not found' }, 404);
     }
 
-    const { product, ...data } = body;
+    const { name, order, is_active } = body;
+
     const productCategory = await prisma.productCategory.update({
       where: { id },
       data: {
-        ...data,
+        name,
+        order,
+        is_active,
         updated_at: new Date(),
-        ...(product
-          ? {
-              product: {
-                ...(product.connect ? { connect: product.connect } : {}),
-                ...(product.disconnect
-                  ? { disconnect: product.disconnect }
-                  : {}),
-              },
-            }
-          : {}),
       },
-      include: { product: true },
     });
     revalidateFrontend();
     return c.json(productCategory);
@@ -209,7 +183,7 @@ productCategoriesRoutes.openapi(
     path: '/{id}',
     request: {
       params: z.object({
-        id: z.string().uuid(),
+        id: z.uuid({ version: 'v4' }),
       }),
     },
     responses: {
