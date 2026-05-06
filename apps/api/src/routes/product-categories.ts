@@ -105,16 +105,25 @@ productCategoriesRoutes.openapi(
   async (c) => {
     const body = c.req.valid('json');
     const { name, is_active } = body;
-    const productCategory = await prisma.productCategory.create({
-      data: {
-        id: randomUUID(),
-        name,
-        is_active,
-        updated_at: new Date(),
-      },
+
+    const result = await prisma.$transaction(async (tx) => {
+      const lastCategory = await tx.productCategory.findFirst({
+        orderBy: { order: 'desc' },
+        select: { order: true },
+      });
+
+      const nextOrder = lastCategory ? lastCategory.order + 1 : 0;
+
+      return await tx.productCategory.create({
+        data: {
+          name,
+          is_active,
+          order: nextOrder,
+        },
+      });
     });
     revalidateFrontend();
-    return c.json(productCategory, 201);
+    return c.json(result, 201);
   },
 );
 
@@ -167,7 +176,6 @@ productCategoriesRoutes.openapi(
       data: {
         name,
         is_active,
-        updated_at: new Date(),
       },
     });
     revalidateFrontend();

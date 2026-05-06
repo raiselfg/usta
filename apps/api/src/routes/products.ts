@@ -127,7 +127,6 @@ productsRoutes.openapi(
         is_active: data.is_active,
         image: data.image,
         product_category: { connect: { id: data.product_category_id } },
-        updated_at: new Date(),
       },
       include: { product_category: true },
     });
@@ -189,7 +188,6 @@ productsRoutes.openapi(
         name: validatedData.name,
         description: validatedData.description,
         is_active: validatedData.is_active,
-        updated_at: new Date(),
         ...(validatedData.product_category_id
           ? {
               product_category: {
