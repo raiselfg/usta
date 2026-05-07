@@ -18,9 +18,9 @@
     "@usta/types": "workspace:*",
     "@usta/ui": "workspace:*",
     "lucide-react": "^1.14.0",
-    "next": "16.2.4",
-    "react": "19.2.5",
-    "react-dom": "19.2.5",
+    "next": "16.2.5",
+    "react": "19.2.6",
+    "react-dom": "19.2.6",
     "sonner": "^2.0.7"
   },
   "devDependencies": {
@@ -29,16 +29,16 @@
     "@types/node": "^25.6.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "@typescript-eslint/eslint-plugin": "^8.59.1",
-    "@typescript-eslint/parser": "^8.59.1",
-    "eslint": "^10.2.1",
-    "eslint-config-next": "16.2.4",
+    "@typescript-eslint/eslint-plugin": "^8.59.2",
+    "@typescript-eslint/parser": "^8.59.2",
+    "eslint": "^10.3.0",
+    "eslint-config-next": "16.2.5",
     "eslint-config-prettier": "^10.1.8",
-    "postcss": "^8.5.12",
+    "postcss": "^8.5.14",
     "prettier": "^3.8.3",
     "tailwindcss": "^4.2.4",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.59.1"
+    "typescript-eslint": "^8.59.2"
   },
   "ignoreScripts": [
     "sharp"
