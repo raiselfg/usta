@@ -5,6 +5,11 @@ import { Separator } from '@usta/ui/components/separator';
 import { categoryOptions, productOptions } from '@/lib/query-options';
 
 export const Route = createFileRoute('/dashboard/')({
+  loader: ({ context: { queryClient } }) =>
+    Promise.all([
+      queryClient.ensureQueryData(productOptions.list()),
+      queryClient.ensureQueryData(categoryOptions.list()),
+    ]),
   component: DashboardIndexContent,
 });
 

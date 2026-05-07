@@ -3,7 +3,7 @@ import type { ProductCategoryWithProducts } from '@usta/types/product-categories
 import { Badge } from '@usta/ui/components/badge';
 import { memo } from 'react';
 
-import { DeleteProductCategryButton } from './delete-product-category-button';
+import { DeleteProductCategoryButton } from './delete-product-category-button';
 import { EditProductCategoryForm } from './edit-product-category-form';
 
 interface ProductCategoryCardProps {
@@ -44,7 +44,7 @@ export const ProductCategoryCard = memo(
 
           <div className="flex items-center justify-between">
             <EditProductCategoryForm category={category} />
-            <DeleteProductCategryButton categoryId={category.id} />
+            <DeleteProductCategoryButton categoryId={category.id} />
           </div>
         </div>
       </div>

@@ -22,7 +22,7 @@ interface Props {
   categoryId: string;
 }
 
-export const DeleteProductCategryButton = ({ categoryId }: Props) => {
+export const DeleteProductCategoryButton = ({ categoryId }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const queryClient = useQueryClient();
 
