@@ -18,7 +18,7 @@ export async function getLandingData(): Promise<LandingCategory[]> {
     }
 
     return res.json();
-  } catch (error) {
+  } catch {
     return [];
   }
 }

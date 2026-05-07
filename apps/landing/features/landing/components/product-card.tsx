@@ -1,23 +1,23 @@
-import type { LandingProduct } from '@usta/types/products';
 import Image from 'next/image';
 
 interface Props {
-  product: LandingProduct;
+  name: string | null;
+  image: string;
   isPriority: boolean;
 }
 
-export const ProductCard = ({ product, isPriority }: Props) => {
+export const ProductCard = ({ name, image, isPriority }: Props) => {
   return (
     <div className="relative">
       <Image
-        alt={product.name || 'Изображение товара'}
+        alt={name || 'Изображение товара'}
         className="w-full border-2 object-cover transition-opacity"
         priority={isPriority}
         quality={70}
         height={455}
         width={305}
         sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-        src={product.image}
+        src={image}
       />
     </div>
   );

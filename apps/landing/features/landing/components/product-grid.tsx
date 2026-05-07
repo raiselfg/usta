@@ -12,7 +12,8 @@ export const ProductGrid = ({ products, isFirstCategory }: Props) => {
       {products.map((product, index) => (
         <li key={product.id}>
           <ProductCard
-            product={product}
+            name={product.name}
+            image={product.image}
             isPriority={isFirstCategory && index < 4}
           />
         </li>
