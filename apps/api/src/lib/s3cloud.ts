@@ -5,27 +5,17 @@ import {
   DeleteObjectCommand,
 } from '@aws-sdk/client-s3';
 import { randomUUID } from 'crypto';
-import path from 'path';
 import sharp from 'sharp';
 
+import { env } from './env.js';
 import { ValidationError, StorageError } from './errors.js';
 
-const ENDPOINT = process.env.AWS_ENDPOINT!;
-const PUBLIC_ENDPOINT = process.env.AWS_PUBLIC_ENDPOINT!;
-const REGION = process.env.AWS_REGION!;
-const ACCESS_KEY = process.env.AWS_ACCESS_KEY!;
-const SECRET_KEY = process.env.AWS_SECRET_KEY!;
-const BUCKET = process.env.AWS_BUCKET!;
+const ENDPOINT = env.AWS_ENDPOINT;
+const REGION = env.AWS_REGION;
+const ACCESS_KEY = env.AWS_ACCESS_KEY;
+const SECRET_KEY = env.AWS_SECRET_KEY;
+const BUCKET = env.AWS_BUCKET;
 
-const MIME_TYPES: Record<string, string> = {
-  jpg: 'image/jpeg',
-  jpeg: 'image/jpeg',
-  png: 'image/png',
-  webp: 'image/webp',
-  avif: 'image/avif',
-};
-
-const ALLOWED_EXTENSIONS = new Set(Object.keys(MIME_TYPES));
 const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
 
 const client = new S3Client({
@@ -71,17 +61,17 @@ export async function uploadFile(fileBody: File): Promise<string> {
 
   try {
     await client.send(command);
-    return `${PUBLIC_ENDPOINT}/${BUCKET}/${fileName}`;
+    return `${ENDPOINT}/${BUCKET}/${fileName}`;
   } catch (error) {
     if (error instanceof S3ServiceException) {
-      console.error(`S3 Error: ${error.name}`, {
-        code: error.$metadata.httpStatusCode,
-        msg: error.message,
+      console.error(`[S3] Upload failed: ${error.name}`, {
+        status: error.$metadata.httpStatusCode,
+        message: error.message,
       });
       throw new StorageError(`Storage failed: ${error.name}`);
     }
 
-    console.error('Unexpected upload error:', error);
+    console.error('[S3] Unexpected upload error:', error);
     throw new StorageError('Internal upload error');
   }
 }
@@ -90,7 +80,8 @@ export async function deleteFile(fileUrl: string): Promise<void> {
   const fileName = fileUrl.split(`/${BUCKET}/`)[1];
 
   if (!fileName) {
-    throw new ValidationError(`Invalid file URL: ${fileUrl}`);
+    console.warn(`[S3] Attempted to delete invalid file URL: ${fileUrl}`);
+    return;
   }
 
   const command = new DeleteObjectCommand({
@@ -102,14 +93,14 @@ export async function deleteFile(fileUrl: string): Promise<void> {
     await client.send(command);
   } catch (error) {
     if (error instanceof S3ServiceException) {
-      console.error(`S3 Error: ${error.name}`, {
-        code: error.$metadata.httpStatusCode,
-        msg: error.message,
+      console.error(`[S3] Delete failed: ${error.name}`, {
+        status: error.$metadata.httpStatusCode,
+        message: error.message,
       });
       throw new StorageError(`Storage failed: ${error.name}`);
     }
 
-    console.error('Unexpected delete error:', error);
+    console.error('[S3] Unexpected delete error:', error);
     throw new StorageError('Internal delete error');
   }
 }

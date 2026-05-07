@@ -1,6 +1,5 @@
 import { OpenAPIHono, createRoute, z } from '@hono/zod-openapi';
 
-import { ValidationError } from '../lib/errors.js';
 import { uploadFile } from '../lib/s3cloud.js';
 
 export const uploadRoutes = new OpenAPIHono();
@@ -43,25 +42,13 @@ uploadRoutes.openapi(
   async (c) => {
     const { file } = c.req.valid('form');
 
-    console.log('File info:', {
+    console.log('[Upload] Processing file:', {
       name: file.name,
       size: file.size,
       type: file.type,
     });
 
-    try {
-      const url = await uploadFile(file);
-      return c.json({ url }, 201);
-    } catch (err) {
-      console.error('Upload error details:', {
-        message: err instanceof Error ? err.message : err,
-        stack: err instanceof Error ? err.stack : undefined,
-      });
-
-      if (err instanceof ValidationError) {
-        return c.json({ error: err.message }, 400);
-      }
-      return c.json({ error: 'Failed to upload file' }, 500);
-    }
+    const url = await uploadFile(file);
+    return c.json({ url }, 201);
   },
 );

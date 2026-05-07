@@ -6,12 +6,19 @@ import {
   ProductCategorySchema,
   UpdateProductCategorySchema,
 } from '@usta/types/product-categories.js';
-import { randomUUID } from 'crypto';
 
+import { NotFoundError, ValidationError } from '../lib/errors.js';
 import { revalidateFrontend } from '../lib/revalidate.js';
 
 const ProductCategoryWithProductsSchema =
   BaseProductCategoryWithProductsSchema.openapi('ProductCategoryWithProducts');
+
+const IdParamSchema = z.object({
+  id: z.uuid().openapi({
+    param: { name: 'id', in: 'path' },
+    example: '123e4567-e89b-12d3-a456-426614174000',
+  }),
+});
 
 export const productCategoriesRoutes = new OpenAPIHono();
 
@@ -88,9 +95,7 @@ productCategoriesRoutes.openapi(
     method: 'get',
     path: '/{id}',
     request: {
-      params: z.object({
-        id: z.string().uuid(),
-      }),
+      params: IdParamSchema,
     },
     responses: {
       200: {
@@ -112,9 +117,7 @@ productCategoriesRoutes.openapi(
       where: { id },
       include: { product: true },
     });
-    if (!productCategory) {
-      return c.json({ message: 'Product category not found' }, 404);
-    }
+    if (!productCategory) throw new NotFoundError('Product category not found');
     return c.json(productCategory);
   },
 );
@@ -128,7 +131,9 @@ productCategoriesRoutes.openapi(
       body: {
         content: {
           'application/json': {
-            schema: CreateProductCategorySchema,
+            schema: CreateProductCategorySchema.openapi(
+              'CreateProductCategory',
+            ),
           },
         },
       },
@@ -137,7 +142,7 @@ productCategoriesRoutes.openapi(
       201: {
         content: {
           'application/json': {
-            schema: ProductCategorySchema,
+            schema: ProductCategorySchema.openapi('ProductCategory'),
           },
         },
         description: 'Create a new product category',
@@ -175,13 +180,13 @@ productCategoriesRoutes.openapi(
     method: 'patch',
     path: '/{id}',
     request: {
-      params: z.object({
-        id: z.uuid({ version: 'v4' }),
-      }),
+      params: IdParamSchema,
       body: {
         content: {
           'application/json': {
-            schema: UpdateProductCategorySchema,
+            schema: UpdateProductCategorySchema.openapi(
+              'UpdateProductCategory',
+            ),
           },
         },
       },
@@ -190,7 +195,7 @@ productCategoriesRoutes.openapi(
       200: {
         content: {
           'application/json': {
-            schema: ProductCategorySchema,
+            schema: ProductCategorySchema.openapi('ProductCategory'),
           },
         },
         description: 'Update a product category',
@@ -207,9 +212,7 @@ productCategoriesRoutes.openapi(
     const existing = await prisma.productCategory.findUnique({
       where: { id },
     });
-    if (!existing) {
-      return c.json({ message: 'Product category not found' }, 404);
-    }
+    if (!existing) throw new NotFoundError('Product category not found');
 
     const { name, is_active } = body;
 
@@ -231,9 +234,7 @@ productCategoriesRoutes.openapi(
     method: 'delete',
     path: '/{id}',
     request: {
-      params: z.object({
-        id: z.uuid({ version: 'v4' }),
-      }),
+      params: IdParamSchema,
     },
     responses: {
       200: {
@@ -244,6 +245,9 @@ productCategoriesRoutes.openapi(
         },
         description: 'Delete a product category',
       },
+      400: {
+        description: 'Cannot delete category with products',
+      },
       404: {
         description: 'Product category not found',
       },
@@ -251,11 +255,18 @@ productCategoriesRoutes.openapi(
   }),
   async (c) => {
     const { id } = c.req.valid('param');
+
     const existing = await prisma.productCategory.findUnique({
       where: { id },
+      include: { _count: { select: { product: true } } },
     });
-    if (!existing) {
-      return c.json({ message: 'Product category not found' }, 404);
+
+    if (!existing) throw new NotFoundError('Product category not found');
+
+    if (existing._count.product > 0) {
+      throw new ValidationError(
+        'Cannot delete category that still has products',
+      );
     }
 
     await prisma.productCategory.delete({ where: { id } });

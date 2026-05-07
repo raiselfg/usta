@@ -1,15 +1,16 @@
 import type { Context, Next } from 'hono';
+import type { ContentfulStatusCode } from 'hono/utils/http-status';
 
-import 'dotenv/config';
 import { serve } from '@hono/node-server';
 import { swaggerUI } from '@hono/swagger-ui';
 import { OpenAPIHono } from '@hono/zod-openapi';
 import { rateLimiter } from 'hono-rate-limiter';
 import { cors } from 'hono/cors';
 import { secureHeaders } from 'hono/secure-headers';
-import process from 'node:process';
 
 import { auth } from './lib/auth.js';
+import { env } from './lib/env.js';
+import { ApiError } from './lib/errors.js';
 import { productCategoriesRoutes } from './routes/product-categories.js';
 import { productsRoutes } from './routes/products.js';
 import { storefrontRoutes } from './routes/storefront.js';
@@ -17,9 +18,31 @@ import { uploadRoutes } from './routes/upload.js';
 
 const app = new OpenAPIHono();
 
+// 1. Error Handling
+app.onError((err, c) => {
+  if (err instanceof ApiError) {
+    return c.json(
+      {
+        message: err.message,
+        code: err.code,
+      },
+      err.status as ContentfulStatusCode,
+    );
+  }
+
+  console.error('[Unhandled Error]', err);
+  return c.json(
+    {
+      message: 'Internal Server Error',
+      ...(env.NODE_ENV === 'development' ? { stack: err.stack } : {}),
+    },
+    500,
+  );
+});
+
 app.use('*', secureHeaders());
 
-// CORS
+// 2. CORS
 app.use(
   '*',
   cors({
@@ -40,8 +63,8 @@ app.use(
 
 // 3. Rate Limiter
 const limiter = rateLimiter({
-  windowMs: 10 * 60 * 1000, // Окно: 10 минут
-  limit: 200, // Максимум 200 запросов за 10 минут с одного IP
+  windowMs: 10 * 60 * 1000,
+  limit: 200,
   standardHeaders: 'draft-6',
   keyGenerator: (c) => c.req.header('x-forwarded-for') || 'anonymous',
   handler: (c) =>
@@ -54,16 +77,12 @@ app.all('/api/auth/*', (c) => {
 });
 
 // 5. Middleware защиты (Проверка прав доступа)
-// Лендинг читает данные (GET) свободно. Админка (POST/PATCH/DELETE) обязана иметь сессию.
-const requireAuth = async (c: Context, next: Next) => {
-  if (c.req.method === 'GET') {
-    return await next();
-  }
-
+// Используем "whitelist" подход для защиты админских методов.
+const requireAdminAuth = async (c: Context, next: Next) => {
   const session = await auth.api.getSession({ headers: c.req.raw.headers });
 
   if (!session) {
-    console.error(
+    console.warn(
       `[Auth] Unauthorized access attempt to ${c.req.method} ${c.req.url}`,
     );
     return c.json(
@@ -75,17 +94,28 @@ const requireAuth = async (c: Context, next: Next) => {
   return await next();
 };
 
-// Применяем защиту к роутам продуктов и категорий
-app.use('/products', requireAuth);
-app.use('/products/*', requireAuth);
-app.use('/product-categories', requireAuth);
-app.use('/product-categories/*', requireAuth);
-app.use('/upload', requireAuth);
+// Публичные роуты (Storefront) - не требуют авторизации
+app.route('/storefront', storefrontRoutes);
 
 app.route('/products', productsRoutes);
 app.route('/product-categories', productCategoriesRoutes);
-app.route('/storefront', storefrontRoutes);
 app.route('/upload', uploadRoutes);
+
+// Добавляем защиту для мутаций в роутах
+app.on(['POST', 'PATCH', 'DELETE', 'PUT'], '/products/*', requireAdminAuth);
+app.on(['POST', 'PATCH', 'DELETE', 'PUT'], '/products', requireAdminAuth);
+app.on(
+  ['POST', 'PATCH', 'DELETE', 'PUT'],
+  '/product-categories/*',
+  requireAdminAuth,
+);
+app.on(
+  ['POST', 'PATCH', 'DELETE', 'PUT'],
+  '/product-categories',
+  requireAdminAuth,
+);
+app.use('/upload/*', requireAdminAuth);
+app.use('/upload', requireAdminAuth);
 
 app.get('/health', (c) =>
   c.json({ status: 'ok', time: new Date().toISOString() }),
@@ -101,7 +131,7 @@ app.doc('/doc', {
 });
 app.get('/docs', swaggerUI({ url: '/doc' }));
 
-const port = Number(process.env.PORT) || 3000;
+const port = 3000;
 const hostname = '0.0.0.0';
 
 serve(
@@ -112,6 +142,6 @@ serve(
   },
   (info) => {
     console.log(`Server is running on http://${hostname}:${info.port}`);
-    console.log(`Environment: ${process.env.NODE_ENV}`);
+    console.log(`Environment: ${env.NODE_ENV}`);
   },
 );

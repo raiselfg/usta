@@ -2,10 +2,12 @@ import { prisma } from '@usta/database';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
 import { betterAuth } from 'better-auth/minimal';
 
+import { env } from './env.js';
+
 export const auth = betterAuth({
   appName: 'USTA',
-  secret: process.env.BETTER_AUTH_SECRET,
-  baseURL: process.env.BETTER_AUTH_URL,
+  secret: env.BETTER_AUTH_SECRET,
+  baseURL: env.BETTER_AUTH_URL,
   basePath: '/api/auth',
   database: prismaAdapter(prisma, {
     provider: 'postgresql',
@@ -38,7 +40,7 @@ export const auth = betterAuth({
     },
   },
   advanced: {
-    useSecureCookies: process.env.NODE_ENV === 'production',
+    useSecureCookies: env.NODE_ENV === 'production',
     cookiePrefix: 'usta_auth',
     defaultCookieAttributes: {
       sameSite: 'none',

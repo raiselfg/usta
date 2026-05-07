@@ -7,17 +7,23 @@ import {
 } from '@usta/types/products.js';
 import { randomUUID } from 'crypto';
 
+import { NotFoundError } from '../lib/errors.js';
 import { revalidateFrontend } from '../lib/revalidate.js';
 import { deleteFile } from '../lib/s3cloud.js';
 
 // Schemas
 const ProductWithProductCategorySchema =
   BaseProductWithProductCategorySchema.openapi('ProductWithProductCategory');
-const CreateProductApiSchema = BaseCreateProductApiSchema.openapi({
-  type: 'object',
-});
-const UpdateProductBodySchema = BaseUpdateProductBodySchema.openapi({
-  type: 'object',
+const CreateProductApiSchema =
+  BaseCreateProductApiSchema.openapi('CreateProduct');
+const UpdateProductBodySchema =
+  BaseUpdateProductBodySchema.openapi('UpdateProduct');
+
+const IdParamSchema = z.object({
+  id: z.uuid().openapi({
+    param: { name: 'id', in: 'path' },
+    example: '123e4567-e89b-12d3-a456-426614174000',
+  }),
 });
 
 export const productsRoutes = new OpenAPIHono();
@@ -52,18 +58,7 @@ productsRoutes.openapi(
     method: 'get',
     path: '/{id}',
     request: {
-      params: z.object({
-        id: z
-          .string()
-          .uuid()
-          .openapi({
-            param: {
-              name: 'id',
-              in: 'path',
-            },
-            example: '123e4567-e89b-12d3-a456-426614174000',
-          }),
-      }),
+      params: IdParamSchema,
     },
     responses: {
       200: {
@@ -74,9 +69,7 @@ productsRoutes.openapi(
         },
         description: 'Retrieve a product by ID',
       },
-      404: {
-        description: 'Product not found',
-      },
+      404: { description: 'Product not found' },
     },
   }),
   async (c) => {
@@ -85,9 +78,7 @@ productsRoutes.openapi(
       where: { id },
       include: { product_category: true },
     });
-    if (!product) {
-      return c.json({ message: 'Product not found' }, 404);
-    }
+    if (!product) throw new NotFoundError('Product not found');
     return c.json(product);
   },
 );
@@ -100,9 +91,7 @@ productsRoutes.openapi(
     request: {
       body: {
         content: {
-          'application/json': {
-            schema: CreateProductApiSchema,
-          },
+          'application/json': { schema: CreateProductApiSchema },
         },
       },
     },
@@ -142,13 +131,11 @@ productsRoutes.openapi(
     method: 'patch',
     path: '/{id}',
     request: {
-      params: z.object({ id: z.uuid() }),
+      params: IdParamSchema,
       body: {
         content: {
+          'application/json': { schema: UpdateProductBodySchema },
           'multipart/form-data': { schema: UpdateProductBodySchema },
-          'application/json': {
-            schema: UpdateProductBodySchema,
-          },
         },
       },
     },
@@ -164,23 +151,10 @@ productsRoutes.openapi(
   }),
   async (c) => {
     const { id } = c.req.valid('param');
-    const contentType = c.req.header('content-type') || '';
-    const rawData = contentType.includes('application/json')
-      ? await c.req.json()
-      : await c.req.parseBody();
-
-    const result = UpdateProductBodySchema.safeParse(rawData);
-    if (!result.success) {
-      console.error('[Validation Error]', result.error.format());
-      return c.json(
-        { message: 'Validation failed', errors: result.error.format() },
-        400,
-      );
-    }
-    const validatedData = result.data;
+    const validatedData = c.req.valid('json');
 
     const existing = await prisma.product.findUnique({ where: { id } });
-    if (!existing) return c.json({ message: 'Product not found' }, 404);
+    if (!existing) throw new NotFoundError('Product findUnique failed');
 
     const product = await prisma.product.update({
       where: { id },
@@ -209,7 +183,7 @@ productsRoutes.openapi(
   createRoute({
     method: 'delete',
     path: '/{id}',
-    request: { params: z.object({ id: z.string().uuid() }) },
+    request: { params: IdParamSchema },
     responses: {
       200: {
         content: {
@@ -222,10 +196,20 @@ productsRoutes.openapi(
   }),
   async (c) => {
     const { id } = c.req.valid('param');
-    const existing = await prisma.product.findUnique({ where: { id } });
-    if (!existing) return c.json({ message: 'Product not found' }, 404);
-    await deleteFile(existing.image);
+
+    const product = await prisma.product.findUnique({ where: { id } });
+    if (!product) throw new NotFoundError('Product not found');
+
+    // We delete from DB first. If it fails (e.g. constraints), we don't delete the file.
+    // If DB delete succeeds but S3 fails, we log it but still return success (the resource is gone from API perspective).
     await prisma.product.delete({ where: { id } });
+
+    try {
+      await deleteFile(product.image);
+    } catch (err) {
+      console.error(`[Cleanup] Failed to delete file for product ${id}:`, err);
+    }
+
     revalidateFrontend();
     return c.json({ success: true });
   },
