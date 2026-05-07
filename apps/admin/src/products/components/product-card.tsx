@@ -16,7 +16,7 @@ export const ProductCard = memo(
           <img
             src={product.image}
             alt={product.name || 'Товар'}
-            className='h-full w-full object-cover transition-transform duration-700 ease-out'
+            className='h-full w-full object-cover'
           />
 
           <Badge
@@ -50,5 +50,3 @@ export const ProductCard = memo(
     );
   },
 );
-
-ProductCard.displayName = 'ProductCard';

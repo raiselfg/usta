@@ -11,7 +11,7 @@ export const ProductCard = ({ name, image, isPriority }: Props) => {
     <div className='relative'>
       <Image
         alt={name || 'Изображение товара'}
-        className='w-full border-2 object-cover transition-opacity'
+        className='w-full border-2 object-cover'
         priority={isPriority}
         quality={70}
         height={455}

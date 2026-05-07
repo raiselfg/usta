@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { Link } from '@tanstack/react-router';
 import { Button } from '@usta/ui/components/button';
 import {
   Dialog,
@@ -60,7 +61,7 @@ export const DeleteProductCategoryButton = ({ categoryId }: Props) => {
           <Trash2 size={18} />
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className='sm:max-w-110'>
         <DialogHeader>
           <DialogTitle>Удаление категории</DialogTitle>
           <DialogDescription>
@@ -80,17 +81,22 @@ export const DeleteProductCategoryButton = ({ categoryId }: Props) => {
           <DialogClose asChild>
             <Button variant={'outline'}>Отмена</Button>
           </DialogClose>
-
-          <Button
-            variant={'destructive'}
-            disabled={!isAllowedToDelete || deleteMutation.isPending}
-            onClick={() => deleteMutation.mutate(categoryId)}
-          >
-            {deleteMutation.isPending && (
-              <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-            )}
-            Удалить
-          </Button>
+          {hasProducts ? (
+            <Link to='/dashboard/products'>
+              <Button className='cursor-pointer'>Перейти к товарам</Button>
+            </Link>
+          ) : (
+            <Button
+              variant={'destructive'}
+              disabled={!isAllowedToDelete || deleteMutation.isPending}
+              onClick={() => deleteMutation.mutate(categoryId)}
+            >
+              {deleteMutation.isPending && (
+                <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+              )}
+              Удалить
+            </Button>
+          )}
         </DialogFooter>
       </DialogContent>
     </Dialog>

@@ -33,7 +33,7 @@ function DashboardIndexContent() {
 
   return (
     <div className='flex flex-col gap-10'>
-      <div className='bg-background sticky top-0 z-1 flex flex-col gap-4 py-2'>
+      <div className='sticky top-0 z-1 flex flex-col gap-4 py-2'>
         <h1 className='text-foreground text-4xl font-black'>Главная</h1>
 
         <Separator />
@@ -43,16 +43,16 @@ function DashboardIndexContent() {
         {stats.map((stat, index) => (
           <div
             key={stat.label}
-            className='animate-in fade-in slide-in-from-bottom-4 fill-mode-both group border-border bg-card hover:border-muted-foreground relative overflow-hidden rounded-lg border p-6 transition-all duration-300'
+            className='animate-in fade-in slide-in-from-bottom-4 fill-mode-both group border-border bg-card hover:border-muted-foreground relative overflow-hidden rounded-lg border p-6 transition-all duration-300 hover:shadow-2xl'
             style={{ animationDelay: `${index * 70}ms` }}
           >
             <Link
               to={stat.link}
               className='cursor-pointer'
             >
-              <div className='relative z-10 flex flex-col gap-4'>
+              <div className='relative z-1 flex flex-col gap-4'>
                 <div className='flex flex-col gap-1'>
-                  <span className='text-muted-foreground text-[10px] font-bold tracking-widest uppercase'>
+                  <span className='text-[10px] font-bold tracking-widest uppercase'>
                     {stat.label}
                   </span>
                   <span className='text-4xl font-black tracking-tighter italic'>

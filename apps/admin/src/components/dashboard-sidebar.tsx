@@ -1,3 +1,5 @@
+import type { ComponentProps } from 'react';
+
 import { Link } from '@tanstack/react-router';
 import {
   Sidebar,
@@ -10,12 +12,11 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@usta/ui/components/sidebar';
-import * as React from 'react';
 
 const data = {
   navMain: [
     {
-      title: 'Разделы',
+      title: 'Главная',
       url: '/dashboard',
       items: [
         {
@@ -31,9 +32,7 @@ const data = {
   ],
 };
 
-export function DashboardSidebar({
-  ...props
-}: React.ComponentProps<typeof Sidebar>) {
+export function DashboardSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
   const { isMobile, setOpenMobile } = useSidebar();
 
   return (

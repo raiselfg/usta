@@ -56,7 +56,7 @@ export const CreateProductForm = () => {
       product_category_id: '',
       file: undefined,
     },
-    mode: 'onChange',
+    mode: 'all',
   });
 
   const onDrop = useCallback(
@@ -81,7 +81,7 @@ export const CreateProductForm = () => {
     });
 
   const getErrorMessage = () => {
-    if (errors.file) return errors.file.message as string;
+    if (errors.file) return errors.file.message;
 
     if (fileRejections.length > 0) {
       const error = fileRejections[0].errors[0];
@@ -163,14 +163,27 @@ export const CreateProductForm = () => {
           className='space-y-5 py-4'
         >
           <Field>
-            <FieldLabel>Название</FieldLabel>
-            <Input {...register('name')} />
+            <FieldLabel htmlFor='create-product-name'>Название</FieldLabel>
+            <Input
+              id='create-product-name'
+              type='text'
+              placeholder='Товар 1'
+              required
+              {...register('name')}
+            />
             {errors.name && <FieldError errors={[errors.name]} />}
           </Field>
 
           <Field>
-            <FieldLabel>Описание</FieldLabel>
-            <Input {...register('description')} />
+            <FieldLabel htmlFor='create-product-description'>
+              Описание
+            </FieldLabel>
+            <Input
+              id='create-product-description'
+              type='text'
+              placeholder='Описание товара 1'
+              {...register('description')}
+            />
           </Field>
 
           <Field>
@@ -178,7 +191,7 @@ export const CreateProductForm = () => {
 
             <div
               {...getRootProps()}
-              className={`relative flex min-h-40 cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed p-4 transition-all ${isDragActive ? 'border-primary bg-primary/5' : 'border-stone-800'} ${errorMessage ? 'border-red-500' : 'hover:border-stone-700'} ${preview ? 'border-solid' : ''}`}
+              className={`relative flex min-h-40 cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed p-4 transition-all ${isDragActive ? 'border-primary bg-primary/5' : ''}`}
             >
               <input {...getInputProps()} />
 
@@ -189,20 +202,18 @@ export const CreateProductForm = () => {
                     alt='Preview'
                     className='max-h-32 rounded-lg object-contain shadow-sm'
                   />
-                  <div className='absolute inset-0 flex items-center justify-center rounded-lg opacity-0 transition-opacity group-hover:opacity-100'>
-                    <p className='text-xs font-medium text-white'>
-                      Заменить фото
-                    </p>
+                  <div className='absolute inset-0 flex items-center justify-center rounded-lg'>
+                    <Button>Заменить фото</Button>
                   </div>
                 </div>
               ) : (
                 <div className='text-center'>
-                  <Upload className={`mx-auto mb-2`} />
+                  <Upload className='mx-auto mb-2' />
                   <p className='text-xs font-medium'>
                     Перетащите фото сюда или нажмите для добавления фото
                   </p>
                   <p className='mt-1 text-xs opacity-40'>
-                    PNG, JPG, WEBP, AVIF до 2MB
+                    Поддерживается PNG, JPG, WEBP, AVIF до 2MB
                   </p>
                 </div>
               )}
@@ -226,7 +237,9 @@ export const CreateProductForm = () => {
           </Field>
 
           <Field>
-            <FieldLabel>Категория</FieldLabel>
+            <FieldLabel htmlFor='create-product-category-product_category_id'>
+              Категория
+            </FieldLabel>
             <Controller
               control={control}
               name='product_category_id'
@@ -235,16 +248,16 @@ export const CreateProductForm = () => {
                   onValueChange={field.onChange}
                   value={field.value}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger id='create-product-category-product_category_id'>
                     <SelectValue placeholder='Выберите категорию' />
                   </SelectTrigger>
                   <SelectContent>
-                    {categories?.map(c => (
+                    {categories?.map(category => (
                       <SelectItem
-                        key={c.id}
-                        value={c.id}
+                        key={category.id}
+                        value={category.id}
                       >
-                        {c.name}
+                        {category.name}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -258,13 +271,15 @@ export const CreateProductForm = () => {
 
           <Field>
             <div className='flex items-center gap-2'>
-              <FieldLabel htmlFor='is_active'>Отображать на сайте</FieldLabel>
+              <FieldLabel htmlFor='create-product-is_active'>
+                Отображать на сайте
+              </FieldLabel>
               <Controller
                 control={control}
                 name='is_active'
                 render={({ field }) => (
                   <Checkbox
-                    id='is_active'
+                    id='create-product-is_active'
                     checked={field.value}
                     onCheckedChange={field.onChange}
                   />
@@ -287,7 +302,10 @@ export const CreateProductForm = () => {
             disabled={createMutation.isPending}
           >
             {createMutation.isPending && (
-              <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+              <Loader2
+                size={16}
+                className='animate-spin'
+              />
             )}
             Сохранить
           </Button>

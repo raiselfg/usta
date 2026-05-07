@@ -13,7 +13,7 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { type ProductCategoryWithProducts } from '@usta/types/product-categories';
+import { type ProductCategoryWithProducts } from '@usta/types';
 import { useState } from 'react';
 
 import { categoryQueries } from '@/lib/query-options';
@@ -27,9 +27,10 @@ interface Props {
 
 export function CategorySortableList({ initialCategories }: Props) {
   const [items, setItems] = useState(initialCategories);
+  const [prevInitial, setPrevInitial] = useState(initialCategories);
+
   const queryClient = useQueryClient();
 
-  const [prevInitial, setPrevInitial] = useState(initialCategories);
   if (initialCategories !== prevInitial) {
     setItems(initialCategories);
     setPrevInitial(initialCategories);

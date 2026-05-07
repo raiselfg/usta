@@ -15,7 +15,7 @@ export default function Error({
   }, [error]);
 
   return (
-    <div className='flex min-h-screen flex-col items-center justify-center gap-4 text-center text-stone-300'>
+    <div className='flex min-h-screen flex-col items-center justify-center gap-4 text-center'>
       <h2 className='text-4xl font-bold'>Упс! Что-то пошло не так.</h2>
       <p className='max-w-md text-lg'>
         Произошла непредвиденная ошибка при загрузке страницы. Пожалуйста,

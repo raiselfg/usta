@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   CreateProductCategorySchema,
   type CreateProductCategoryDTO,
-} from '@usta/types/product-categories.js';
+} from '@usta/types';
 import { Button } from '@usta/ui/components/button';
 import { Checkbox } from '@usta/ui/components/checkbox';
 import {
@@ -91,20 +91,30 @@ export const CreateProductCategoryForm = () => {
           className='space-y-5 py-4'
         >
           <Field>
-            <FieldLabel>Название</FieldLabel>
-            <Input {...register('name')} />
+            <FieldLabel htmlFor='create-product-category-name'>
+              Название
+            </FieldLabel>
+            <Input
+              id='create-product-category-name'
+              type='text'
+              placeholder='Категория 1'
+              required
+              {...register('name')}
+            />
             {errors.name && <FieldError errors={[errors.name]} />}
           </Field>
 
           <Field>
             <div className='flex items-center gap-2'>
-              <FieldLabel htmlFor='is_active'>Отображать на сайте</FieldLabel>
+              <FieldLabel htmlFor='create-product-category-is_active'>
+                Отображать на сайте
+              </FieldLabel>
               <Controller
                 control={control}
                 name='is_active'
                 render={({ field }) => (
                   <Checkbox
-                    id='is_active'
+                    id='create-product-category-is_active'
                     checked={field.value}
                     onCheckedChange={field.onChange}
                   />

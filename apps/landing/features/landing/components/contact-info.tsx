@@ -49,7 +49,7 @@ export default function ContactInfo() {
               src='/icons/vk.svg'
               width={28}
             />
-            <span className='text-stone-300'>ВКонтакте</span>
+            <span>ВКонтакте</span>
           </Link>
         </TooltipTrigger>
         <TooltipContent id='tooltip-vk'>
@@ -72,7 +72,7 @@ export default function ContactInfo() {
               color='oklch(86.9% 0.005 56.366)'
               size={28}
             />
-            <span className='text-stone-300'>to-zlato@mail.ru</span>
+            <span>to-zlato@mail.ru</span>
           </button>
         </TooltipTrigger>
         <TooltipContent id='tooltip-email'>
@@ -95,7 +95,7 @@ export default function ContactInfo() {
               color='oklch(86.9% 0.005 56.366)'
               size={28}
             />
-            <span className='text-stone-300'>+7 (905) 205-25-50</span>
+            <span>+7 (905) 205-25-50</span>
           </button>
         </TooltipTrigger>
         <TooltipContent id='tooltip-phone'>

@@ -14,10 +14,11 @@ export const ProductCategoryCard = memo(
   ({ category }: ProductCategoryCardProps) => {
     const isActive = category.is_active;
     const categoryPosition = category.order + 1;
+
     return (
       <div className='group border-border bg-card hover:border-muted-foreground relative flex flex-col overflow-hidden rounded-lg border transition-all duration-300 hover:shadow-2xl'>
         <div className='flex flex-1 flex-col gap-6 p-6'>
-          <h3 className='text-foreground text-xl font-black tracking-tight uppercase italic transition-transform group-hover:translate-x-1'>
+          <h3 className='text-foreground text-xl font-black tracking-tight uppercase italic transition-transform group-hover:translate-x-0.5'>
             {category.name}
           </h3>
 

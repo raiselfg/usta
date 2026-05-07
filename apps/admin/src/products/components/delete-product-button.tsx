@@ -30,13 +30,10 @@ export const DeleteProductButton = ({ productId }: Props) => {
     mutationFn: (id: string) => products.deleteProduct(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: productQueries.all });
-
       setIsOpen(false);
       toast.success('Товар успешно удален');
     },
-    onError: () => {
-      toast.error('Ошибка при удалении товара');
-    },
+    onError: () => toast.error('Ошибка при удалении товара'),
   });
 
   return (

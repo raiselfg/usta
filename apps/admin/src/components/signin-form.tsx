@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { SignInSchema, type SignInSchemaType } from '@usta/types/auth';
+import { SignInSchema, type SignInSchemaType } from '@usta/types';
 import { Button } from '@usta/ui/components/button';
 import {
   Field,
@@ -22,13 +22,13 @@ export const SignInForm = () => {
       email: '',
       password: '',
     },
-    mode: 'onSubmit',
+    mode: 'all',
   });
 
-  async function onSubmit(formData: SignInSchemaType) {
+  async function onSubmit(data: SignInSchemaType) {
     const { error } = await signIn.email({
-      email: formData.email,
-      password: formData.password,
+      email: data.email,
+      password: data.password,
       rememberMe: true,
       callbackURL: '/dashboard',
     });
@@ -38,7 +38,6 @@ export const SignInForm = () => {
       const message =
         (error.code && errorMessages[errorCode]?.ru) || error.message;
       toast.error(message);
-      return;
     }
 
     toast.success('Вы успешно вошли в систему');
@@ -48,6 +47,7 @@ export const SignInForm = () => {
     <form
       onSubmit={form.handleSubmit(onSubmit)}
       className='w-full max-w-sm'
+      id='auth-form'
     >
       <FieldGroup className='flex flex-col gap-2'>
         <Controller
@@ -87,6 +87,7 @@ export const SignInForm = () => {
         />
         <Button
           type='submit'
+          id='auth-form'
           className='w-full'
           disabled={form.formState.isSubmitting}
         >

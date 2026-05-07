@@ -53,7 +53,7 @@ export const EditProductForm = ({ product }: Props) => {
   } = useForm<UpdateProductDTO>({
     resolver: zodResolver(UpdateProductBodySchema),
     defaultValues: {
-      name: product.name || '',
+      name: product.name,
       description: product.description,
       is_active: product.is_active,
       product_category_id: product.product_category_id,
@@ -95,7 +95,7 @@ export const EditProductForm = ({ product }: Props) => {
           <SquarePen /> Редактировать
         </Button>
       </DialogTrigger>
-      <DialogContent className='sm:max-w-105'>
+      <DialogContent className='sm:max-w-110'>
         <DialogHeader>
           <DialogTitle>Редактировать товар</DialogTitle>
           <DialogDescription>
@@ -106,22 +106,35 @@ export const EditProductForm = ({ product }: Props) => {
         <form
           id='edit-product-form'
           onSubmit={handleSubmit(onSubmit)}
-          className='grid gap-4 py-4'
+          className='space-y-5 py-4'
         >
           <Field>
-            <FieldLabel>Название</FieldLabel>
-            <Input {...register('name')} />
+            <FieldLabel htmlFor='edit-product-name'>Название</FieldLabel>
+            <Input
+              id='edit-product-name'
+              type='text'
+              placeholder='Товар 1'
+              required
+              {...register('name')}
+            />
             {errors.name && <FieldError errors={[errors.name]} />}
           </Field>
 
           <Field>
-            <FieldLabel>Описание</FieldLabel>
-            <Input {...register('description')} />
+            <FieldLabel htmlFor='edit-product-description'>Описание</FieldLabel>
+            <Input
+              id='edit-product-description'
+              type='text'
+              placeholder='Описание товара 1'
+              {...register('description')}
+            />
             {errors.description && <FieldError errors={[errors.description]} />}
           </Field>
 
           <Field>
-            <FieldLabel>Категория</FieldLabel>
+            <FieldLabel htmlFor='edit-product-product_category_id'>
+              Категория
+            </FieldLabel>
             <Controller
               control={control}
               name='product_category_id'
@@ -130,7 +143,7 @@ export const EditProductForm = ({ product }: Props) => {
                   onValueChange={field.onChange}
                   defaultValue={field.value}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger id='edit-product-product_category_id'>
                     <SelectValue placeholder='Выберите категорию' />
                   </SelectTrigger>
                   <SelectContent>
@@ -153,13 +166,15 @@ export const EditProductForm = ({ product }: Props) => {
 
           <Field orientation='horizontal'>
             <div className='flex items-center gap-2'>
-              <FieldLabel htmlFor='is_active'>Отображать на сайте</FieldLabel>
+              <FieldLabel htmlFor='edit-product-is_active'>
+                Отображать на сайте
+              </FieldLabel>
               <Controller
                 control={control}
                 name='is_active'
                 render={({ field }) => (
                   <Checkbox
-                    id='is_active'
+                    id='edit-product-is_active-is_active'
                     checked={field.value}
                     onCheckedChange={field.onChange}
                   />

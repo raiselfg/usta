@@ -85,7 +85,7 @@ export const EditProductCategoryForm = ({ category }: Props) => {
           <SquarePen /> Редактировать
         </Button>
       </DialogTrigger>
-      <DialogContent className='sm:max-w-105'>
+      <DialogContent className='sm:max-w-110'>
         <DialogHeader>
           <DialogTitle>Редактировать категорию</DialogTitle>
           <DialogDescription>
@@ -96,23 +96,33 @@ export const EditProductCategoryForm = ({ category }: Props) => {
         <form
           id='edit-product-category-form'
           onSubmit={handleSubmit(onSubmit)}
-          className='grid gap-4 py-4'
+          className='space-y-5 py-4'
         >
           <Field>
-            <FieldLabel>Название</FieldLabel>
-            <Input {...register('name')} />
+            <FieldLabel htmlFor='edit-product-category-name'>
+              Название
+            </FieldLabel>
+            <Input
+              id='edit-product-category-name'
+              type='text'
+              placeholder='Категория 1'
+              required
+              {...register('name')}
+            />
             {errors.name && <FieldError errors={[errors.name]} />}
           </Field>
 
           <Field orientation='horizontal'>
             <div className='flex items-center gap-2'>
-              <FieldLabel htmlFor='is_active'>Отображать на сайте</FieldLabel>
+              <FieldLabel htmlFor='edit-product-category-is_active'>
+                Отображать на сайте
+              </FieldLabel>
               <Controller
                 control={control}
                 name='is_active'
                 render={({ field }) => (
                   <Checkbox
-                    id='is_active'
+                    id='edit-product-category-is_active'
                     checked={field.value}
                     onCheckedChange={field.onChange}
                   />

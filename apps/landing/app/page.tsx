@@ -19,7 +19,7 @@ export default function Home() {
   return (
     <>
       <Hero />
-      <div className='container mx-auto mt-3 flex flex-col gap-8 px-3 text-stone-300 lg:px-4 xl:px-0'>
+      <div className='container mx-auto mt-3 flex flex-col gap-8 px-3 lg:px-4 xl:px-0'>
         <LandingSection title='О нас'>
           <p className='mx-auto w-9/10 text-center text-2xl lg:w-3/5'>
             Бренд «УстА» — это место, где одежда становится искусством, —
