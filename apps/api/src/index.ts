@@ -66,13 +66,13 @@ const limiter = rateLimiter({
   windowMs: 10 * 60 * 1000,
   limit: 200,
   standardHeaders: 'draft-6',
-  keyGenerator: (c) => c.req.header('x-forwarded-for') || 'anonymous',
-  handler: (c) =>
+  keyGenerator: c => c.req.header('x-forwarded-for') || 'anonymous',
+  handler: c =>
     c.json({ message: 'Слишком много запросов, подождите немного' }, 429),
 });
 app.use('*', limiter);
 
-app.all('/api/auth/*', (c) => {
+app.all('/api/auth/*', c => {
   return auth.handler(c.req.raw);
 });
 
@@ -117,7 +117,7 @@ app.on(
 app.use('/upload/*', requireAdminAuth);
 app.use('/upload', requireAdminAuth);
 
-app.get('/health', (c) =>
+app.get('/health', c =>
   c.json({ status: 'ok', time: new Date().toISOString() }),
 );
 
@@ -140,7 +140,7 @@ serve(
     port,
     hostname,
   },
-  (info) => {
+  info => {
     console.log(`Server is running on http://${hostname}:${info.port}`);
     console.log(`Environment: ${env.NODE_ENV}`);
   },

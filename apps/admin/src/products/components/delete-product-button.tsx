@@ -40,9 +40,15 @@ export const DeleteProductButton = ({ productId }: Props) => {
   });
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={setIsOpen}
+    >
       <DialogTrigger asChild>
-        <Button variant={'destructive'} size={'icon'}>
+        <Button
+          variant={'destructive'}
+          size={'icon'}
+        >
           <Trash2 />
         </Button>
       </DialogTrigger>
@@ -54,7 +60,7 @@ export const DeleteProductButton = ({ productId }: Props) => {
             данного продукта и данных с сервера.
           </DialogDescription>
         </DialogHeader>
-        <DialogFooter className="flex items-center justify-between">
+        <DialogFooter className='flex items-center justify-between'>
           <DialogClose>
             <Button variant={'outline'}>Отмена</Button>
           </DialogClose>

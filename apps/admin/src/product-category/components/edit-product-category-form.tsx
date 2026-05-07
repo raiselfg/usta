@@ -76,13 +76,16 @@ export const EditProductCategoryForm = ({ category }: Props) => {
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onOpenChange}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={onOpenChange}
+    >
       <DialogTrigger asChild>
-        <Button variant="outline">
+        <Button variant='outline'>
           <SquarePen /> Редактировать
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-105">
+      <DialogContent className='sm:max-w-105'>
         <DialogHeader>
           <DialogTitle>Редактировать категорию</DialogTitle>
           <DialogDescription>
@@ -91,9 +94,9 @@ export const EditProductCategoryForm = ({ category }: Props) => {
           </DialogDescription>
         </DialogHeader>
         <form
-          id="edit-product-category-form"
+          id='edit-product-category-form'
           onSubmit={handleSubmit(onSubmit)}
-          className="grid gap-4 py-4"
+          className='grid gap-4 py-4'
         >
           <Field>
             <FieldLabel>Название</FieldLabel>
@@ -101,15 +104,15 @@ export const EditProductCategoryForm = ({ category }: Props) => {
             {errors.name && <FieldError errors={[errors.name]} />}
           </Field>
 
-          <Field orientation="horizontal">
-            <div className="flex items-center gap-2">
-              <FieldLabel htmlFor="is_active">Отображать на сайте</FieldLabel>
+          <Field orientation='horizontal'>
+            <div className='flex items-center gap-2'>
+              <FieldLabel htmlFor='is_active'>Отображать на сайте</FieldLabel>
               <Controller
                 control={control}
-                name="is_active"
+                name='is_active'
                 render={({ field }) => (
                   <Checkbox
-                    id="is_active"
+                    id='is_active'
                     checked={field.value}
                     onCheckedChange={field.onChange}
                   />
@@ -120,11 +123,11 @@ export const EditProductCategoryForm = ({ category }: Props) => {
         </form>
         <DialogFooter>
           <DialogClose asChild>
-            <Button variant="outline">Отмена</Button>
+            <Button variant='outline'>Отмена</Button>
           </DialogClose>
           <Button
-            type="submit"
-            form="edit-product-category-form"
+            type='submit'
+            form='edit-product-category-form'
             disabled={updateMutation.isPending}
           >
             {updateMutation.isPending ? 'Сохранение...' : 'Сохранить'}

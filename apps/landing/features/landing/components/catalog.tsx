@@ -14,7 +14,10 @@ export async function Catalog() {
   return (
     <>
       {productsWithCategories.map((productCategory, categoryIndex) => (
-        <CategorySection key={productCategory.id} label={productCategory.name}>
+        <CategorySection
+          key={productCategory.id}
+          label={productCategory.name}
+        >
           <ProductGrid
             products={productCategory.product}
             isFirstCategory={categoryIndex === 0}
@@ -27,13 +30,19 @@ export async function Catalog() {
 
 export const CatalogSkeleton = () => {
   return (
-    <div className="flex flex-col gap-7">
+    <div className='flex flex-col gap-7'>
       {Array.from({ length: 2 }).map((_, i) => (
-        <div className="flex flex-col gap-4" key={i}>
-          <Skeleton className="mx-auto h-8 w-56" />
-          <div className="grid grid-cols-2 gap-2 sm:gap-4 md:grid-cols-3 md:gap-8 lg:gap-12 xl:gap-16">
+        <div
+          className='flex flex-col gap-4'
+          key={i}
+        >
+          <Skeleton className='mx-auto h-8 w-56' />
+          <div className='grid grid-cols-2 gap-2 sm:gap-4 md:grid-cols-3 md:gap-8 lg:gap-12 xl:gap-16'>
             {Array.from({ length: 6 }).map((_, i) => (
-              <Skeleton className="aspect-305/455 w-full border-2" key={i} />
+              <Skeleton
+                className='aspect-305/455 w-full border-2'
+                key={i}
+              />
             ))}
           </div>
         </div>

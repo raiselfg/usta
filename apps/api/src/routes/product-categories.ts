@@ -38,7 +38,7 @@ productCategoriesRoutes.openapi(
       },
     },
   }),
-  async (c) => {
+  async c => {
     const productCategories = await prisma.productCategory.findMany({
       orderBy: [{ order: 'asc' }],
       include: { product: true },
@@ -72,7 +72,7 @@ productCategoriesRoutes.openapi(
       },
     },
   }),
-  async (c) => {
+  async c => {
     const categoryIds = c.req.valid('json');
 
     await prisma.$transaction(
@@ -111,7 +111,7 @@ productCategoriesRoutes.openapi(
       },
     },
   }),
-  async (c) => {
+  async c => {
     const { id } = c.req.valid('param');
     const productCategory = await prisma.productCategory.findUnique({
       where: { id },
@@ -149,11 +149,11 @@ productCategoriesRoutes.openapi(
       },
     },
   }),
-  async (c) => {
+  async c => {
     const body = c.req.valid('json');
     const { name, is_active } = body;
 
-    const result = await prisma.$transaction(async (tx) => {
+    const result = await prisma.$transaction(async tx => {
       const lastCategory = await tx.productCategory.findFirst({
         orderBy: { order: 'desc' },
         select: { order: true },
@@ -205,7 +205,7 @@ productCategoriesRoutes.openapi(
       },
     },
   }),
-  async (c) => {
+  async c => {
     const { id } = c.req.valid('param');
     const body = c.req.valid('json');
 
@@ -253,7 +253,7 @@ productCategoriesRoutes.openapi(
       },
     },
   }),
-  async (c) => {
+  async c => {
     const { id } = c.req.valid('param');
 
     const existing = await prisma.productCategory.findUnique({

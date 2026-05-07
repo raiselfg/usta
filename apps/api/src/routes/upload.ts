@@ -39,7 +39,7 @@ uploadRoutes.openapi(
       500: { description: 'Internal server error' },
     },
   }),
-  async (c) => {
+  async c => {
     const { file } = c.req.valid('form');
 
     console.log('[Upload] Processing file:', {

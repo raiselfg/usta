@@ -17,7 +17,7 @@ export const Route = createFileRoute('/dashboard')({
     }
   },
   pendingComponent: () => (
-    <div className="flex h-screen items-center justify-center">
+    <div className='flex h-screen items-center justify-center'>
       <Spinner />
     </div>
   ),
@@ -29,10 +29,10 @@ function Dashboard() {
     <SidebarProvider>
       <DashboardSidebar />
       <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4 md:hidden">
+        <header className='flex h-16 shrink-0 items-center gap-2 border-b px-4 md:hidden'>
           <SidebarTrigger />
         </header>
-        <main className="flex flex-1 flex-col px-4">
+        <main className='flex flex-1 flex-col px-4'>
           <Outlet />
         </main>
       </SidebarInset>

@@ -34,7 +34,10 @@ if (!rootElement.innerHTML) {
     <StrictMode>
       <QueryClientProvider client={queryClient}>
         <RouterProvider router={router} />
-        <Toaster position="top-center" duration={3500} />
+        <Toaster
+          position='top-center'
+          duration={3500}
+        />
       </QueryClientProvider>
     </StrictMode>,
   );

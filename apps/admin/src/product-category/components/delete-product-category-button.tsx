@@ -48,9 +48,15 @@ export const DeleteProductCategoryButton = ({ categoryId }: Props) => {
   const isAllowedToDelete = !isLoading && !hasProducts;
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={setIsOpen}
+    >
       <DialogTrigger asChild>
-        <Button variant={'destructive'} size={'icon'}>
+        <Button
+          variant={'destructive'}
+          size={'icon'}
+        >
           <Trash2 size={18} />
         </Button>
       </DialogTrigger>
@@ -65,12 +71,12 @@ export const DeleteProductCategoryButton = ({ categoryId }: Props) => {
         </DialogHeader>
 
         {isLoading && (
-          <div className="flex justify-center py-4">
-            <Loader2 className="animate-spin opacity-50" />
+          <div className='flex justify-center py-4'>
+            <Loader2 className='animate-spin opacity-50' />
           </div>
         )}
 
-        <DialogFooter className="flex items-center justify-between gap-2">
+        <DialogFooter className='flex items-center justify-between gap-2'>
           <DialogClose asChild>
             <Button variant={'outline'}>Отмена</Button>
           </DialogClose>
@@ -81,7 +87,7 @@ export const DeleteProductCategoryButton = ({ categoryId }: Props) => {
             onClick={() => deleteMutation.mutate(categoryId)}
           >
             {deleteMutation.isPending && (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              <Loader2 className='mr-2 h-4 w-4 animate-spin' />
             )}
             Удалить
           </Button>

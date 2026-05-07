@@ -56,13 +56,13 @@ export function CategorySortableList({ initialCategories }: Props) {
     const { active, over } = event;
 
     if (over && active.id !== over.id) {
-      setItems((items) => {
-        const oldIndex = items.findIndex((item) => item.id === active.id);
-        const newIndex = items.findIndex((item) => item.id === over.id);
+      setItems(items => {
+        const oldIndex = items.findIndex(item => item.id === active.id);
+        const newIndex = items.findIndex(item => item.id === over.id);
 
         const newItems = arrayMove(items, oldIndex, newIndex);
 
-        reorderMutation.mutate(newItems.map((item) => item.id));
+        reorderMutation.mutate(newItems.map(item => item.id));
         return newItems;
       });
     }
@@ -75,14 +75,14 @@ export function CategorySortableList({ initialCategories }: Props) {
       onDragEnd={handleDragEnd}
     >
       <SortableContext
-        items={items.map((item) => item.id)}
+        items={items.map(item => item.id)}
         strategy={verticalListSortingStrategy}
       >
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+        <div className='grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3'>
           {items.map((category, index) => (
             <div
               key={category.id}
-              className="animate-in fade-in slide-in-from-bottom-4 fill-mode-both duration-700"
+              className='animate-in fade-in slide-in-from-bottom-4 fill-mode-both duration-700'
               style={{ animationDelay: `${index * 70}ms` }}
             >
               <SortableCategoryItem category={category} />

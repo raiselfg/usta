@@ -17,10 +17,10 @@ function DashboardProductCategoriesContent() {
   const { data: categories } = useSuspenseQuery(categoryOptions.list());
 
   return (
-    <div className="flex flex-col gap-8">
-      <div className="bg-background sticky top-0 z-1 flex flex-col gap-4 py-2">
-        <div className="flex items-center justify-between">
-          <h1 className="text-foreground text-4xl font-black">
+    <div className='flex flex-col gap-8'>
+      <div className='bg-background sticky top-0 z-1 flex flex-col gap-4 py-2'>
+        <div className='flex items-center justify-between'>
+          <h1 className='text-foreground text-4xl font-black'>
             Категории товаров
           </h1>
           <CreateProductCategoryForm />

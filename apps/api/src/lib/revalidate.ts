@@ -2,7 +2,7 @@ export const revalidateFrontend = async () => {
   const tags = ['product-categories', 'landing-data'];
   const baseUrl = process.env.NEXT_PUBLIC_URL || 'https://us-ta.ru';
 
-  const promises = tags.map(async (tag) => {
+  const promises = tags.map(async tag => {
     const url = `${baseUrl}/api/revalidate?tag=${tag}&secret=${process.env.REVALIDATION_TOKEN}`;
     try {
       const res = await fetch(url, { method: 'POST' });
@@ -13,7 +13,7 @@ export const revalidateFrontend = async () => {
     }
   });
 
-  Promise.all(promises).catch((e) =>
+  Promise.all(promises).catch(e =>
     console.error('Error in revalidation promises:', e),
   );
 };

@@ -86,13 +86,16 @@ export const EditProductForm = ({ product }: Props) => {
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onOpenChange}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={onOpenChange}
+    >
       <DialogTrigger asChild>
-        <Button variant="outline">
+        <Button variant='outline'>
           <SquarePen /> Редактировать
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-105">
+      <DialogContent className='sm:max-w-105'>
         <DialogHeader>
           <DialogTitle>Редактировать товар</DialogTitle>
           <DialogDescription>
@@ -101,9 +104,9 @@ export const EditProductForm = ({ product }: Props) => {
           </DialogDescription>
         </DialogHeader>
         <form
-          id="edit-product-form"
+          id='edit-product-form'
           onSubmit={handleSubmit(onSubmit)}
-          className="grid gap-4 py-4"
+          className='grid gap-4 py-4'
         >
           <Field>
             <FieldLabel>Название</FieldLabel>
@@ -121,18 +124,21 @@ export const EditProductForm = ({ product }: Props) => {
             <FieldLabel>Категория</FieldLabel>
             <Controller
               control={control}
-              name="product_category_id"
+              name='product_category_id'
               render={({ field }) => (
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Выберите категорию" />
+                    <SelectValue placeholder='Выберите категорию' />
                   </SelectTrigger>
                   <SelectContent>
-                    {categories?.map((category) => (
-                      <SelectItem key={category.id} value={category.id}>
+                    {categories?.map(category => (
+                      <SelectItem
+                        key={category.id}
+                        value={category.id}
+                      >
                         {category.name}
                       </SelectItem>
                     ))}
@@ -145,15 +151,15 @@ export const EditProductForm = ({ product }: Props) => {
             )}
           </Field>
 
-          <Field orientation="horizontal">
-            <div className="flex items-center gap-2">
-              <FieldLabel htmlFor="is_active">Отображать на сайте</FieldLabel>
+          <Field orientation='horizontal'>
+            <div className='flex items-center gap-2'>
+              <FieldLabel htmlFor='is_active'>Отображать на сайте</FieldLabel>
               <Controller
                 control={control}
-                name="is_active"
+                name='is_active'
                 render={({ field }) => (
                   <Checkbox
-                    id="is_active"
+                    id='is_active'
                     checked={field.value}
                     onCheckedChange={field.onChange}
                   />
@@ -164,11 +170,11 @@ export const EditProductForm = ({ product }: Props) => {
         </form>
         <DialogFooter>
           <DialogClose asChild>
-            <Button variant="outline">Отмена</Button>
+            <Button variant='outline'>Отмена</Button>
           </DialogClose>
           <Button
-            type="submit"
-            form="edit-product-form"
+            type='submit'
+            form='edit-product-form'
             disabled={updateMutation.isPending}
           >
             {updateMutation.isPending ? 'Сохранение...' : 'Сохранить'}

@@ -19,9 +19,9 @@ export default function Home() {
   return (
     <>
       <Hero />
-      <div className="container mx-auto mt-3 flex flex-col gap-8 px-3 text-stone-300 lg:px-4 xl:px-0">
-        <LandingSection title="О нас">
-          <p className="mx-auto w-9/10 text-center text-2xl lg:w-3/5">
+      <div className='container mx-auto mt-3 flex flex-col gap-8 px-3 text-stone-300 lg:px-4 xl:px-0'>
+        <LandingSection title='О нас'>
+          <p className='mx-auto w-9/10 text-center text-2xl lg:w-3/5'>
             Бренд «УстА» — это место, где одежда становится искусством, —
             способом самовыражения. Мы создаём уникальные образы, вдохновлённые
             культурными корнями, разными эпохами, событиями прошедшего времени и
@@ -32,13 +32,16 @@ export default function Home() {
           </p>
         </LandingSection>
 
-        <LandingSection title="Каталог">
+        <LandingSection title='Каталог'>
           <Suspense fallback={<CatalogSkeleton />}>
             <Catalog />
           </Suspense>
         </LandingSection>
 
-        <LandingSection className="mb-4" title="Контакты">
+        <LandingSection
+          className='mb-4'
+          title='Контакты'
+        >
           <ContactInfo />
         </LandingSection>
       </div>

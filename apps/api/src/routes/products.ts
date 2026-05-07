@@ -44,7 +44,7 @@ productsRoutes.openapi(
       },
     },
   }),
-  async (c) => {
+  async c => {
     const products = await prisma.product.findMany({
       include: { product_category: true },
     });
@@ -72,7 +72,7 @@ productsRoutes.openapi(
       404: { description: 'Product not found' },
     },
   }),
-  async (c) => {
+  async c => {
     const { id } = c.req.valid('param');
     const product = await prisma.product.findUnique({
       where: { id },
@@ -105,7 +105,7 @@ productsRoutes.openapi(
       400: { description: 'Invalid input' },
     },
   }),
-  async (c) => {
+  async c => {
     const data = c.req.valid('json');
 
     const product = await prisma.product.create({
@@ -149,7 +149,7 @@ productsRoutes.openapi(
       404: { description: 'Product not found' },
     },
   }),
-  async (c) => {
+  async c => {
     const { id } = c.req.valid('param');
     const validatedData = c.req.valid('json');
 
@@ -194,7 +194,7 @@ productsRoutes.openapi(
       404: { description: 'Product not found' },
     },
   }),
-  async (c) => {
+  async c => {
     const { id } = c.req.valid('param');
 
     const product = await prisma.product.findUnique({ where: { id } });

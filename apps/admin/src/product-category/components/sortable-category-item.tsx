@@ -27,13 +27,17 @@ export function SortableCategoryItem({ category }: Props) {
   };
 
   return (
-    <div ref={setNodeRef} style={style} className="group relative">
+    <div
+      ref={setNodeRef}
+      style={style}
+      className='group relative'
+    >
       <div
         {...attributes}
         {...listeners}
-        className="bg-background/50 hover:bg-background/80 absolute top-2 right-2 z-1 cursor-grab rounded-md p-2 opacity-100 transition-opacity active:cursor-grabbing"
+        className='bg-background/50 hover:bg-background/80 absolute top-2 right-2 z-1 cursor-grab rounded-md p-2 opacity-100 transition-opacity active:cursor-grabbing'
       >
-        <GripVertical className="text-muted-foreground h-5 w-5" />
+        <GripVertical className='text-muted-foreground h-5 w-5' />
       </div>
 
       <ProductCategoryCard category={category} />

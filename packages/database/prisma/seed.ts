@@ -49,7 +49,7 @@ main()
   .then(async () => {
     await prisma.$disconnect();
   })
-  .catch(async (e) => {
+  .catch(async e => {
     console.error('Seed script failed with error:');
     console.error(e);
     await prisma.$disconnect();

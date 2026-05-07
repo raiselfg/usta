@@ -12,7 +12,7 @@ export const Route = createFileRoute('/')({
     }
   },
   pendingComponent: () => (
-    <div className="flex h-screen items-center justify-center">
+    <div className='flex h-screen items-center justify-center'>
       <Spinner />
     </div>
   ),
@@ -21,7 +21,7 @@ export const Route = createFileRoute('/')({
 
 function Index() {
   return (
-    <div className="flex h-screen items-center justify-center">
+    <div className='flex h-screen items-center justify-center'>
       <SignInForm />
     </div>
   );

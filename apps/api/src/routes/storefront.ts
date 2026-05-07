@@ -22,7 +22,7 @@ storefrontRoutes.openapi(
       },
     },
   }),
-  async (c) => {
+  async c => {
     const categories = await prisma.productCategory.findMany({
       where: { is_active: true },
       orderBy: { order: 'asc' },

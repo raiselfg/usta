@@ -37,20 +37,26 @@ export function DashboardSidebar({
   const { isMobile, setOpenMobile } = useSidebar();
 
   return (
-    <Sidebar {...props} className="border-border bg-card border-r">
-      <SidebarContent className="p-2">
-        {data.navMain.map((group) => (
-          <SidebarGroup key={group.title} className="py-4">
-            <SidebarGroupLabel className="px-4 font-black tracking-widest uppercase">
+    <Sidebar
+      {...props}
+      className='border-border bg-card border-r'
+    >
+      <SidebarContent className='p-2'>
+        {data.navMain.map(group => (
+          <SidebarGroup
+            key={group.title}
+            className='py-4'
+          >
+            <SidebarGroupLabel className='px-4 font-black tracking-widest uppercase'>
               <Link to={group.url}>{group.title}</Link>
             </SidebarGroupLabel>
-            <SidebarGroupContent className="mt-2">
+            <SidebarGroupContent className='mt-2'>
               <SidebarMenu>
-                {group.items.map((item) => (
+                {group.items.map(item => (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton
                       asChild
-                      className="hover:bg-muted/50 group relative h-11 px-4 transition-all duration-300"
+                      className='hover:bg-muted/50 group relative h-11 px-4 transition-all duration-300'
                       onClick={() => {
                         if (isMobile) {
                           setOpenMobile(false);
@@ -63,7 +69,7 @@ export function DashboardSidebar({
                           className: 'bg-primary/5 text-primary ',
                         }}
                       >
-                        <span className="group-[.active]:text-primary text-[11px] font-bold tracking-widest uppercase transition-colors">
+                        <span className='group-[.active]:text-primary text-[11px] font-bold tracking-widest uppercase transition-colors'>
                           {item.title}
                         </span>
                       </Link>

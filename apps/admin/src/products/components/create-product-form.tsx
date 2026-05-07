@@ -143,13 +143,13 @@ export const CreateProductForm = () => {
   return (
     <Dialog
       open={isOpen}
-      onOpenChange={(val) => (!val ? handleClose() : setIsOpen(true))}
+      onOpenChange={val => (!val ? handleClose() : setIsOpen(true))}
     >
       <DialogTrigger asChild>
         <Button>Создать товар</Button>
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-110">
+      <DialogContent className='sm:max-w-110'>
         <DialogHeader>
           <DialogTitle>Новый товар</DialogTitle>
           <DialogDescription>
@@ -158,9 +158,9 @@ export const CreateProductForm = () => {
         </DialogHeader>
 
         <form
-          id="create-product-form"
+          id='create-product-form'
           onSubmit={handleSubmit(onSubmit)}
-          className="space-y-5 py-4"
+          className='space-y-5 py-4'
         >
           <Field>
             <FieldLabel>Название</FieldLabel>
@@ -183,25 +183,25 @@ export const CreateProductForm = () => {
               <input {...getInputProps()} />
 
               {preview ? (
-                <div className="group relative">
+                <div className='group relative'>
                   <img
                     src={preview}
-                    alt="Preview"
-                    className="max-h-32 rounded-lg object-contain shadow-sm"
+                    alt='Preview'
+                    className='max-h-32 rounded-lg object-contain shadow-sm'
                   />
-                  <div className="absolute inset-0 flex items-center justify-center rounded-lg opacity-0 transition-opacity group-hover:opacity-100">
-                    <p className="text-xs font-medium text-white">
+                  <div className='absolute inset-0 flex items-center justify-center rounded-lg opacity-0 transition-opacity group-hover:opacity-100'>
+                    <p className='text-xs font-medium text-white'>
                       Заменить фото
                     </p>
                   </div>
                 </div>
               ) : (
-                <div className="text-center">
+                <div className='text-center'>
                   <Upload className={`mx-auto mb-2`} />
-                  <p className="text-xs font-medium">
+                  <p className='text-xs font-medium'>
                     Перетащите фото сюда или нажмите для добавления фото
                   </p>
-                  <p className="mt-1 text-xs opacity-40">
+                  <p className='mt-1 text-xs opacity-40'>
                     PNG, JPG, WEBP, AVIF до 2MB
                   </p>
                 </div>
@@ -212,10 +212,10 @@ export const CreateProductForm = () => {
 
             {preview && !createMutation.isPending && (
               <Button
-                variant="destructive"
-                size="sm"
-                type="button"
-                onClick={(e) => {
+                variant='destructive'
+                size='sm'
+                type='button'
+                onClick={e => {
                   e.stopPropagation();
                   resetPreview();
                 }}
@@ -229,15 +229,21 @@ export const CreateProductForm = () => {
             <FieldLabel>Категория</FieldLabel>
             <Controller
               control={control}
-              name="product_category_id"
+              name='product_category_id'
               render={({ field }) => (
-                <Select onValueChange={field.onChange} value={field.value}>
+                <Select
+                  onValueChange={field.onChange}
+                  value={field.value}
+                >
                   <SelectTrigger>
-                    <SelectValue placeholder="Выберите категорию" />
+                    <SelectValue placeholder='Выберите категорию' />
                   </SelectTrigger>
                   <SelectContent>
-                    {categories?.map((c) => (
-                      <SelectItem key={c.id} value={c.id}>
+                    {categories?.map(c => (
+                      <SelectItem
+                        key={c.id}
+                        value={c.id}
+                      >
                         {c.name}
                       </SelectItem>
                     ))}
@@ -251,14 +257,14 @@ export const CreateProductForm = () => {
           </Field>
 
           <Field>
-            <div className="flex items-center gap-2">
-              <FieldLabel htmlFor="is_active">Отображать на сайте</FieldLabel>
+            <div className='flex items-center gap-2'>
+              <FieldLabel htmlFor='is_active'>Отображать на сайте</FieldLabel>
               <Controller
                 control={control}
-                name="is_active"
+                name='is_active'
                 render={({ field }) => (
                   <Checkbox
-                    id="is_active"
+                    id='is_active'
                     checked={field.value}
                     onCheckedChange={field.onChange}
                   />
@@ -269,16 +275,19 @@ export const CreateProductForm = () => {
         </form>
 
         <DialogFooter>
-          <Button variant="ghost" onClick={handleClose}>
+          <Button
+            variant='ghost'
+            onClick={handleClose}
+          >
             Отмена
           </Button>
           <Button
-            type="submit"
-            form="create-product-form"
+            type='submit'
+            form='create-product-form'
             disabled={createMutation.isPending}
           >
             {createMutation.isPending && (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              <Loader2 className='mr-2 h-4 w-4 animate-spin' />
             )}
             Сохранить
           </Button>

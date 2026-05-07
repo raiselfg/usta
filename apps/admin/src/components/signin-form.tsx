@@ -45,52 +45,55 @@ export const SignInForm = () => {
   }
 
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)} className="w-full max-w-sm">
-      <FieldGroup className="flex flex-col gap-2">
+    <form
+      onSubmit={form.handleSubmit(onSubmit)}
+      className='w-full max-w-sm'
+    >
+      <FieldGroup className='flex flex-col gap-2'>
         <Controller
-          name="email"
+          name='email'
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor="email">Почта</FieldLabel>
+              <FieldLabel htmlFor='email'>Почта</FieldLabel>
               <Input
                 {...field}
-                id="email"
-                type="email"
+                id='email'
+                type='email'
                 aria-invalid={fieldState.invalid}
-                placeholder="example@mail.ru"
-                autoComplete="off"
+                placeholder='example@mail.ru'
+                autoComplete='off'
               />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
         />
         <Controller
-          name="password"
+          name='password'
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor="password">Пароль</FieldLabel>
+              <FieldLabel htmlFor='password'>Пароль</FieldLabel>
               <PasswordInput
                 {...field}
-                id="password"
+                id='password'
                 aria-invalid={fieldState.invalid}
-                placeholder="******"
-                autoComplete="off"
+                placeholder='******'
+                autoComplete='off'
               />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
         />
         <Button
-          type="submit"
-          className="w-full"
+          type='submit'
+          className='w-full'
           disabled={form.formState.isSubmitting}
         >
           {!form.formState.isSubmitting ? (
             <span>Войти</span>
           ) : (
-            <div className="flex items-center gap-2">
+            <div className='flex items-center gap-2'>
               <Spinner />
               <span>Вход...</span>
             </div>

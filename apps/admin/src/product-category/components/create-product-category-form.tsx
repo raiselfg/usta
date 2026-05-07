@@ -71,13 +71,13 @@ export const CreateProductCategoryForm = () => {
   return (
     <Dialog
       open={isOpen}
-      onOpenChange={(val) => (!val ? handleClose() : setIsOpen(true))}
+      onOpenChange={val => (!val ? handleClose() : setIsOpen(true))}
     >
       <DialogTrigger asChild>
         <Button>Создать категорию</Button>
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-110">
+      <DialogContent className='sm:max-w-110'>
         <DialogHeader>
           <DialogTitle>Новая категория</DialogTitle>
           <DialogDescription>
@@ -86,9 +86,9 @@ export const CreateProductCategoryForm = () => {
         </DialogHeader>
 
         <form
-          id="create-product-category-form"
+          id='create-product-category-form'
           onSubmit={handleSubmit(onSubmit)}
-          className="space-y-5 py-4"
+          className='space-y-5 py-4'
         >
           <Field>
             <FieldLabel>Название</FieldLabel>
@@ -97,14 +97,14 @@ export const CreateProductCategoryForm = () => {
           </Field>
 
           <Field>
-            <div className="flex items-center gap-2">
-              <FieldLabel htmlFor="is_active">Отображать на сайте</FieldLabel>
+            <div className='flex items-center gap-2'>
+              <FieldLabel htmlFor='is_active'>Отображать на сайте</FieldLabel>
               <Controller
                 control={control}
-                name="is_active"
+                name='is_active'
                 render={({ field }) => (
                   <Checkbox
-                    id="is_active"
+                    id='is_active'
                     checked={field.value}
                     onCheckedChange={field.onChange}
                   />
@@ -115,16 +115,19 @@ export const CreateProductCategoryForm = () => {
         </form>
 
         <DialogFooter>
-          <Button variant="ghost" onClick={handleClose}>
+          <Button
+            variant='ghost'
+            onClick={handleClose}
+          >
             Отмена
           </Button>
           <Button
-            type="submit"
-            form="create-product-category-form"
+            type='submit'
+            form='create-product-category-form'
             disabled={createMutation.isPending}
           >
             {createMutation.isPending && (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              <Loader2 className='mr-2 h-4 w-4 animate-spin' />
             )}
             Сохранить
           </Button>

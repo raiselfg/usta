@@ -57,7 +57,7 @@ export default function RootLayout({
   children: ReactNode;
 }>) {
   return (
-    <html lang="ru">
+    <html lang='ru'>
       <body className={`${cyrillicOld.variable} antialiased`}>
         <TooltipProvider>{children}</TooltipProvider>
         <Toaster />

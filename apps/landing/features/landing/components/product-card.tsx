@@ -8,15 +8,15 @@ interface Props {
 
 export const ProductCard = ({ name, image, isPriority }: Props) => {
   return (
-    <div className="relative">
+    <div className='relative'>
       <Image
         alt={name || 'Изображение товара'}
-        className="w-full border-2 object-cover transition-opacity"
+        className='w-full border-2 object-cover transition-opacity'
         priority={isPriority}
         quality={70}
         height={455}
         width={305}
-        sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+        sizes='(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw'
         src={image}
       />
     </div>
