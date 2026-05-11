@@ -1,5 +1,6 @@
 'use client';
 
+import { Button } from '@usta/ui/components/button';
 import {
   Tooltip,
   TooltipContent,
@@ -27,9 +28,6 @@ export default function ContactInfo() {
     }
   };
 
-  const commonClasses =
-    'flex items-center gap-2 text-primary hover:underline transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary rounded-md';
-
   return (
     <address className='flex flex-col items-center justify-center gap-4 text-lg sm:flex-row sm:gap-6 sm:text-xl'>
       <Tooltip>
@@ -37,19 +35,23 @@ export default function ContactInfo() {
           <Link
             aria-describedby='tooltip-vk'
             aria-label='Группа ВКонтакте'
-            className={commonClasses}
             href='https://vk.com/butikusta?from=groups'
             rel='noopener noreferrer nofollow'
             target='_blank'
           >
-            <Image
-              alt='Иконка ВКонтакте'
-              className='shrink-0'
-              height={28}
-              src='/icons/vk.svg'
-              width={28}
-            />
-            <span>ВКонтакте</span>
+            <Button
+              variant={'link'}
+              size={'xl'}
+            >
+              <Image
+                alt='Иконка ВКонтакте'
+                className='shrink-0'
+                height={24}
+                src='/icons/vk.svg'
+                width={24}
+              />
+              <span>ВКонтакте</span>
+            </Button>
           </Link>
         </TooltipTrigger>
         <TooltipContent id='tooltip-vk'>
@@ -59,21 +61,21 @@ export default function ContactInfo() {
 
       <Tooltip>
         <TooltipTrigger asChild>
-          <button
+          <Button
+            variant={'link'}
+            size={'xl'}
             aria-describedby='tooltip-email'
             aria-label='Скопировать почтовый адрес'
-            className={commonClasses}
             onClick={() => handleCopy('to-zlato@mail.ru')}
             type='button'
           >
             <Mail
               aria-hidden='true'
               className='shrink-0'
-              color='oklch(86.9% 0.005 56.366)'
-              size={28}
+              size={24}
             />
             <span>to-zlato@mail.ru</span>
-          </button>
+          </Button>
         </TooltipTrigger>
         <TooltipContent id='tooltip-email'>
           <p>Скопировать почтовый адрес</p>
@@ -82,21 +84,21 @@ export default function ContactInfo() {
 
       <Tooltip>
         <TooltipTrigger asChild>
-          <button
+          <Button
+            variant={'link'}
+            size={'xl'}
             aria-describedby='tooltip-phone'
             aria-label='Скопировать номер телефона'
-            className={commonClasses}
             onClick={() => handleCopy('+7 (905) 205-25-50')}
             type='button'
           >
             <Phone
               aria-hidden='true'
               className='shrink-0'
-              color='oklch(86.9% 0.005 56.366)'
-              size={28}
+              size={24}
             />
             <span>+7 (905) 205-25-50</span>
-          </button>
+          </Button>
         </TooltipTrigger>
         <TooltipContent id='tooltip-phone'>
           <p>Скопировать номер телефона</p>
