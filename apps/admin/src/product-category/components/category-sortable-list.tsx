@@ -16,7 +16,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { type ProductCategoryWithProducts } from '@usta/types';
 import { useState } from 'react';
 
-import { categoryQueries } from '@/lib/query-options';
+import { categoryQueries } from '@/shared/lib/query-options';
 
 import { productCategories } from '../lib/product-categories';
 import { SortableCategoryItem } from './sortable-category-item';

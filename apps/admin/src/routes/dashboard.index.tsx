@@ -2,7 +2,7 @@ import { useQueries } from '@tanstack/react-query';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { Separator } from '@usta/ui/components/separator';
 
-import { categoryOptions, productOptions } from '@/lib/query-options';
+import { categoryOptions, productOptions } from '@/shared/lib/query-options';
 
 export const Route = createFileRoute('/dashboard/')({
   loader: ({ context: { queryClient } }) =>

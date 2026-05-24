@@ -22,7 +22,7 @@ import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 
-import { categoryQueries } from '@/lib/query-options';
+import { categoryQueries } from '@/shared/lib/query-options';
 
 import { productCategories } from '../lib/product-categories';
 

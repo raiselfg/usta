@@ -15,7 +15,7 @@ import { Trash2, Loader2 } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { categoryQueries } from '@/lib/query-options';
+import { categoryQueries } from '@/shared/lib/query-options';
 
 import { productCategories } from '../lib/product-categories';
 

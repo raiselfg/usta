@@ -1,11 +1,7 @@
-import { SignInForm } from './components/signin-form';
+import { SignInForm } from './shared/components/signin-form';
 
 function App() {
-  return (
-    <>
-      <SignInForm />
-    </>
-  );
+  return <SignInForm />;
 }
 
 export default App;

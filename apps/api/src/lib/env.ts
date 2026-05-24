@@ -1,9 +1,7 @@
+import 'dotenv/config';
 import { z } from '@hono/zod-openapi';
 
 const envSchema = z.object({
-  NODE_ENV: z
-    .enum(['development', 'production', 'test'])
-    .default('development'),
   DATABASE_URL: z.url(),
   BETTER_AUTH_SECRET: z.string().min(1),
   BETTER_AUTH_URL: z.url(),
@@ -12,6 +10,10 @@ const envSchema = z.object({
   AWS_ACCESS_KEY: z.string().min(1),
   AWS_SECRET_KEY: z.string().min(1),
   AWS_BUCKET: z.string().min(1),
+  REVALIDATION_TOKEN: z.string().min(1),
+  NODE_ENV: z
+    .enum(['development', 'production', 'test'])
+    .default('development'),
 });
 
 const parsed = envSchema.safeParse(process.env);

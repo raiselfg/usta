@@ -4,7 +4,7 @@ import type {
   UpdateProductCategoryDTO,
 } from '@usta/types/product-categories';
 
-import { api, handleApiError } from '../../lib/axios-instance';
+import { api, handleApiError } from '../../shared/lib/axios-instance';
 
 export const productCategories = {
   getCategories: async () => {

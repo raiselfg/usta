@@ -1,8 +1,8 @@
 import { createFileRoute, redirect } from '@tanstack/react-router';
 import { Spinner } from '@usta/ui/components/spinner';
 
-import { SignInForm } from '@/components/signin-form';
-import { authClient } from '@/lib/auth-client';
+import { SignInForm } from '@/shared/components/signin-form';
+import { authClient } from '@/shared/lib/auth-client';
 
 export const Route = createFileRoute('/')({
   beforeLoad: async () => {

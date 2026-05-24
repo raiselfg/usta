@@ -6,8 +6,8 @@ import {
 } from '@usta/ui/components/sidebar';
 import { Spinner } from '@usta/ui/components/spinner';
 
-import { DashboardSidebar } from '@/components/dashboard-sidebar';
-import { authClient } from '@/lib/auth-client';
+import { DashboardSidebar } from '@/shared/components/dashboard-sidebar';
+import { authClient } from '@/shared/lib/auth-client';
 
 export const Route = createFileRoute('/dashboard')({
   beforeLoad: async () => {

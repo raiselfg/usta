@@ -6,6 +6,7 @@ import ReactDOM from 'react-dom/client';
 
 import { routeTree } from './routeTree.gen';
 import './globals.css';
+import { ThemeProvider } from './shared/components/theme-provider';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -32,13 +33,18 @@ if (!rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement);
   root.render(
     <StrictMode>
-      <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
-        <Toaster
-          position='top-center'
-          duration={3500}
-        />
-      </QueryClientProvider>
+      <ThemeProvider
+        defaultTheme='dark'
+        storageKey='vite-ui-theme'
+      >
+        <QueryClientProvider client={queryClient}>
+          <RouterProvider router={router} />
+          <Toaster
+            position='top-center'
+            duration={3500}
+          />
+        </QueryClientProvider>
+      </ThemeProvider>
     </StrictMode>,
   );
 }

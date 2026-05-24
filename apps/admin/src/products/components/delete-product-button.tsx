@@ -14,8 +14,8 @@ import { Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { productQueries } from '@/lib/query-options';
 import { products } from '@/products/lib/products';
+import { productQueries } from '@/shared/lib/query-options';
 
 interface Props {
   productId: string;

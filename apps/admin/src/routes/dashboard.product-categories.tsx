@@ -3,9 +3,9 @@ import { createFileRoute } from '@tanstack/react-router';
 import { Badge } from '@usta/ui/components/badge';
 import { Separator } from '@usta/ui/components/separator';
 
-import { categoryOptions } from '@/lib/query-options';
 import { CategorySortableList } from '@/product-category/components/category-sortable-list';
 import { CreateProductCategoryForm } from '@/product-category/components/create-product-category-form';
+import { categoryOptions } from '@/shared/lib/query-options';
 
 export const Route = createFileRoute('/dashboard/product-categories')({
   loader: ({ context: { queryClient } }) =>

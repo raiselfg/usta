@@ -13,7 +13,7 @@ import { Spinner } from '@usta/ui/components/spinner';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 
-import { errorMessages, signIn } from '@/lib/auth-client';
+import { errorMessages, signIn } from '@/shared/lib/auth-client';
 
 export const SignInForm = () => {
   const form = useForm<SignInSchemaType>({

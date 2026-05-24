@@ -4,9 +4,9 @@ import { Badge } from '@usta/ui/components/badge';
 import { Separator } from '@usta/ui/components/separator';
 import { Skeleton } from '@usta/ui/components/skeleton';
 
-import { productOptions } from '@/lib/query-options';
 import { CreateProductForm } from '@/products/components/create-product-form';
 import { ProductCard } from '@/products/components/product-card';
+import { productOptions } from '@/shared/lib/query-options';
 
 export const Route = createFileRoute('/dashboard/products')({
   loader: ({ context: { queryClient } }) =>

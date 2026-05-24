@@ -30,8 +30,8 @@ import { useDropzone } from 'react-dropzone';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 
-import { categoryOptions, productQueries } from '@/lib/query-options';
 import { products } from '@/products/lib/products';
+import { categoryOptions, productQueries } from '@/shared/lib/query-options';
 
 export const CreateProductForm = () => {
   const [isOpen, setIsOpen] = useState(false);

@@ -1,6 +1,7 @@
 import type { ComponentProps } from 'react';
 
 import { Link } from '@tanstack/react-router';
+import { Separator } from '@usta/ui/components/separator';
 import {
   Sidebar,
   SidebarContent,
@@ -12,6 +13,8 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@usta/ui/components/sidebar';
+
+import { ThemeToggle } from './theme-toggle';
 
 const data = {
   navMain: [
@@ -44,13 +47,22 @@ export function DashboardSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
         {data.navMain.map(group => (
           <SidebarGroup
             key={group.title}
-            className='py-4'
+            className='flex flex-col gap-2 py-4'
           >
-            <SidebarGroupLabel className='px-4 font-black tracking-widest uppercase'>
-              <Link to={group.url}>{group.title}</Link>
+            <SidebarGroupLabel className='px-4 font-black tracking-widest'>
+              <div className='flex w-full items-center justify-between'>
+                <Link
+                  className='text-lg'
+                  to={group.url}
+                >
+                  {group.title}
+                </Link>
+                <ThemeToggle />
+              </div>
             </SidebarGroupLabel>
-            <SidebarGroupContent className='mt-2'>
-              <SidebarMenu>
+            <Separator />
+            <SidebarGroupContent>
+              <SidebarMenu className='flex flex-col gap-1'>
                 {group.items.map(item => (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton
@@ -68,7 +80,7 @@ export function DashboardSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
                           className: 'bg-primary/5 text-primary ',
                         }}
                       >
-                        <span className='group-[.active]:text-primary text-[11px] font-bold tracking-widest uppercase transition-colors'>
+                        <span className='group-[.active]:text-primary font-bold tracking-widest transition-colors'>
                           {item.title}
                         </span>
                       </Link>
