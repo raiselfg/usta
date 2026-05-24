@@ -21,8 +21,8 @@ RUN pnpm turbo run build --filter=@usta/admin
 
 # 3. Runner stage
 FROM base AS runner
-WORKDIR /app
-COPY --from=builder /app/out/full/apps/admin/dist ./apps/admin/dist
+WORKDIR /app/apps/admin/dist
+COPY --from=builder /app/out/full/apps/admin/dist .
 
 # Use serve for simple and robust SPA hosting
 RUN pnpm install -g serve
@@ -30,5 +30,5 @@ RUN pnpm install -g serve
 # Standard port for serve
 EXPOSE 3000
 
-# Serve the dist folder in SPA mode (-s)
-CMD ["serve", "-s", "apps/admin/dist", "-l", "3000"]
+# Serve the current folder in SPA mode (-s)
+CMD ["serve", "-s", ".", "-l", "3000"]
