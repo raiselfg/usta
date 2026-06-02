@@ -41,14 +41,14 @@ function DashboardIndexContent() {
 
       <div className='grid grid-cols-1 gap-6 md:grid-cols-3'>
         {stats.map((stat, index) => (
-          <div
+          <Link
             key={stat.label}
-            className='animate-in fade-in slide-in-from-bottom-4 fill-mode-both group border-border bg-card hover:border-muted-foreground relative overflow-hidden rounded-lg border p-6 transition-all duration-300 hover:shadow-2xl'
-            style={{ animationDelay: `${index * 70}ms` }}
+            to={stat.link}
+            className='cursor-pointer'
           >
-            <Link
-              to={stat.link}
-              className='cursor-pointer'
+            <div
+              className='animate-in fade-in slide-in-from-bottom-4 fill-mode-both group border-border bg-card hover:border-muted-foreground relative overflow-hidden rounded-lg border p-6 transition-all duration-300 hover:shadow-2xl'
+              style={{ animationDelay: `${index * 70}ms` }}
             >
               <div className='relative z-1 flex flex-col gap-4'>
                 <div className='flex flex-col gap-1'>
@@ -60,8 +60,8 @@ function DashboardIndexContent() {
                   </span>
                 </div>
               </div>
-            </Link>
-          </div>
+            </div>
+          </Link>
         ))}
       </div>
     </div>
