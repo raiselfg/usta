@@ -55,7 +55,7 @@ export const products = {
 
   updateProduct: async (id: string, productData: UpdateProductDTO) => {
     try {
-      const { data } = await api.patch<UpdateProductDTO>(
+      const { data } = await api.patch<ProductWithProductCategory>(
         `/products/${id}`,
         productData,
       );
@@ -67,7 +67,7 @@ export const products = {
 
   deleteProduct: async (id: string) => {
     try {
-      const { data } = await api.delete<ProductWithProductCategory>(
+      const { data } = await api.delete<{ success: boolean }>(
         `/products/${id}`,
       );
       return data;

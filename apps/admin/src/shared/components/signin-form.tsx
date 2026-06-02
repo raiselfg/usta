@@ -38,6 +38,7 @@ export const SignInForm = () => {
       const message =
         (error.code && errorMessages[errorCode]?.ru) || error.message;
       toast.error(message);
+      return;
     }
 
     toast.success('Вы успешно вошли в систему');

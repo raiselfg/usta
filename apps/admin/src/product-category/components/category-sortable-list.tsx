@@ -15,6 +15,7 @@ import {
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { type ProductCategoryWithProducts } from '@usta/types';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 import { categoryQueries } from '@/shared/lib/query-options';
 
@@ -51,22 +52,25 @@ export function CategorySortableList({ initialCategories }: Props) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: categoryQueries.all });
     },
+    onError: () => {
+      // Откатываем оптимистичный порядок к последнему серверному
+      setItems(prevInitial);
+      toast.error('Не удалось изменить порядок категорий');
+    },
   });
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
 
-    if (over && active.id !== over.id) {
-      setItems(items => {
-        const oldIndex = items.findIndex(item => item.id === active.id);
-        const newIndex = items.findIndex(item => item.id === over.id);
+    if (!over || active.id === over.id) return;
 
-        const newItems = arrayMove(items, oldIndex, newIndex);
+    const oldIndex = items.findIndex(item => item.id === active.id);
+    const newIndex = items.findIndex(item => item.id === over.id);
 
-        reorderMutation.mutate(newItems.map(item => item.id));
-        return newItems;
-      });
-    }
+    const newItems = arrayMove(items, oldIndex, newIndex);
+
+    setItems(newItems);
+    reorderMutation.mutate(newItems.map(item => item.id));
   };
 
   return (

@@ -26,8 +26,8 @@
     "apps/landing/**/*.{ts,tsx,mjs}": [
       "pnpm --filter @usta/landing lint:fix"
     ],
-    "apps/api/**/*.{ts,js,mjs}": [
-      "pnpm --filter @usta/api lint:fix"
+    "apps/next-api/**/*.{ts,tsx,mjs}": [
+      "prettier --write"
     ],
     "**/*.{json,md,css}": [
       "prettier --write"

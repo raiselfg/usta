@@ -19,7 +19,7 @@ services:
   api:
     build:
       context: .
-      dockerfile: apps/api/Dockerfile
+      dockerfile: apps/next-api/Dockerfile
     ports:
       - '8080:3000'
     environment:
@@ -29,12 +29,14 @@ services:
       DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-usta}?schema=public
       BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET}
       BETTER_AUTH_URL: ${BETTER_AUTH_URL}
-      MINIO_ENDPOINT: ${MINIO_ENDPOINT}
-      MINIO_BUCKET_NAME: ${MINIO_BUCKET_NAME}
-      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
-      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+      AWS_ENDPOINT: ${AWS_ENDPOINT}
+      AWS_REGION: ${AWS_REGION}
+      AWS_BUCKET: ${AWS_BUCKET}
+      AWS_ACCESS_KEY: ${AWS_ACCESS_KEY}
+      AWS_SECRET_KEY: ${AWS_SECRET_KEY}
       REVALIDATION_TOKEN: ${REVALIDATION_TOKEN}
-      NEXT_PUBLIC_URL: ${NEXT_PUBLIC_URL}
+      # В docker-сети ревалидация landing идёт по имени сервиса, а не на прод
+      NEXT_PUBLIC_URL: ${NEXT_PUBLIC_URL:-http://landing:3000}
     depends_on:
       db:
         condition: service_healthy
@@ -51,16 +53,9 @@ services:
     ports:
       - '3000:3000'
     environment:
-      NEXT_PUBLIC_API_URL: http://localhost:8080
-      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-usta}?schema=public
-      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET}
-      BETTER_AUTH_URL: ${BETTER_AUTH_URL}
-      MINIO_ENDPOINT: ${MINIO_ENDPOINT}
-      MINIO_BUCKET_NAME: ${MINIO_BUCKET_NAME}
-      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
-      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+      # SSR-фетч идёт изнутри контейнера → адрес сервиса api, а не localhost хоста
+      NEXT_PUBLIC_API_URL: http://api:3000
       REVALIDATION_TOKEN: ${REVALIDATION_TOKEN}
-      NEXT_PUBLIC_URL: ${NEXT_PUBLIC_URL}
     depends_on:
       - api
 
@@ -68,10 +63,11 @@ services:
     build:
       context: .
       dockerfile: apps/admin/Dockerfile
+      # Vite-переменные нужны на сборке (SPA статичен), не в runtime
+      args:
+        VITE_BETTER_AUTH_BASE_URL: ${VITE_BETTER_AUTH_BASE_URL:-http://localhost:8080}
     ports:
       - '8081:3000'
-    environment:
-      VITE_API_URL: http://localhost:8080
     depends_on:
       - api
 

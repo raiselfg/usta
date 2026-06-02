@@ -7,26 +7,29 @@ import {
 import { randomUUID } from 'crypto';
 import sharp from 'sharp';
 
-import { env } from './env.js';
-import { ValidationError, StorageError } from './errors.js';
-
-const ENDPOINT = env.AWS_ENDPOINT;
-const REGION = env.AWS_REGION;
-const ACCESS_KEY = env.AWS_ACCESS_KEY;
-const SECRET_KEY = env.AWS_SECRET_KEY;
-const BUCKET = env.AWS_BUCKET;
+import { env } from './env';
+import { ValidationError, StorageError } from './errors';
 
 const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
 
-const client = new S3Client({
-  forcePathStyle: true,
-  region: REGION,
-  endpoint: ENDPOINT,
-  credentials: {
-    accessKeyId: ACCESS_KEY,
-    secretAccessKey: SECRET_KEY,
-  },
-});
+let _client: S3Client | null = null;
+
+// Ленивая инициализация клиента — обращается к env только в рантайме.
+function getClient(): S3Client {
+  if (_client) return _client;
+
+  _client = new S3Client({
+    forcePathStyle: true,
+    region: env.AWS_REGION,
+    endpoint: env.AWS_ENDPOINT,
+    credentials: {
+      accessKeyId: env.AWS_ACCESS_KEY,
+      secretAccessKey: env.AWS_SECRET_KEY,
+    },
+  });
+
+  return _client;
+}
 
 export async function uploadFile(fileBody: File): Promise<string> {
   if (fileBody.size > MAX_FILE_SIZE) {
@@ -52,7 +55,7 @@ export async function uploadFile(fileBody: File): Promise<string> {
     .toBuffer();
 
   const command = new PutObjectCommand({
-    Bucket: BUCKET,
+    Bucket: env.AWS_BUCKET,
     Key: fileName,
     Body: optimizedBuffer,
     ContentType: 'image/avif',
@@ -61,8 +64,8 @@ export async function uploadFile(fileBody: File): Promise<string> {
   });
 
   try {
-    await client.send(command);
-    return `${ENDPOINT}/${BUCKET}/${fileName}`;
+    await getClient().send(command);
+    return `${env.AWS_ENDPOINT}/${env.AWS_BUCKET}/${fileName}`;
   } catch (error) {
     if (error instanceof S3ServiceException) {
       console.error(`[S3] Upload failed: ${error.name}`, {
@@ -78,7 +81,8 @@ export async function uploadFile(fileBody: File): Promise<string> {
 }
 
 export async function deleteFile(fileUrl: string): Promise<void> {
-  const fileName = fileUrl.split(`/${BUCKET}/`)[1];
+  const bucket = env.AWS_BUCKET;
+  const fileName = fileUrl.split(`/${bucket}/`)[1];
 
   if (!fileName) {
     console.warn(`[S3] Attempted to delete invalid file URL: ${fileUrl}`);
@@ -86,12 +90,12 @@ export async function deleteFile(fileUrl: string): Promise<void> {
   }
 
   const command = new DeleteObjectCommand({
-    Bucket: BUCKET,
+    Bucket: bucket,
     Key: fileName,
   });
 
   try {
-    await client.send(command);
+    await getClient().send(command);
   } catch (error) {
     if (error instanceof S3ServiceException) {
       console.error(`[S3] Delete failed: ${error.name}`, {

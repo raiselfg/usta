@@ -10,11 +10,15 @@ FROM base AS builder
 WORKDIR /app
 COPY . .
 # Prune the workspace for the admin app
-RUN npx turbo prune --scope=@usta/admin --docker
+RUN npx turbo prune @usta/admin --docker
 
 # Work inside the pruned workspace
 WORKDIR /app/out/full
 RUN pnpm install
+
+# Vite инлайнит VITE_* на этапе сборки — пробрасываем через build-arg
+ARG VITE_BETTER_AUTH_BASE_URL
+ENV VITE_BETTER_AUTH_BASE_URL=$VITE_BETTER_AUTH_BASE_URL
 
 # Build the admin app
 RUN pnpm turbo run build --filter=@usta/admin

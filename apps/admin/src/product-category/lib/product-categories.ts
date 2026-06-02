@@ -1,5 +1,6 @@
 import type {
   CreateProductCategoryDTO,
+  ProductCategory,
   ProductCategoryWithProducts,
   UpdateProductCategoryDTO,
 } from '@usta/types/product-categories';
@@ -29,7 +30,7 @@ export const productCategories = {
   },
   updateCategory: async (id: string, updateData: UpdateProductCategoryDTO) => {
     try {
-      const { data } = await api.patch<UpdateProductCategoryDTO>(
+      const { data } = await api.patch<ProductCategory>(
         `/product-categories/${id}`,
         updateData,
       );
@@ -40,7 +41,7 @@ export const productCategories = {
   },
   createCategory: async (createData: CreateProductCategoryDTO) => {
     try {
-      const { data } = await api.post<CreateProductCategoryDTO>(
+      const { data } = await api.post<ProductCategory>(
         '/product-categories',
         createData,
       );
