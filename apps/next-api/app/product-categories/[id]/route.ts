@@ -31,7 +31,7 @@ export const PATCH = handle(async (req, { params }) => {
   const { id } = await params;
   idSchema.parse(id);
 
-  const { name, is_active } = UpdateProductCategorySchema.parse(
+  const { name, is_active, color } = UpdateProductCategorySchema.parse(
     await req.json(),
   );
 
@@ -40,7 +40,7 @@ export const PATCH = handle(async (req, { params }) => {
 
   const productCategory = await prisma.productCategory.update({
     where: { id },
-    data: { name, is_active },
+    data: { name, is_active, color },
   });
 
   revalidateFrontend();

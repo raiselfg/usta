@@ -7,9 +7,14 @@ import type {
 import { api, handleApiError } from '../../shared/lib/axios-instance';
 
 export const products = {
-  getProducts: async () => {
+  getProducts: async (categoryId?: string) => {
     try {
-      const { data } = await api.get<ProductWithProductCategory[]>('/products');
+      const { data } = await api.get<ProductWithProductCategory[]>(
+        '/products',
+        {
+          params: categoryId ? { category: categoryId } : undefined,
+        },
+      );
       return data;
     } catch (error) {
       handleApiError(error, 'Failed to fetch products');

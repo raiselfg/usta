@@ -20,7 +20,7 @@ export const GET = handle(async () => {
 // POST /product-categories — только админ
 export const POST = handle(async req => {
   await requireAdmin(req);
-  const { name, is_active } = CreateProductCategorySchema.parse(
+  const { name, is_active, color } = CreateProductCategorySchema.parse(
     await req.json(),
   );
 
@@ -37,6 +37,7 @@ export const POST = handle(async req => {
         name,
         is_active,
         order: nextOrder,
+        color,
       },
     });
   });

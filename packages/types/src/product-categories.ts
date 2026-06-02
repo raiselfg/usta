@@ -9,6 +9,13 @@ export const ProductCategorySchema = z.object({
     .min(1, 'Введите название категории')
     .max(50, 'Название слишком длинное (максимум 50 символов)'),
   order: z.number('Введите порядковый номер категории'),
+  color: z
+    .string()
+    .regex(
+      /^#[0-9A-F]{6}$/i,
+      'Введите корректный hex-код цвета (например, #FF5733)',
+    ),
+
   is_active: z.boolean(),
   created_at: z.iso.datetime().or(z.date()),
   updated_at: z.iso.datetime().or(z.date()),
@@ -28,6 +35,7 @@ export const LandingCategorySchema = ProductCategorySchema.pick({
 export const CreateProductCategorySchema = ProductCategorySchema.pick({
   name: true,
   is_active: true,
+  color: true,
 });
 
 export const UpdateProductCategorySchema =

@@ -5,7 +5,8 @@ import { products } from '@/products/lib/products';
 
 export const productQueries = {
   all: ['products'] as const,
-  list: () => [...productQueries.all, 'list'] as const,
+  list: (categoryId?: string) =>
+    [...productQueries.all, 'list', categoryId ?? 'all'] as const,
   detail: (id: string) => [...productQueries.all, 'detail', id] as const,
 };
 
@@ -16,10 +17,10 @@ export const categoryQueries = {
 };
 
 export const productOptions = {
-  list: () =>
+  list: (categoryId?: string) =>
     queryOptions({
-      queryKey: productQueries.list(),
-      queryFn: () => products.getProducts(),
+      queryKey: productQueries.list(categoryId),
+      queryFn: () => products.getProducts(categoryId),
     }),
   detail: (id: string) =>
     queryOptions({

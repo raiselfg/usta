@@ -9,9 +9,12 @@ import { revalidateFrontend } from '@/lib/revalidate';
 
 export const dynamic = 'force-dynamic';
 
-// GET /products — публичный
-export const GET = handle(async () => {
+// GET /products — публичный. ?category=<id> фильтрует по категории
+export const GET = handle(async req => {
+  const categoryId = new URL(req.url).searchParams.get('category');
+
   const products = await prisma.product.findMany({
+    where: categoryId ? { product_category_id: categoryId } : undefined,
     include: { product_category: true },
   });
   return NextResponse.json(products);

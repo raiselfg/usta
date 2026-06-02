@@ -36,20 +36,26 @@ export const CreateProductCategoryForm = () => {
     control,
     formState: { errors },
     reset,
+    watch,
+    setValue,
   } = useForm<CreateProductCategoryDTO>({
     resolver: zodResolver(CreateProductCategorySchema),
     defaultValues: {
       name: '',
       is_active: true,
+      color: '',
     },
     mode: 'all',
   });
+
+  const selectedColor = watch('color');
 
   const createMutation = useMutation({
     mutationFn: async (data: CreateProductCategoryDTO) => {
       return productCategories.createCategory({
         name: data.name,
         is_active: data.is_active,
+        color: data.color,
       });
     },
     onSuccess: () => {
@@ -120,6 +126,47 @@ export const CreateProductCategoryForm = () => {
                   />
                 )}
               />
+            </div>
+          </Field>
+
+          <Field>
+            <FieldLabel htmlFor='edit-product-category-color'>Цвет</FieldLabel>
+
+            <div className='flex w-full flex-col gap-1'>
+              <div className='flex items-center gap-2'>
+                <input
+                  type='color'
+                  id='edit-product-category-color-picker'
+                  value={selectedColor?.toUpperCase() || '#000000'}
+                  className='border-input h-10 w-10 cursor-pointer rounded border bg-transparent p-0'
+                  onChange={e => {
+                    setValue('color', e.target.value.toUpperCase(), {
+                      shouldValidate: true,
+                      shouldDirty: true,
+                    });
+                  }}
+                />
+
+                <Input
+                  id='edit-product-category-color'
+                  type='text'
+                  placeholder='#FFFFFF'
+                  maxLength={7}
+                  required
+                  className='w-30'
+                  {...register('color', {
+                    required: 'Это поле обязательно',
+
+                    onChange: e => {
+                      setValue('color', e.target.value.toUpperCase(), {
+                        shouldValidate: true,
+                      });
+                    },
+                  })}
+                />
+              </div>
+
+              {errors.color && <FieldError errors={[errors.color]} />}
             </div>
           </Field>
         </form>
