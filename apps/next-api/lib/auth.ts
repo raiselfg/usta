@@ -43,10 +43,11 @@ export const auth = betterAuth({
   advanced: {
     useSecureCookies: env.NODE_ENV === 'production',
     cookiePrefix: 'usta_auth',
-    defaultCookieAttributes: {
-      sameSite: 'none',
-      secure: true,
-    },
+    // defaultCookieAttributes: {
+    //   sameSite: 'none',
+    //   secure: true,
+    //   domain: '.us-ta.ru',
+    // },
   },
   plugins: [nextCookies()],
 });
