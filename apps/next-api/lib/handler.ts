@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import { getAuth } from './auth';
 import { env } from './env';
 import { ApiError, UnauthorizedError } from './errors';
+import { auth } from './auth';
 
 type RouteContext = { params: Promise<Record<string, string>> };
 type RouteHandler = (
@@ -59,7 +59,7 @@ export function handle(fn: RouteHandler): RouteHandler {
  * Бросает UnauthorizedError, который перехватывается `handle`.
  */
 export async function requireAdmin(req: NextRequest) {
-  const session = await getAuth().api.getSession({ headers: req.headers });
+  const session = await auth.api.getSession({ headers: req.headers });
 
   if (!session) {
     console.warn(
