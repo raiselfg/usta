@@ -44,20 +44,28 @@ function createAuth() {
     advanced: {
       useSecureCookies: env.NODE_ENV === 'production',
       cookiePrefix: 'usta_auth',
-      // В проде шарим cookie между поддоменами (admin/landing/api .us-ta.ru),
-      // на localhost оставляем host-only, иначе браузер отклонит домен.
+      // admin/landing/api — поддомены одного site (us-ta.ru), поэтому в проде
+      // шарим cookie через Domain=.us-ta.ru и используем SameSite=Lax. Это
+      // обычная first-party cookie: браузер не режёт её как стороннюю
+      // (в отличие от SameSite=None) и шлёт на все поддомены.
       ...(env.NODE_ENV === 'production'
         ? {
             crossSubDomainCookies: {
               enabled: true,
               domain: '.us-ta.ru',
             },
+            defaultCookieAttributes: {
+              sameSite: 'lax',
+              secure: true,
+            },
           }
-        : {}),
-      defaultCookieAttributes: {
-        sameSite: 'none',
-        secure: true,
-      },
+        : {
+            // localhost тоже same-site между портами; на http нужен
+            // SameSite=Lax без Secure, иначе браузер отклонит cookie.
+            defaultCookieAttributes: {
+              sameSite: 'lax',
+            },
+          }),
     },
     // Гарантирует, что Set-Cookie из better-auth попадают в ответ Next.js
     plugins: [nextCookies()],
