@@ -44,6 +44,16 @@ function createAuth() {
     advanced: {
       useSecureCookies: env.NODE_ENV === 'production',
       cookiePrefix: 'usta_auth',
+      // В проде шарим cookie между поддоменами (admin/landing/api .us-ta.ru),
+      // на localhost оставляем host-only, иначе браузер отклонит домен.
+      ...(env.NODE_ENV === 'production'
+        ? {
+            crossSubDomainCookies: {
+              enabled: true,
+              domain: '.us-ta.ru',
+            },
+          }
+        : {}),
       defaultCookieAttributes: {
         sameSite: 'none',
         secure: true,

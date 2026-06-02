@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useNavigate } from '@tanstack/react-router';
 import { SignInSchema, type SignInSchemaType } from '@usta/types';
 import { Button } from '@usta/ui/components/button';
 import {
@@ -16,6 +17,7 @@ import { toast } from 'sonner';
 import { errorMessages, signIn } from '@/shared/lib/auth-client';
 
 export const SignInForm = () => {
+  const navigate = useNavigate();
   const form = useForm<SignInSchemaType>({
     resolver: zodResolver(SignInSchema),
     defaultValues: {
@@ -30,7 +32,6 @@ export const SignInForm = () => {
       email: data.email,
       password: data.password,
       rememberMe: true,
-      callbackURL: '/dashboard',
     });
 
     if (error) {
@@ -42,6 +43,7 @@ export const SignInForm = () => {
     }
 
     toast.success('Вы успешно вошли в систему');
+    await navigate({ to: '/dashboard' });
   }
 
   return (
