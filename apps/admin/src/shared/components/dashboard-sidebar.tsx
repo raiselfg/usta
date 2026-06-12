@@ -5,6 +5,7 @@ import { Separator } from '@usta/ui/components/separator';
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -14,6 +15,7 @@ import {
   useSidebar,
 } from '@usta/ui/components/sidebar';
 
+import LogoutButton from './logout-button';
 import { ThemeToggle } from './theme-toggle';
 
 const data = {
@@ -92,6 +94,9 @@ export function DashboardSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
           </SidebarGroup>
         ))}
       </SidebarContent>
+      <SidebarFooter>
+        <LogoutButton />
+      </SidebarFooter>
     </Sidebar>
   );
 }
